@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.venv-*/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# RedFox runtime state (never commit engagement data, evidence or audit logs)
+.redfox/
+*.db
+*.db-wal
+*.db-shm
+evidence/
+audit/
+reports/
+KILL
+
+# Tool binaries and downloads
+tools/bin/
+tools/tmp/
+tools/*.zip
+tools/wordlists/*.tmp
+
+# Local scratch
+*.log
+!examples/**/*.log
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Lab artefacts
+lab/*.db
