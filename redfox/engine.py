@@ -465,6 +465,10 @@ class Campaign:
             for review in reviews:
                 if not self.store.finding_by_fingerprint(eng["id"], review["fingerprint"]):
                     continue
+                # Only the validation step may declare a finding proven. Triage
+                # classifying evidence as convincing is not proof.
+                if review["status"] == "validated":
+                    review["status"] = "candidate"
                 self.store.update_finding(
                     eng["id"], review["fingerprint"],
                     title=review["title"] or None, severity=review["severity"],

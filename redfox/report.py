@@ -217,7 +217,9 @@ def html(findings: list[dict[str, Any]], engagement: dict[str, Any],
            padding:14px 16px; }}
   .stat b {{ display:block; font-size:26px; }}
   .stat span {{ color:#8b949e; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }}
+  .tablewrap {{ overflow-x:auto; -webkit-overflow-scrolling:touch; }}
   table {{ width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; }}
+  td code, td a {{ white-space:nowrap; }}
   th, td {{ text-align:left; padding:10px 12px; border-bottom:1px solid #21262d; }}
   th {{ color:#8b949e; font-weight:600; font-size:12px; text-transform:uppercase; }}
   .finding {{ background:#161b22; border:1px solid #21262d; border-radius:12px;
@@ -249,8 +251,9 @@ def html(findings: list[dict[str, Any]], engagement: dict[str, Any],
 <h2>Executive summary</h2>
 <p>{_esc(summary.get('executive_summary') or 'No summary was produced.')}</p>
 <h2>Findings</h2>
-<table><thead><tr><th>#</th><th>Severity</th><th>Finding</th><th>Asset</th><th>Status</th></tr></thead>
-<tbody>{''.join(rows)}</tbody></table>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Severity</th><th>Finding</th>
+<th>Asset</th><th>Status</th></tr></thead>
+<tbody>{''.join(rows)}</tbody></table></div>
 {''.join(cards)}
 <h2>Tooling and trace</h2>
 <p class="meta">Tools used: {_esc(', '.join(meta.get('tools_used', [])) or 'none')} ·

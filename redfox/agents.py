@@ -65,15 +65,15 @@ Rules:
   discovered path is not itself a vulnerability, technology detection is not a
   vulnerability).
 - Never invent a finding, a CVE, or a CVSS score that the evidence does not support.
-- Set `validated` ONLY if the candidate's own evidence already proves exploitation;
-  otherwise leave it `candidate` so the validation agent can prove it.
+- Never set `validated`: proving a finding is the validation agent's job, not yours.
+  Use `candidate`, `rejected` or `inconclusive` only.
 - Severity must reflect real impact: exposed credentials/config = high, discoverable
   but non-sensitive path = info/low.
 
 Reply with ONE JSON object:
 {"findings": [{"fingerprint": "<as given>", "title": "<short>",
   "severity": "critical|high|medium|low|info", "cvss": <number or null>,
-  "status": "candidate|validated|rejected|inconclusive",
+  "status": "candidate|rejected|inconclusive",
   "description": "<what the evidence shows>",
   "remediation": "<concrete fix>"}]}"""
 
