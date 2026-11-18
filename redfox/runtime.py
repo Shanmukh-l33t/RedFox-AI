@@ -171,10 +171,11 @@ class ToolRuntime:
         digest = hashlib.sha256(stdout.encode("utf-8") + stderr.encode("utf-8")).hexdigest()
         duration = round(time.time() - started, 3)
 
-        evidence_path = self._write_evidence(engagement["id"], action_id, call, argv,
-                                             stdout, stderr, digest, duration)
+        evidence_path, file_digest = self._write_evidence(
+            engagement["id"], action_id, call, argv, stdout, stderr, digest, duration)
         evidence_id = self.store.add_evidence(
-            engagement["id"], action_id, call.evidence_kind, str(evidence_path), digest,
+            engagement["id"], action_id, call.evidence_kind, str(evidence_path),
+            file_digest,
             summary=f"{call.tool} -> {call.target} (exit={proc.returncode})",
         )
         self._finish_action(action_id, proc.returncode, evidence_id)
@@ -244,7 +245,8 @@ class ToolRuntime:
             encoding="utf-8",
         )
         evidence_id = self.store.add_evidence(
-            engagement["id"], action_id, "http", str(path), digest,
+            engagement["id"], action_id, "http", str(path),
+            hashlib.sha256(path.read_bytes()).hexdigest(),
             summary=f"{call.method} {call.url} -> {status}",
         )
         self._finish_action(action_id, 0 if not error else None, evidence_id)
@@ -259,7 +261,8 @@ class ToolRuntime:
 
     # ---- evidence ----------------------------------------------------
     def _write_evidence(self, eid: str, action_id: str, call: ToolCall, argv: list[str],
-                        stdout: str, stderr: str, digest: str, duration: float) -> Path:
+                        stdout: str, stderr: str, digest: str,
+                        duration: float) -> tuple[Path, str]:
         directory = self.settings.evidence_dir / eid
         directory.mkdir(parents=True, exist_ok=True)
         path = directory / f"{action_id}_{call.tool}.log"
@@ -270,7 +273,7 @@ class ToolRuntime:
             f"{'=' * 70}\n[stdout]\n{stdout}\n[stderr]\n{stderr}\n"
         )
         path.write_text(banner, encoding="utf-8")
-        return path
+        return path, hashlib.sha256(path.read_bytes()).hexdigest()
 
     def _finish_action(self, action_id: str, exit_code: int | None,
                        evidence_id: str) -> None:

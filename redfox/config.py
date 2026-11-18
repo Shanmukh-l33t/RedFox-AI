@@ -46,6 +46,7 @@ class Settings:
     llm_api_key: str
     llm_base_url: str
     llm_max_tokens: int
+    llm_timeout_s: int
     rate_per_min: int
     rate_per_target_per_min: int
     max_steps: int
@@ -90,6 +91,7 @@ class Settings:
             llm_api_key=os.environ.get("REDFOX_LLM_API_KEY", ""),
             llm_base_url=os.environ.get("REDFOX_LLM_BASE_URL", ""),
             llm_max_tokens=_int("REDFOX_LLM_MAX_TOKENS", 2048),
+            llm_timeout_s=_int("REDFOX_LLM_TIMEOUT", 300),
             rate_per_min=_int("REDFOX_RATE_PER_MIN", 120),
             rate_per_target_per_min=_int("REDFOX_RATE_PER_TARGET", 60),
             max_steps=_int("REDFOX_MAX_STEPS", 40),

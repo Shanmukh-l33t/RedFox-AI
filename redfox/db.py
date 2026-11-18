@@ -247,12 +247,31 @@ class Store:
             ).fetchall()
         return [_task_row(r) for r in rows]
 
+    def task_already_done(self, eid: str, kind: str, target: str) -> bool:
+        with self.connect() as conn:
+            row = conn.execute(
+                "SELECT 1 FROM tasks WHERE engagement_id=? AND kind=? AND state='done' "
+                "AND json_extract(payload_json,'$.target')=? LIMIT 1",
+                (eid, kind, target),
+            ).fetchone()
+        return row is not None
+
     def reset_running_tasks(self, eid: str) -> int:
         """Crash recovery: a task stuck in 'running' is requeued, not lost."""
         with self.connect() as conn:
             cur = conn.execute(
                 "UPDATE tasks SET state='pending', updated_at=? "
                 "WHERE engagement_id=? AND state='running'", (now(), eid)
+            )
+            return cur.rowcount
+
+    def retry_failed_tasks(self, eid: str, max_attempts: int = 2) -> int:
+        """A transient failure (model timeout, network) gets one more try on resume."""
+        with self.connect() as conn:
+            cur = conn.execute(
+                "UPDATE tasks SET state='pending', updated_at=? "
+                "WHERE engagement_id=? AND state='failed' AND attempts < ?",
+                (now(), eid, max_attempts),
             )
             return cur.rowcount
 

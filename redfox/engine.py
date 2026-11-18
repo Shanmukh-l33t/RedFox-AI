@@ -90,9 +90,18 @@ class Campaign:
                     if not plan["tasks"]:
                         break
                     self.store.event(engagement_id, "plan.floor", plan)
+                enqueued = 0
                 for item in plan["tasks"]:
+                    if item["target"] and self.store.task_already_done(
+                            engagement_id, item["kind"], item["target"]):
+                        self.store.event(engagement_id, "plan.duplicate_skipped", item)
+                        continue
                     self.store.add_task(engagement_id, item["agent"], item["agent"],
                                         item["kind"], item)
+                    enqueued += 1
+                if not enqueued:
+                    self.store.event(engagement_id, "campaign.no_new_work", plan)
+                    break
                 steps += 1
                 continue
 
@@ -436,15 +445,14 @@ class Campaign:
         payload = [{
             "fingerprint": f["fingerprint"], "title": f["title"],
             "severity": f["severity"], "asset": f["asset"], "location": f["location"],
-            "description": f["description"][:240], "source_tool": f["source_tool"],
-            "evidence_ids": f["evidence_ids"],
+            "source_tool": f["source_tool"], "template_id": f.get("template_id", ""),
         } for f in candidates[:24]]
 
         # Small batches: a local model on CPU times out on a single large review,
         # and a failed batch must not discard the batches that already succeeded.
         applied = 0
         errors = 0
-        batch_size = 6
+        batch_size = 4
         for start in range(0, len(payload), batch_size):
             batch = payload[start:start + batch_size]
             try:
@@ -453,7 +461,7 @@ class Campaign:
                 errors += 1
                 self.store.event(eng["id"], "triage.error",
                                  {"batch": start // batch_size, "error": str(exc)[:300]})
-                continue
+                reviews = _fallback_triage(batch)
             for review in reviews:
                 if not self.store.finding_by_fingerprint(eng["id"], review["fingerprint"]):
                     continue
@@ -560,6 +568,31 @@ class Campaign:
             "audit": {"ok": ok, "message": audit_message},
             "report_dir": str(self.settings.home / "reports" / eid),
         }
+
+
+def _fallback_triage(batch: list[dict]) -> list[dict]:
+    """Keep the tool's own severity when the model cannot review a batch.
+
+    This invents nothing: severity comes from the scanner that produced the
+    candidate, and discovered paths are demoted to info because a reachable path
+    is not itself a vulnerability.
+    """
+    out = []
+    for cand in batch:
+        severity = cand.get("severity") if cand.get("severity") in {
+            "critical", "high", "medium", "low", "info"} else "info"
+        if cand.get("source_tool") == "ffuf":
+            severity = "info"
+        out.append({
+            "fingerprint": cand["fingerprint"],
+            "title": cand.get("title", ""),
+            "severity": severity,
+            "cvss": None,
+            "status": "candidate",
+            "description": "",
+            "remediation": "",
+        })
+    return out
 
 
 def _fallback_validations(candidates: list[dict], auth_spec: dict | None) -> list[dict]:
