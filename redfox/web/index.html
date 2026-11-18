@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RedFox AI — campaigns</title>
+<style>
+  :root { color-scheme: dark; --bg:#0b0e13; --panel:#131820; --line:#1f2632;
+          --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff; --red:#ff7b72;
+          --amber:#e3b341; --green:#7ee787; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  header { display:flex; align-items:center; gap:16px; padding:18px 28px;
+           border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); z-index:5; }
+  header h1 { font-size:17px; margin:0; letter-spacing:-.01em; }
+  header .tag { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; }
+  .spacer { flex:1; }
+  button { background:#1c2330; color:var(--text); border:1px solid var(--line);
+           border-radius:8px; padding:7px 12px; font-size:13px; cursor:pointer; }
+  button:hover { border-color:#2f3a4b; }
+  button.danger { border-color:#4a1f22; color:var(--red); }
+  main { display:grid; grid-template-columns: 320px 1fr; gap:0; min-height:calc(100vh - 62px); }
+  aside { border-right:1px solid var(--line); padding:16px; overflow:auto; }
+  section { padding:20px 26px; overflow:auto; }
+  .eng { padding:11px 12px; border:1px solid var(--line); border-radius:9px;
+         margin-bottom:9px; cursor:pointer; background:var(--panel); }
+  .eng:hover { border-color:#2b3546; }
+  .eng.active { border-color:var(--accent); }
+  .eng b { display:block; font-size:13px; }
+  .eng span { font-size:11px; color:var(--muted); }
+  .pill { display:inline-block; font-size:10px; text-transform:uppercase; letter-spacing:.08em;
+          padding:2px 7px; border-radius:999px; background:#1c2330; color:var(--muted); }
+  .pill.completed { background:#12261e; color:var(--green); }
+  .pill.running { background:#10233a; color:var(--accent); }
+  .pill.halted,.pill.paused { background:#3d1d11; color:var(--amber); }
+  .row { display:flex; gap:18px; flex-wrap:wrap; margin-bottom:18px; }
+  .stat { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+          padding:12px 16px; min-width:120px; }
+  .stat b { display:block; font-size:24px; }
+  .stat span { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px;
+         background:#0f141c; padding:2px 5px; border-radius:4px; }
+  .sev { font-size:10px; text-transform:uppercase; letter-spacing:.08em; font-weight:700;
+         padding:2px 7px; border-radius:999px; }
+  .sev.critical { background:#3d1114; color:#ff7b72; }
+  .sev.high { background:#3d1d11; color:#ffa657; }
+  .sev.medium { background:#3d3211; color:#e3b341; }
+  .sev.low { background:#12261e; color:#7ee787; }
+  .sev.info { background:#1c2128; color:#8b949e; }
+  #feed { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11.5px;
+          background:#0d1218; border:1px solid var(--line); border-radius:10px;
+          padding:12px; height:210px; overflow:auto; color:#9aa4b2; white-space:pre-wrap; }
+  h2 { font-size:14px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted);
+       margin:24px 0 10px; }
+  .empty { color:var(--muted); font-size:13px; padding:14px 0; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>RedFox AI</h1>
+  <span class="tag">authorized testing only</span>
+  <div class="spacer"></div>
+  <button id="killBtn" class="danger">Kill switch</button>
+  <button id="refresh">Refresh</button>
+</header>
+<main>
+  <aside>
+    <h2>Engagements</h2>
+    <div id="engagements"><div class="empty">loading…</div></div>
+  </aside>
+  <section>
+    <div id="detail"><div class="empty">Select an engagement.</div></div>
+  </section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
