@@ -24,7 +24,7 @@ themselves, the CI runner, and PyPI dependencies beyond `pip-audit` output.
 | 5 | Medium | `parse_target` raised `ValueError` (not `ScopeError`) on `host:port/path` | Fixed |
 | 6 | Medium | Security tools can reach hosts outside scope via redirects and embedded URLs | Accepted |
 | 7 | Low | DNS rebinding can point an authorised hostname at an unauthorised address | Accepted |
-| 8 | Low | The API has no authentication and is loopback-only by default | Accepted |
+| 8 | Low | The API had no authentication, only a loopback bind | Mitigated |
 | 9 | Low | Evidence files contain verbatim target responses, including any secrets in them | Accepted |
 | 10 | Info | No `subprocess` outside `runtime.py`; binaries are allowlisted | Verified |
 | 11 | Low | A same-named program on PATH was run as if it were the scanner | Fixed |
@@ -120,14 +120,18 @@ different address. Scope-by-name is what operators actually authorise, and
 pinning resolution would break legitimate CDN-fronted targets. Accepted, and
 recorded here so the trust boundary is explicit.
 
-### 8. Unauthenticated API (Low → accepted)
+### 8. Unauthenticated API (Low → mitigated)
 
 `redfox serve` binds `127.0.0.1` and refuses a non-loopback address without
-`--i-know`. There is no authentication: any local process that can reach the
-port can start campaigns, read findings, and approve gated actions. On a
-single-operator workstation that is the same trust boundary as the shell. It is
-documented in `SECURITY.md` and must be fronted by an authenticating proxy
-before it is exposed to anything else.
+`--i-know`. There was no authentication: any local process that could reach the
+port could start campaigns, read findings, and approve gated actions.
+
+`REDFOX_API_TOKEN` now closes that: when it is set, every `/api` route needs
+`Authorization: Bearer <token>` (or `X-RedFox-Token`), compared in constant time,
+and the WebSocket requires `?token=`. The UI asks for the token inline and keeps
+it in `localStorage`. Unset, the server keeps the old behaviour — loopback and the
+shell as the trust boundary — which is stated in `SECURITY.md`. Tests:
+`tests/test_api_auth.py`.
 
 ### 9. Evidence contains target responses (Low → accepted)
 

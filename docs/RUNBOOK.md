@@ -96,6 +96,19 @@ token spend for the campaign.
 
 ## Troubleshooting
 
+## Serving the UI
+
+`redfox serve` binds `127.0.0.1` and, by default, has no authentication. Set a
+token before anything else can reach the port:
+
+```bash
+export REDFOX_API_TOKEN=$(python -c "import secrets; print(secrets.token_urlsafe(24))")
+redfox serve --port 8000
+```
+
+Every `/api` route then needs `Authorization: Bearer <token>`; the UI asks for it
+on first load and remembers it. The WebSocket endpoint takes `?token=`.
+
 ## Credentials
 
 An `auth_check` or `impact` block in the scope file may hold a literal

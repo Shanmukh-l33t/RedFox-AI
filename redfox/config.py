@@ -53,6 +53,7 @@ class Settings:
     tool_timeout_s: int
     quiet_hours: str  # "22:00-06:00" or empty
     retention_days: int
+    api_token: str = ""  # empty: the API is loopback-only and unauthenticated
 
     @property
     def db_path(self) -> Path:
@@ -96,6 +97,7 @@ class Settings:
             rate_per_target_per_min=_int("REDFOX_RATE_PER_TARGET", 60),
             max_steps=_int("REDFOX_MAX_STEPS", 40),
             tool_timeout_s=_int("REDFOX_TOOL_TIMEOUT", 600),
+            api_token=os.environ.get("REDFOX_API_TOKEN", ""),
             quiet_hours=os.environ.get("REDFOX_QUIET_HOURS", ""),
             retention_days=_int("REDFOX_RETENTION_DAYS", 365),
         )

@@ -125,7 +125,9 @@ Rules: exclusions always win; a wildcard is rejected; a CIDR must be expanded to
 
 **CLI** — `init`, `run`, `status`, `findings`, `report`, `scope-check`, `impact`, `approvals`, `approve`, `kill`, `verify-audit`, `tools`, `serve`.
 
-**REST + WebSocket** — `redfox serve` (loopback by default):
+**REST + WebSocket** — `redfox serve` (loopback by default). With `REDFOX_API_TOKEN`
+set, every `/api` route requires `Authorization: Bearer <token>` and `/ws/{id}`
+requires `?token=`; unset, the port is loopback-only and unauthenticated:
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -140,7 +142,7 @@ Rules: exclusions always win; a wildcard is rejected; a CIDR must be expanded to
 | GET | `/api/audit/verify` | verify the hash chain |
 | WS | `/ws/{id}` | live events |
 
-**Web UI** — served at `/`: engagement list, live event feed, findings table, report links, kill switch.
+**Web UI** — served at `/`: engagement list, live event feed, findings table, report links, kill switch. If the API needs a token it asks for one inline and remembers it.
 
 ![RedFox AI campaign view](docs/campaign-ui.png)
 

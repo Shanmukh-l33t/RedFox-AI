@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+import hmac
+
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 
@@ -60,6 +62,23 @@ def create_app(home: str | None = None) -> FastAPI:
         if not eng:
             raise HTTPException(status_code=404, detail="engagement not found")
         return eng
+
+    @app.middleware("http")
+    async def authenticate(request, call_next):
+        """Bearer token on every data route when REDFOX_API_TOKEN is set.
+
+        Off by default: the server binds loopback and the shell is the trust
+        boundary. Set the token before putting anything in front of it.
+        """
+        if settings.api_token and request.url.path.startswith("/api"):
+            supplied = request.headers.get("x-redfox-token") or ""
+            header = request.headers.get("authorization", "")
+            if header.lower().startswith("bearer "):
+                supplied = header[7:]
+            if not hmac.compare_digest(supplied, settings.api_token):
+                return JSONResponse({"detail": "invalid or missing API token"},
+                                    status_code=401)
+        return await call_next(request)
 
     @app.get("/api/health")
     def health() -> dict[str, Any]:
@@ -158,6 +177,11 @@ def create_app(home: str | None = None) -> FastAPI:
 
     @app.websocket("/ws/{eid}")
     async def stream(websocket: WebSocket, eid: str) -> None:
+        if settings.api_token:
+            supplied = websocket.query_params.get("token") or ""
+            if not hmac.compare_digest(supplied, settings.api_token):
+                await websocket.close(code=4401)
+                return
         await websocket.accept()
         last = 0
         try:

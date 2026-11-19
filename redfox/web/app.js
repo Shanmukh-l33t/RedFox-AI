@@ -5,8 +5,31 @@ const el = (sel) => document.querySelector(sel);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-async function api(path, options) {
-  const res = await fetch(path, options);
+let token = localStorage.getItem("redfox_token") || "";
+
+// An inline prompt, not window.prompt(): a modal dialog blocks the whole page,
+// including the event stream that is the point of this UI.
+function showTokenPrompt() {
+  const box = el("#engagements");
+  if (!box || el("#token-row")) return;
+  box.innerHTML = `<div id="token-row" class="empty">This server needs a token.
+    <input id="token-input" type="password" placeholder="REDFOX_API_TOKEN" autocomplete="off">
+    <button id="token-save" type="button">Save</button></div>`;
+  el("#token-save").addEventListener("click", () => {
+    token = el("#token-input").value.trim();
+    localStorage.setItem("redfox_token", token);
+    loadEngagements();
+  });
+}
+
+async function api(path, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  let res = await fetch(path, { ...options, headers });
+  if (res.status === 401) {
+    showTokenPrompt();
+    throw new Error("401 token required");
+  }
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   return res.json();
 }
@@ -90,7 +113,9 @@ async function selectEngagement(id) {
 
 function connectStream(id) {
   if (state.ws) { try { state.ws.close(); } catch (e) {} }
-  const ws = new WebSocket(`ws://${location.host}/ws/${id}`);
+  const scheme = location.protocol === "https:" ? "wss" : "ws";
+  const auth = token ? `?token=${encodeURIComponent(token)}` : "";
+  const ws = new WebSocket(`${scheme}://${location.host}/ws/${id}${auth}`);
   state.ws = ws;
   ws.onmessage = (msg) => {
     const feed = el("#feed");
