@@ -182,6 +182,11 @@ class WhatwebAdapter(ToolAdapter):
     def parse(self, result: ExecutionResult) -> list[Observation]:
         out: list[Observation] = []
         text = result.stdout.strip()
+        # The runtime appends the tool's log file after an "[output-file]" marker;
+        # that marker contains a bracket, so the JSON must be searched for after it.
+        marker = text.rfind("[output-file]")
+        if marker >= 0:
+            text = text[marker + len("[output-file]"):]
         start = text.find("[")
         if start < 0:
             return out

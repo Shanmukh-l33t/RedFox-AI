@@ -132,3 +132,19 @@ def test_subfinder_only_for_domains() -> None:
 def test_every_adapter_declares_a_risk_class(adapter) -> None:
     assert adapter.risk in {"passive", "active", "validation", "intrusive"}
     assert adapter.describe()["name"] == adapter.name
+
+def test_whatweb_parses_json_after_the_output_file_marker() -> None:
+    """The runtime merges the log file in behind a marker that contains a '['.
+
+    whatweb ran for the first time in CI and parsed to nothing because of it.
+    """
+    payload = json.dumps([
+        {"target": "http://127.0.0.1:8080/", "http_status": 200,
+         "plugins": {"Python": {"version": ["3.12"]}, "HTML5": {}}}
+    ])
+    merged = "\n[output-file]\n" + payload + "\n"
+    observations = WhatwebAdapter().parse(result(merged))
+    assert len(observations) == 1
+    assert observations[0].data["status"] == 200
+    assert "Python/3.12" in observations[0].data["tech"]
+    assert "HTML5" in observations[0].data["tech"]
