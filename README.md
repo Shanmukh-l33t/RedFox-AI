@@ -125,6 +125,10 @@ Rules: exclusions always win; a wildcard is rejected; a CIDR must be expanded to
 
 **Web UI** — served at `/`: engagement list, live event feed, findings table, report links, kill switch.
 
+![RedFox AI campaign view](docs/campaign-ui.png)
+
+*A completed L2 campaign against the lab target: 19 findings recorded, 6 validated with evidence, 12 policy-gated actions, audit chain verified.*
+
 ## Models
 
 Provider-agnostic; every id is configuration.
