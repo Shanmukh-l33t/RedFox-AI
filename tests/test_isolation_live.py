@@ -106,4 +106,6 @@ def test_ffuf_finds_paths_through_the_mounted_wordlist(tmp_path: Path) -> None:
         assert result.exit_code == 0, result.stderr[:400]
         observations.extend(adapter.parse(result))
 
-    assert observations, "ffuf parsed nothing: is the wordlist mounted?"
+    assert observations, (
+        f"ffuf parsed nothing. exit={result.exit_code} "
+        f"stderr={result.stderr[:300]!r} stdout={result.stdout[:300]!r}")
