@@ -216,6 +216,13 @@ examples/        the lab engagement, plus a recorded run's report and audit log
 scripts/         tool installer, evidence verifier, soak harness
 ```
 
+## Verification
+
+[`docs/VERIFICATION.md`](docs/VERIFICATION.md) records what was actually run for
+each item on the project's definition-of-done: the clean-clone campaign (26
+findings, 9 validated, 19/19 evidence intact), the audit chain check, the CI jobs,
+and the soak. It also lists what is still not proven.
+
 ## Design record
 
 `docs/DESIGN_SYNTHESIS.md` contains the Phase-1 analysis of the six reference projects (pentagi, strix, ARTEX, hexstrike, Pentest-Swarm-AI, shannon): the capability matrix, what was adopted, what was rejected and why, and the deliberate stack deviations. `docs/references/` holds the per-repo analyses.
