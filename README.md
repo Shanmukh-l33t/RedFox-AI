@@ -30,12 +30,11 @@ scope file ──► engagement record ──► policy gate ──► tool runt
 - **Resumable.** Campaign state is a durable task table. Kill the process mid-run and `redfox run <id>` picks up where it stopped.
 - **Credentials stay out of the record.** Write a password as `${LAB_ADMIN_PASSWORD}` and only the reference is stored; the value is read from the environment when the request is built. Credentials are never sent to a model — the validator sees `<redacted>`.
 
-## What it does not do (v0.3.0)
+## What it does not do (v0.4.0)
 
-- **No container isolation.** Tools run as subprocesses under your user account, behind the policy gate but not inside a sandbox. See [ARCHITECTURE.md](docs/ARCHITECTURE.md#isolation).
+- **Isolation is opt-in.** `REDFOX_ISOLATE=docker` runs each tool in its own image with the evidence directory as the only mount; without it, tools run as subprocesses behind the policy gate. `nmap`, `nuclei`, `httpx` and `subfinder` have images; `ffuf`, `amass`, `whatweb` and `sslscan` do not yet and are refused — not silently run on the host — while isolation is on. See [ARCHITECTURE.md](docs/ARCHITECTURE.md#isolation).
 - **Single node.** No Redis/Celery/Postgres. The task queue is a SQLite table; multi-node execution is future work.
 - **No exploitation.** The only intrusive capability is a read-only impact check: it authenticates with operator-supplied credentials and reads one page. It never writes, uploads, deletes or escalates.
-- **No per-tool sandbox inside the process.** Isolation is the policy gate plus your host; run it in a container or VM for real engagements.
 - **`whatweb` needs Ruby, `sslscan` needs its binary.** CI installs both on Linux; where they are absent the adapters report `NOT INSTALLED` rather than pretending.
 
 ## Quickstart
@@ -84,6 +83,26 @@ redfox impact eng_…
 # → 2 actions allowed, finding "Authenticated access to http://…/admin/" validated,
 #   approval status "consumed" (one approval authorizes one operation)
 ```
+
+## Isolation
+
+```bash
+export REDFOX_ISOLATE=docker
+export REDFOX_DOCKER_NETWORK=bridge      # "host" to reach a lab on this machine
+redfox run <engagement>
+```
+
+Each tool invocation becomes a `docker run` of an image that contains only that
+tool: no capabilities, no new privileges, a pid limit, and the engagement's
+evidence directory as the only mount. The policy gate is unchanged — it still
+decides whether the call happens, and the scope check runs before the container is
+started. A tool with no image fails with `isolation.no_image` instead of running
+unsandboxed.
+
+What it contains: the toolchain. A hostile template, a wordlist that walks paths,
+or a compromised scanner cannot touch your workstation or your keys. What it does
+not contain: a scanner that follows a redirect out of scope — that is bounded by
+the tool, not by the mount.
 
 ## Autonomy levels
 

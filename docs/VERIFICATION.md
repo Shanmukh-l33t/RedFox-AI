@@ -3,7 +3,7 @@
 What was actually run, and what it returned. Every number below came out of a
 command, not an estimate. Re-run any of it from a clean clone.
 
-Date: 2026-11-19 · Tag: `v0.3.0` · Python 3.14.9 (dev), 3.11/3.12 (CI) · Windows 11
+Date: 2026-11-19 · Tag: `v0.4.0` · Python 3.14.9 (dev), 3.11/3.12 (CI) · Windows 11
 
 ## 1. Safety first, and tested
 
@@ -27,7 +27,9 @@ Real tool adapters                    success   ← nmap, httpx, ffuf, nuclei, w
 End-to-end against the lab target     success
 ```
 
-The `Real tool adapters` job is the one that earns its keep: it installs the
+The `Container isolation` job runs nmap inside `instrumentisto/nmap` with
+`--network host` and asserts the port is found and evidence written through the
+mount; the `Real tool adapters` job is the other one that earns its keep: it installs the
 binaries and runs the adapters through the policy gate. It found three defects
 that unit tests with fixtures could not (see `docs/SECURITY-REVIEW.md` §11 and the
 whatweb parse fallback).

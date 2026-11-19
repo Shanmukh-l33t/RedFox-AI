@@ -132,18 +132,32 @@ anything is written.
 
 ## Isolation
 
-**Not shipped: per-tool containers.** Tool processes run as the invoking user.
-The policy gate decides *whether* a tool runs and against what; it does not
-sandbox *what the tool does to the host*. A malicious or compromised tool binary
-would run with your privileges.
+**Per-tool containers: opt-in, `REDFOX_ISOLATE=docker`.** The policy gate decides
+*whether* a tool runs and against what; `redfox/isolation.py` decides *where*.
+With isolation on, an invocation becomes:
 
-Mitigations present: fixed binary allowlist resolved from a project directory or
-`PATH`, argv-only execution (no shell), timeouts with hard kill, per-scope port
-restriction, and full audit of every invocation.
+```
+docker run --rm --network $REDFOX_DOCKER_NETWORK   --cap-drop ALL --security-opt no-new-privileges --pids-limit 512   -v <evidence dir>:/evidence -w /evidence <tool image> <tool argv>
+```
 
-If you need stronger isolation, run the whole platform in a container or VM whose
-egress is limited to the engagement scope. That is the recommended deployment for
-anything beyond a lab.
+- The only mount is the engagement's evidence directory; `{out}` is rewritten to
+  `/evidence/...` so the tool writes where the runtime reads.
+- The image holds one tool. The host filesystem, the operator's keys, and every
+  other tool on the machine are out of reach.
+- `--network` defaults to `bridge` (no route to the host's loopback). Use `host`
+  only for a local lab.
+- A tool with no configured image is refused with an `isolation.no_image` event.
+  Falling back to an unsandboxed run would make the setting a suggestion.
+
+Images: `nmap` (instrumentisto/nmap), `nuclei`/`nuclei_validate`, `httpx`,
+`subfinder` (projectdiscovery). No image yet for `ffuf`, `amass`, `whatweb`,
+`sslscan`; those are refused while isolation is on.
+
+With isolation **off**, tool processes run as the invoking user. The mitigations
+that remain: fixed binary allowlist resolved from a project directory or `PATH`,
+argv-only execution (no shell), an 8 MB output cap, an AST test that no module
+outside `runtime.py` can spawn a process, and the policy gate in front of every
+call. For a real engagement without isolation, run the platform in a VM.
 
 ## Approvals
 

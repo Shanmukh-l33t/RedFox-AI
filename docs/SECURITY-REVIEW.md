@@ -22,7 +22,7 @@ themselves, the CI runner, and PyPI dependencies beyond `pip-audit` output.
 | 3 | Medium | Unbounded tool output was read wholly into memory and evidence | Fixed |
 | 4 | Medium | Credentials were stored in plaintext in the engagement record | Mitigated |
 | 5 | Medium | `parse_target` raised `ValueError` (not `ScopeError`) on `host:port/path` | Fixed |
-| 6 | Medium | Security tools can reach hosts outside scope via redirects and embedded URLs | Accepted |
+| 6 | Medium | Security tools can reach hosts outside scope via redirects and embedded URLs | Mitigated (partly) |
 | 7 | Low | DNS rebinding can point an authorised hostname at an unauthorised address | Accepted |
 | 8 | Low | The API had no authentication, only a loopback bind | Mitigated |
 | 9 | Low | Evidence files contain verbatim target responses, including any secrets in them | Accepted |
@@ -106,11 +106,16 @@ redirects. A hostile target can therefore cause a scan tool to send requests to 
 host the operator did not authorise.
 
 This is inherent to running general-purpose scanners and is not fixable in the
-orchestrator. The intended mitigation — per-tool containers with an
-egress-filtered network — is **not implemented** (see the isolation section of
-`docs/ARCHITECTURE.md`). Until it is, treat the tool container's network
-position as the real scope boundary, and run engagements from a network segment
-that cannot reach anything you are not authorised to test.
+orchestrator; the tool is doing what it is designed to do. The mitigation that
+does exist is `REDFOX_ISOLATE=docker` (`redfox/isolation.py`): the tool runs in an
+image with no capabilities, no new privileges, and only the evidence directory
+mounted, on `REDFOX_DOCKER_NETWORK`. With `bridge` the container cannot reach
+anything the network does not route to; with `host` it can, so the network
+position is the real scope boundary, not the tool's good behaviour.
+
+What is still not solved: a template that follows an embedded URL leaves through
+the container's network. Set `REDFOX_DOCKER_NETWORK` to a segment that cannot
+reach anything outside the engagement, or accept the residual risk knowingly.
 
 ### 7. DNS rebinding (Low → accepted)
 

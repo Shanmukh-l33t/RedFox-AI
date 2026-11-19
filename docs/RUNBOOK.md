@@ -96,6 +96,25 @@ token spend for the campaign.
 
 ## Troubleshooting
 
+## Isolation
+
+```bash
+export REDFOX_ISOLATE=docker
+export REDFOX_DOCKER_NETWORK=bridge   # "host" only for a lab on this machine
+```
+
+Tools with an image (nmap, nuclei, httpx, subfinder) run in it; the rest are
+refused with `isolation.no_image` rather than run on the host. Pull images ahead
+of time so a campaign is not waiting on a 90 MB download mid-scan:
+
+```bash
+docker pull instrumentisto/nmap:latest
+docker pull projectdiscovery/nuclei:latest
+```
+
+If every task fails with `isolation.no_image`, either turn isolation off
+deliberately or add the image to `IMAGES` in `redfox/isolation.py`.
+
 ## Serving the UI
 
 `redfox serve` binds `127.0.0.1` and, by default, has no authentication. Set a
