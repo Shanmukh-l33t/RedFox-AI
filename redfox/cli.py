@@ -188,6 +188,25 @@ def cmd_tools(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_impact(args: argparse.Namespace) -> int:
+    """Queue the gated impact demonstration. It still needs an approval to run."""
+    settings, store, audit, policy = _context(args.home)
+    eng = store.get_engagement(args.engagement)
+    if not eng:
+        print("no such engagement", file=sys.stderr)
+        return 2
+    if not (eng.get("config") or {}).get("impact"):
+        print("refused: this engagement has no 'impact' spec in its config",
+              file=sys.stderr)
+        return 2
+    store.add_task(args.engagement, "postexploit", "postexploit", "impact",
+                   {"reason": "operator requested an impact demonstration"})
+    campaign = Campaign(settings, store, audit, policy)
+    summary = asyncio.run(campaign.run(args.engagement, args.max_steps))
+    print(json.dumps(summary, indent=2))
+    return 0
+
+
 def cmd_serve(args: argparse.Namespace) -> int:
     import uvicorn
     from .api import create_app
@@ -254,6 +273,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("tools", help="adapter availability")
     p.set_defaults(func=cmd_tools)
+
+    p = sub.add_parser("impact", help="queue the gated impact demonstration (L3 + approval)")
+    p.add_argument("engagement")
+    p.add_argument("--max-steps", type=int, default=3)
+    p.set_defaults(func=cmd_impact)
 
     p = sub.add_parser("serve", help="API and web UI")
     p.add_argument("--host", default="127.0.0.1")

@@ -64,6 +64,11 @@ class PolicyEnforcementPoint:
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         self.limiter = RateLimiter()
+        # Set by the campaign: (tool, target) -> approval row or None.
+        self.approval_lookup = None
+
+    def bind_approvals(self, lookup) -> None:
+        self.approval_lookup = lookup
 
     # ---- kill switch -------------------------------------------------
     def killed(self) -> bool:
@@ -117,13 +122,19 @@ class PolicyEnforcementPoint:
             cfg = engagement.get("config") or {}
             lab_ok = bool(auth.get("lab_isolated")) and autonomy >= 3
             auto_ok = lab_ok and bool(cfg.get("auto_intrusive", False))
+            approved = False
             if not auto_ok:
-                return Decision(
-                    False,
-                    "intrusive action requires explicit human approval",
-                    risk,
-                    needs_approval=True,
-                )
+                approval = None
+                if self.approval_lookup is not None:
+                    approval = self.approval_lookup(call.tool, call.target)
+                if not approval:
+                    return Decision(
+                        False,
+                        "intrusive action requires explicit human approval",
+                        risk,
+                        needs_approval=True,
+                    )
+                approved = True
 
         # Scope: deny-by-default.
         try:
@@ -155,4 +166,7 @@ class PolicyEnforcementPoint:
                                  self.settings.rate_per_target_per_min):
             return Decision(False, f"per-target rate limit reached for {target.key}", risk)
 
+        if risk == "intrusive" and approved:
+            return Decision(True, f"authorized by operator approval: {why}", risk,
+                            via_approval=True)
         return Decision(True, f"authorized: {why}", risk)

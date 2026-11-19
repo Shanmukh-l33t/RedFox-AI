@@ -22,6 +22,7 @@ ALLOWED_TASKS = {
     "analysis": {"nuclei"},
     "triage": {"triage"},
     "validation": {"nuclei_validate", "authcheck", "http_probe"},
+    "postexploit": {"impact"},
     "report": {"report"},
 }
 
@@ -55,6 +56,7 @@ run, or when every allowed target has been covered and no candidate remains.
 Set "done": true only in those two cases.
 Task kinds by agent: recon->subfinder|httpx, enum->nmap|ffuf|whatweb|sslscan|httpx,
 analysis->nuclei, triage->triage, validation->nuclei_validate|authcheck|http_probe,
+postexploit->impact (L3 only, needs operator approval),
 report->report."""
 
 TRIAGE_SYSTEM = """You are the vulnerability triage specialist on an AUTHORIZED engagement.
@@ -167,7 +169,7 @@ class Triage:
             return []
         prompt = ("Candidates extracted from real tool output:\n"
                   + _truncate(candidates, 14000))
-        reply = await self.llm.json_reply(TRIAGE_SYSTEM, prompt, max_tokens=900)
+        reply = await self.llm.json_reply(TRIAGE_SYSTEM, prompt, max_tokens=1600)
         findings = []
         for raw in reply.data.get("findings") or []:
             if not isinstance(raw, dict):

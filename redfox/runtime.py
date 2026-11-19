@@ -32,7 +32,7 @@ if TYPE_CHECKING:
 # Binaries an adapter may name. Anything else is refused before policy runs,
 # so a bad adapter string cannot become arbitrary execution.
 ALLOWED_BINARIES = frozenset(
-    {"nmap", "nuclei", "httpx", "subfinder", "ffuf", "whatweb", "sslscan"}
+    {"nmap", "nuclei", "httpx", "subfinder", "amass", "ffuf", "whatweb", "sslscan"}
 )
 
 _AUTHZ = "authori" + "zation"
@@ -198,24 +198,38 @@ class ToolRuntime:
         import httpx
 
         started = time.time()
-        probe = ToolCall(tool=call.tool, target=call.url, argv=(),
+        # The approval identity is the declared target (an origin for impact
+        # checks), not each path, so one operator approval covers one operation.
+        probe_target = call.target or call.url
+        probe = ToolCall(tool=call.tool, target=probe_target, argv=(),
                          risk=call.risk, reason=call.reason)
         decision = self.policy.check(probe, engagement, agent)
         action_id = self.store.record_action(
             engagement_id=engagement["id"], task_id=task_id, agent=agent,
-            tool=call.tool, target=call.url, argv=[call.method, call.url],
+            tool=call.tool, target=probe_target, argv=[call.method, call.url],
             risk=call.risk, decision="allowed" if decision.allowed else "denied",
             deny_reason=None if decision.allowed else decision.reason,
         )
         self.audit.append({
             "engagement_id": engagement["id"], "action_id": action_id, "agent": agent,
-            "tool": call.tool, "target": call.url, "argv": [call.method, call.url],
+            "tool": call.tool, "target": probe_target, "argv": [call.method, call.url],
             "risk": call.risk, "decision": "allowed" if decision.allowed else "denied",
             "reason": decision.reason, "rationale": call.reason,
         })
         if not decision.allowed:
+            if decision.needs_approval:
+                approval_id = self.store.request_approval(
+                    engagement["id"],
+                    {"tool": call.tool, "target": probe_target,
+                     "argv": [call.method, call.url], "risk": call.risk,
+                     "reason": call.reason},
+                    decision.reason,
+                )
+                self.store.event(engagement["id"], "approval.requested",
+                                 {"approval_id": approval_id, "tool": call.tool,
+                                  "target": probe_target})
             self.store.event(engagement["id"], "action.denied",
-                             {"tool": call.tool, "target": call.url,
+                             {"tool": call.tool, "target": probe_target,
                               "reason": decision.reason, "action_id": action_id})
             return HttpResponse(action_id, decision, error=decision.reason)
 

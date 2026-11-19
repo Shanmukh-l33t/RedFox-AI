@@ -38,6 +38,17 @@ class LLMReply:
     output_tokens: int = 0
 
 
+def _choice_text(body: dict[str, Any]) -> str:
+    choices = body.get("choices") or [{}]
+    message = choices[0].get("message") or {}
+    return message.get("content") or ""
+
+
+def _truncated(body: dict[str, Any]) -> bool:
+    choices = body.get("choices") or [{}]
+    return choices[0].get("finish_reason") == "length"
+
+
 def extract_json(text: str) -> dict[str, Any]:
     """Pull the first JSON object out of a model reply, tolerating fences."""
     cleaned = (text or "").strip()
@@ -66,6 +77,8 @@ class LLMClient:
         self.api_key = settings.llm_api_key
         self.base_url = settings.llm_base_url or self._default_base()
         self.transport = transport
+        # Optional sink for token accounting; the campaign points this at a store.
+        self.on_usage = None
 
     def _default_base(self) -> str:
         return {
@@ -89,8 +102,15 @@ class LLMClient:
             )
         budget = max_tokens or self.settings.llm_max_tokens
         if self.provider == "anthropic":
-            return await self._anthropic(system, user, budget)
-        return await self._openai_compatible(system, user, budget)
+            reply = await self._anthropic(system, user, budget)
+        else:
+            reply = await self._openai_compatible(system, user, budget)
+        if self.on_usage is not None:
+            try:
+                self.on_usage(reply)
+            except Exception:
+                pass  # accounting must never break a campaign
+        return reply
 
     async def json_reply(self, system: str, user: str, retries: int = 1,
                          max_tokens: int | None = None) -> LLMReply:
@@ -124,23 +144,37 @@ class LLMClient:
         }
         headers = {"Authorization": f"Bearer {self.api_key or 'local'}"}
         url = self.base_url.rstrip("/") + "/chat/completions"
-        try:
-            async with httpx.AsyncClient(timeout=float(self.settings.llm_timeout_s), transport=self.transport) as client:
-                resp = await client.post(url, json=payload, headers=headers)
-                resp.raise_for_status()
-                body = resp.json()
-        except Exception as exc:
-            raise LLMError(f"{type(exc).__name__}: {exc}") from exc
-        choices = body.get("choices") or []
-        if not choices:
-            raise LLMError("provider returned no choices")
-        text = (choices[0].get("message") or {}).get("content") or ""
+        body = await self._post(url, payload, headers)
+        text = _choice_text(body)
+        if not text.strip() or _truncated(body):
+            # Two real failure modes: reasoning models spend a small budget on
+            # hidden reasoning and return nothing, and a JSON reply gets cut off
+            # mid-string at the cap. Either way, retry once with room.
+            retry = dict(payload, max_tokens=min(budget * 4, 4000))
+            retry.pop("response_format", None)
+            body = await self._post(url, retry, headers)
+            text = _choice_text(body)
         usage = body.get("usage") or {}
         return LLMReply(
             data={}, text=text, model=body.get("model", self.model),
             input_tokens=int(usage.get("prompt_tokens") or 0),
             output_tokens=int(usage.get("completion_tokens") or 0),
         )
+
+    async def _post(self, url: str, payload: dict[str, Any],
+                    headers: dict[str, str]) -> dict[str, Any]:
+        try:
+            async with httpx.AsyncClient(
+                    timeout=float(self.settings.llm_timeout_s),
+                    transport=self.transport) as client:
+                resp = await client.post(url, json=payload, headers=headers)
+                resp.raise_for_status()
+                body = resp.json()
+        except Exception as exc:
+            raise LLMError(f"{type(exc).__name__}: {exc}") from exc
+        if not (body.get("choices") or []):
+            raise LLMError("provider returned no choices")
+        return body
 
     async def _anthropic(self, system: str, user: str, budget: int) -> LLMReply:
         payload = {

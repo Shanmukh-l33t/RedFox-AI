@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from .auth import AuthCheck
+from .amass import AmassAdapter
 from .base import ToolAdapter
 from .discovery import SubfinderAdapter
 from .network import NmapAdapter, SslscanAdapter
@@ -13,6 +14,7 @@ from .web import FfufAdapter, HttpxAdapter, NucleiAdapter, WhatwebAdapter
 
 def build_adapters() -> dict[str, ToolAdapter]:
     adapters: list[ToolAdapter] = [
+        AmassAdapter(),
         SubfinderAdapter(),
         HttpxAdapter(),
         NmapAdapter(),

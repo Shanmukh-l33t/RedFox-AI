@@ -65,10 +65,10 @@ the audit log with the reason. Three consecutive denials halt the campaign
 
 ```
 created ──run──► running ──task──► running … ──report──► completed
-                    │  ▲
-        kill switch │  │ resume()
-                    ▼  │
-                  halted / paused
+                    │  ▲                    │
+        kill switch │  │ resume()           │ intrusive action
+                    ▼  │                    ▼
+              halted / paused        awaiting_approval ──approve──► running
 ```
 
 Tasks are rows: `pending → running → done|failed`. `Campaign.run()` requeues any
@@ -83,6 +83,7 @@ result is written before the next task is claimed.
 | Recon / Enum | a task from the orchestrator | adapter runs, parsed observations | Only via the runtime |
 | Triage | candidates with evidence ids | severity, status, description, remediation | No |
 | Validator | candidates + configured login | validation plan (`nuclei_validate`, `http_probe`, `authcheck`) | Only via the runtime |
+| Post-exploitation | engagement `impact` spec + operator approval | one authenticated read of a protected page | Only via the runtime, `intrusive` risk class |
 | Reporter | findings + engagement meta | executive summary, remediation prose | No |
 
 Specialists do not call each other. They read and write shared state, and the
@@ -144,15 +145,25 @@ If you need stronger isolation, run the whole platform in a container or VM whos
 egress is limited to the engagement scope. That is the recommended deployment for
 anything beyond a lab.
 
+## Approvals
+
+An `intrusive` action is refused by policy below L3. At L3 (with `lab_isolated`)
+it is refused with `needs_approval`, and the runtime files an approval record
+carrying the tool, target, argv and rationale. The campaign sets
+`awaiting_approval` and stops. `redfox approve` flips the record to `approved`;
+the next run re-queues the operation, policy consults the approval for that exact
+`(tool, target)` pair, and the engine consumes it when the operation ends — so
+one approval authorizes one operation, never a standing permission.
+
 ## Observability
 
 - `events` table: every plan, action, denial, approval, triage and validation.
 - `actions` table: per-tool timing, exit code, decision.
 - `redfox status <id>`: steps, findings by status, actions allowed/denied, evidence
   count, audit chain status.
-- Cost accounting: LLM token usage is returned by the client; per-engagement
-  accounting is a documented gap (the events table has the data, the report does
-  not yet summarise it).
+- Cost accounting: every model call writes an `llm.usage` event with model and
+  token counts; the report summarises calls, input/output tokens, wall clock and
+  total tool time, and the SARIF marks the model in the run properties.
 
 ## Scale path
 

@@ -295,6 +295,7 @@ class Decision:
     reason: str
     risk: str = "passive"
     needs_approval: bool = False
+    via_approval: bool = False
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -302,6 +303,7 @@ class Decision:
             "reason": self.reason,
             "risk": self.risk,
             "needs_approval": self.needs_approval,
+            "via_approval": self.via_approval,
         }
 
 

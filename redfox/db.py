@@ -473,6 +473,34 @@ class Store:
             ).fetchone()
         return dict(row) if row else None
 
+    def approved_for(self, eid: str, tool: str, target: str) -> dict | None:
+        """An unused operator approval for this exact tool+target, if one exists."""
+        with self.connect() as conn:
+            row = conn.execute(
+                "SELECT * FROM approvals WHERE engagement_id=? AND status='approved' "
+                "AND json_extract(action_json,'$.tool')=? "
+                "AND json_extract(action_json,'$.target')=? "
+                "ORDER BY decided_at LIMIT 1",
+                (eid, tool, target),
+            ).fetchone()
+        return dict(row) if row else None
+
+    def consume_approval(self, approval_id: str) -> None:
+        """An approval authorizes one execution, not a standing permission."""
+        with self.connect() as conn:
+            conn.execute(
+                "UPDATE approvals SET status='consumed' WHERE id=? AND status='approved'",
+                (approval_id,),
+            )
+
+    def approved_unconsumed(self, eid: str) -> list[dict]:
+        with self.connect() as conn:
+            rows = conn.execute(
+                "SELECT * FROM approvals WHERE engagement_id=? AND status='approved' "
+                "ORDER BY decided_at", (eid,)
+            ).fetchall()
+        return [dict(r) for r in rows]
+
     # ---- memory ------------------------------------------------------
     def add_memory(self, kind: str, key: str, value: str, eid: str | None = None) -> None:
         with self.connect() as conn:

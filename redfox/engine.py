@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
-from . import report, validation
+from . import impact, report, validation
 from .adapters.registry import ToolBox
 from .agents import build_agents
 from .audit import AuditLog
@@ -72,6 +72,17 @@ class Campaign:
             self.store.event(engagement_id, "campaign.resume",
                              {"requeued": requeued, "retried": retried})
         self.store.set_status(engagement_id, "running")
+        self.policy.bind_approvals(
+            lambda tool, target: self.store.approved_for(engagement_id, tool, target))
+        self.llm.on_usage = lambda reply: self.store.event(
+            engagement_id, "llm.usage",
+            {"model": reply.model, "in": reply.input_tokens, "out": reply.output_tokens})
+        for _ in self.store.approved_unconsumed(engagement_id):
+            already = any(t["kind"] == "impact" and t["state"] == "pending"
+                          for t in self.store.tasks_for(engagement_id))
+            if not already:
+                self.store.add_task(engagement_id, "postexploit", "postexploit", "impact",
+                                    {"reason": "operator approved an intrusive action"})
         self.audit.append({"engagement_id": engagement_id, "event": "campaign.start",
                            "operator": auth.operator,
                            "authorization_ref": auth.authorization_ref,
@@ -87,6 +98,13 @@ class Campaign:
             if self.policy.killed():
                 self.store.set_status(engagement_id, "halted")
                 self.store.event(engagement_id, "campaign.halted", {"reason": "kill switch"})
+                break
+
+            waiting = self.store.pending_approval(engagement_id)
+            if waiting:
+                self.store.set_status(engagement_id, "awaiting_approval")
+                self.store.event(engagement_id, "campaign.awaiting_approval",
+                                 {"approval_id": waiting["id"], "reason": waiting["reason"]})
                 break
 
             task = self.store.next_task(engagement_id)
@@ -142,9 +160,14 @@ class Campaign:
 
         eng = self.store.get_engagement(engagement_id) or eng
         if eng["status"] == "running":
+            waiting = self.store.pending_approval(engagement_id)
             report_done = any(t["kind"] == "report" and t["state"] == "done"
                               for t in self.store.tasks_for(engagement_id))
-            if report_done:
+            if waiting:
+                # Hitting the budget while an approval is outstanding still means
+                # the campaign is blocked on a human, not finished.
+                self.store.set_status(engagement_id, "awaiting_approval")
+            elif report_done:
                 self.store.set_status(engagement_id, "completed")
             else:
                 # Out of budget without a report: paused is the honest status.
@@ -158,10 +181,14 @@ class Campaign:
         kind = task["kind"]
         if kind in TOOL_TASKS:
             return await self._run_tool(eng, scope, task)
+        if kind == "authcheck":
+            return await self._run_authcheck(eng, task)
         if kind == "triage":
             return await self._triage(eng)
         if kind == "validation":
             return await self._validation(eng, scope)
+        if kind == "impact":
+            return await self._impact(eng)
         if kind == "report":
             return await self._report(eng, scope)
         raise ValueError(f"unknown task kind {kind}")
@@ -201,6 +228,34 @@ class Campaign:
             observations += len(parsed)
             self._ingest(eng, parsed, result, call)
         return allowed, denied, observations
+
+    async def _run_authcheck(self, eng: dict, task: dict) -> dict[str, Any]:
+        """Planner-requested credential check against the configured login form."""
+        spec = dict((eng.get("config") or {}).get("auth_check") or {})
+        url = task["payload"].get("target") or spec.get("url") or ""
+        if not spec or not url:
+            return {"skipped": "no auth_check spec configured"}
+        from types import SimpleNamespace
+
+        from .adapters.auth import AuthCheck
+
+        checker = AuthCheck()
+        allowed = denied = 0
+        accepted = 0
+        for call in checker.plan(url, spec):
+            response = await self.runtime.execute_http(eng, call, task["agent"], task["id"])
+            if not response.decision.allowed:
+                denied += 1
+                continue
+            allowed += 1
+            observation = checker.parse(call, response, spec)
+            if observation.data.get("accepted"):
+                accepted += 1
+            self._ingest(eng, [observation],
+                         SimpleNamespace(evidence_id=response.evidence_id,
+                                         evidence_path=""), call)
+        return {"authcheck": {"allowed": allowed, "denied": denied,
+                              "accepted": accepted}}
 
     async def _validation(self, eng: dict, scope: Scope) -> dict[str, Any]:
         candidates = [f for f in self.store.findings_for(eng["id"])
@@ -338,6 +393,15 @@ class Campaign:
             finding = self.store.finding_by_fingerprint(eng["id"], fp) if fp else None
             if finding and finding.get("template_id"):
                 template_ids = [finding["template_id"]]
+            elif task["payload"].get("target"):
+                # The planner may name a location instead of a fingerprint; it
+                # still has to resolve to a template id we actually observed.
+                target = task["payload"]["target"]
+                for candidate in self.store.findings_for(eng["id"]):
+                    if candidate.get("template_id") and target in (
+                            candidate.get("location") or ""):
+                        template_ids = [candidate["template_id"]]
+                        break
         return {
             "scope": scope,
             "ports": list(scope.allowed_ports),
@@ -491,7 +555,7 @@ class Campaign:
         # and a failed batch must not discard the batches that already succeeded.
         applied = 0
         errors = 0
-        batch_size = 4
+        batch_size = 3
         for start in range(0, len(payload), batch_size):
             batch = payload[start:start + batch_size]
             try:
@@ -518,6 +582,45 @@ class Campaign:
                 applied += 1
         self.store.event(eng["id"], "triage.applied", {"count": applied})
         return {"triaged": applied, "errors": errors}
+
+    async def _impact(self, eng: dict) -> dict[str, Any]:
+        """Gated post-exploitation: one authenticated read, only after approval."""
+        spec = (eng.get("config") or {}).get("impact") or {}
+        if not spec:
+            return {"skipped": "no impact spec configured"}
+        origin = impact.origin_of(str(spec.get("login_url") or ""))
+        try:
+            result = await impact.demonstrate_access(self.runtime, eng, spec)
+        finally:
+            # One approval authorizes one operation (which may be several
+            # requests), and it is spent when the operation ends — pass or fail.
+            approval = self.store.approved_for(eng["id"], impact.PROBE, origin)
+            if approval:
+                self.store.consume_approval(approval["id"])
+                self.store.event(eng["id"], "approval.consumed",
+                                 {"approval_id": approval["id"], "target": origin})
+        if result.get("denied"):
+            return result
+        if result.get("confirmed"):
+            fp = fingerprint("impact", result.get("protected_url", ""),
+                             result.get("username", ""))
+            self.store.upsert_finding(
+                eng["id"], fp,
+                f"Authenticated access to {result.get('protected_url')}", "high",
+                result.get("protected_url", ""),
+                f"Operator-supplied credentials authenticate and reach "
+                f"{result.get('protected_url')} without further authorization checks. "
+                f"Signed-in content was returned in the response.",
+                status="validated", location=result.get("protected_url", ""),
+                evidence_ids=result.get("evidence_ids", []),
+                reproduction=[f"POST {result.get('login_url')} with the reported credentials",
+                              f"GET {result.get('protected_url')} with the session cookie"],
+                source_tool="impact_probe",
+            )
+        self.store.event(eng["id"], "impact.result",
+                         {"confirmed": bool(result.get("confirmed")),
+                          "reason": result.get("reason", "")})
+        return result
 
     async def _report(self, eng: dict, scope: Scope) -> dict[str, Any]:
         findings = [f for f in self.store.findings_for(eng["id"])
@@ -553,7 +656,8 @@ class Campaign:
             summary["executive_summary"] = _count_summary(findings)
         meta["model"] = self.llm.model or self.llm.provider
         directory = self.settings.home / "reports" / eng["id"]
-        paths = report.write_bundle(directory, findings, eng, summary, meta)
+        paths = report.write_bundle(directory, findings,
+                                    dict(eng, model=meta.get("model", "")), summary, meta)
         self.store.event(eng["id"], "report.written",
                          {k: str(v) for k, v in paths.items()})
         self.store.set_status(eng["id"], "completed")
@@ -564,6 +668,30 @@ class Campaign:
         actions = self.store.actions_for(eng["id"])
         evidence = self.store.evidence_for(eng["id"])
         ok, message = self.audit.verify()
+        events = self.store.events_since(eng["id"], 0, 5000)
+        usage = []
+        for event in events:
+            if event["type"] == "llm.usage":
+                try:
+                    usage.append(json.loads(event["payload_json"]))
+                except json.JSONDecodeError:
+                    continue
+        stamps = sorted(e["ts"] for e in events if e.get("ts"))
+        seconds = 0
+        if len(stamps) > 1:
+            try:
+                seconds = int((datetime.fromisoformat(stamps[-1])
+                               - datetime.fromisoformat(stamps[0])).total_seconds())
+            except ValueError:
+                seconds = 0
+        tool_seconds = 0.0
+        for action in actions:
+            try:
+                start = datetime.fromisoformat(action["started_at"])
+                end = datetime.fromisoformat(action["finished_at"] or action["started_at"])
+                tool_seconds += max(0.0, (end - start).total_seconds())
+            except (ValueError, TypeError):
+                continue
         return {
             "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "actions_allowed": sum(1 for a in actions if a["decision"] == "allowed"),
@@ -572,6 +700,14 @@ class Campaign:
             "audit_status": message if ok else f"FAILED: {message}",
             "evidence_paths": {e["id"]: e["path"] for e in evidence},
             "model": self.llm.model or self.llm.provider,
+            "tool_seconds": round(tool_seconds, 1),
+            "campaign_seconds": seconds,
+            "llm": {
+                "calls": len(usage),
+                "input_tokens": sum(int(u.get("in") or 0) for u in usage),
+                "output_tokens": sum(int(u.get("out") or 0) for u in usage),
+                "models": sorted({str(u.get("model")) for u in usage if u.get("model")}),
+            },
         }
 
     # ---- state for prompts -------------------------------------------

@@ -1,0 +1,42 @@
+{
+  "name": "RedFox lab target — gated impact demonstration",
+  "autonomy": 3,
+  "scope": {
+    "allow": [
+      "127.0.0.1",
+      "http://127.0.0.1:8080"
+    ],
+    "deny": [],
+    "ports": "8080"
+  },
+  "authorization": {
+    "operator": "Shanmukh Dheekonda",
+    "authorization_ref": "LAB-SELF-OWNED-2026-11-19-L3",
+    "attested_at": "2026-11-19T00:00:00Z",
+    "lab_isolated": true,
+    "notes": "Loopback lab. L3 is set so the intrusive impact check can be requested; it still requires an operator approval record before it runs."
+  },
+  "config": {
+    "tls_verify": false,
+    "auto_intrusive": false,
+    "auth_check": {
+      "url": "http://127.0.0.1:8080/login",
+      "username_field": "username",
+      "password_field": "password",
+      "credentials": [
+        {"username": "admin", "password": "admin"}
+      ],
+      "max_attempts": 1
+    },
+    "impact": {
+      "login_url": "http://127.0.0.1:8080/login",
+      "protected_path": "/admin/",
+      "username_field": "username",
+      "password_field": "password",
+      "success_marker": "Admin console",
+      "credentials": [
+        {"username": "admin", "password": "admin"}
+      ]
+    }
+  }
+}

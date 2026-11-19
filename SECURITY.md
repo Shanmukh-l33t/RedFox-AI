@@ -32,6 +32,7 @@ RedFox is a local operator tool, not a multi-tenant service.
 | Secrets in prompts | The model receives normalised observations, never raw tool output, so credentials in banners do not reach a provider by default. Configure a local model (`ollama`) for sensitive engagements. |
 | Log tampering | Audit records are hash-chained; `redfox verify-audit` detects any edit or deletion and reports the first broken line. |
 | A runaway campaign | Autonomy ceiling, per-engagement and per-target rate limits, step budget, hard tool timeouts, and a kill switch that halts planning and refuses further actions. |
+| The impact check being used to damage a target | It is read-only by construction: one POST to the configured login and one GET of one configured path. No write, upload, delete or escalation path exists in it, and it declares `intrusive` so it needs L3 plus a per-operation operator approval. |
 
 ## Known limitations
 

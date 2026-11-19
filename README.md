@@ -24,16 +24,17 @@ scope file ──► engagement record ──► policy gate ──► tool runt
 
 - **Scope first.** An engagement cannot be created without an authorization record (operator, reference, attestation time) and an explicit allow/deny scope plus a port spec. Malformed scopes are refused at load: no wildcards, no `0.0.0.0/0`.
 - **One choke point.** Adapters declare an argv; they cannot execute. `redfox/runtime.py` is the only module that spawns a process or makes a request, and it calls the policy gate immediately before acting. A test parses the AST of every other module and fails the build if that stops being true.
-- **Real tools, real parsers.** nmap, nuclei, httpx, subfinder, ffuf, whatweb, sslscan and an HTTP auth-check each have an adapter with a real parser. The model never reads raw tool output; it reads normalised observations.
+- **Real tools, real parsers.** nmap, nuclei, httpx, subfinder, amass, ffuf, whatweb, sslscan and an HTTP auth-check each have an adapter with a real parser. The model never reads raw tool output; it reads normalised observations.
 - **Proof before report.** A finding is `validated` only when a second, policy-gated action reproduced it and the response is stored as evidence. Everything else stays `candidate` or `inconclusive` and is labelled as such.
+- **Intrusive steps need a human.** The one post-exploitation step (an authenticated read of a protected page) is classified `intrusive`: it is refused below L3, files an approval request at L3, and runs only after `redfox approve`, once per operation.
 - **Resumable.** Campaign state is a durable task table. Kill the process mid-run and `redfox run <id>` picks up where it stopped.
 
-## What it does not do (v0.1.0)
+## What it does not do (v0.2.0)
 
 - **No container isolation.** Tools run as subprocesses under your user account, behind the policy gate but not inside a sandbox. See [ARCHITECTURE.md](docs/ARCHITECTURE.md#isolation).
 - **Single node.** No Redis/Celery/Postgres. The task queue is a SQLite table; multi-node execution is future work.
-- **No post-exploitation module.** The gated path exists (risk class `intrusive`, approval records, L3 + lab attestation), but no intrusive adapter ships. This is deliberate.
-- **No PDF renderer.** HTML is print-ready; use your browser's "Print to PDF".
+- **No exploitation.** The only intrusive capability is a read-only impact check: it authenticates with operator-supplied credentials and reads one page. It never writes, uploads, deletes or escalates.
+- **No per-tool sandbox inside the process.** Isolation is the policy gate plus your host; run it in a container or VM for real engagements.
 - **`whatweb` needs Ruby, `sslscan` needs its binary.** Both adapters are complete and report `NOT INSTALLED` rather than pretending when the tool is absent.
 
 ## Quickstart
@@ -62,13 +63,25 @@ redfox findings eng_…
 redfox report eng_…
 ```
 
-Reports land in `~/.redfox/reports/<engagement>/report.{sarif,md,html}`; evidence in `~/.redfox/evidence/<engagement>/`.
+Reports land in `~/.redfox/reports/<engagement>/report.{sarif,md,html,pdf}`; evidence in `~/.redfox/evidence/<engagement>/`.
 
 ### Prove the scope engine refuses things
 
 ```bash
 redfox scope-check eng_… https://example.com/      # exit 3, "not in the authorized scope"
 redfox scope-check eng_… http://127.0.0.1:8080/ --risk intrusive   # exit 3, "exceeds autonomy"
+```
+
+### Prove an intrusive step needs a human
+
+```bash
+# L3 engagement with an "impact" spec in its config (see examples/scope-lab-l3.json)
+redfox impact eng_…            # → status "awaiting_approval"; one action denied, one approval filed
+redfox approvals eng_…         # → the exact tool, target and argv awaiting a decision
+redfox approve apr_… --note "approved by change ticket 4421"
+redfox impact eng_…
+# → 2 actions allowed, finding "Authenticated access to http://…/admin/" validated,
+#   approval status "consumed" (one approval authorizes one operation)
 ```
 
 ## Autonomy levels
@@ -109,7 +122,7 @@ Rules: exclusions always win; a wildcard is rejected; a CIDR must be expanded to
 
 ## Interfaces
 
-**CLI** — `init`, `run`, `status`, `findings`, `report`, `scope-check`, `approvals`, `approve`, `kill`, `verify-audit`, `tools`, `serve`.
+**CLI** — `init`, `run`, `status`, `findings`, `report`, `scope-check`, `impact`, `approvals`, `approve`, `kill`, `verify-audit`, `tools`, `serve`.
 
 **REST + WebSocket** — `redfox serve` (loopback by default):
 
@@ -120,7 +133,7 @@ Rules: exclusions always win; a wildcard is rejected; a CIDR must be expanded to
 | GET | `/api/engagements/{id}` | engagement, assets, findings, recent actions, summary |
 | POST | `/api/engagements/{id}/run` | start or resume |
 | POST | `/api/engagements/{id}/halt` | pause |
-| GET | `/api/engagements/{id}/report?fmt=html\|md\|sarif` | report bundle |
+| GET | `/api/engagements/{id}/report?fmt=html\|md\|sarif\|pdf` | report bundle |
 | GET | `/api/engagements/{id}/approvals` · POST `/api/approvals/{id}` | gated actions |
 | POST | `/api/kill?undo=0\|1` | global kill switch |
 | GET | `/api/audit/verify` | verify the hash chain |
@@ -159,6 +172,13 @@ Each finding carries a fingerprint, severity, CVSS (when the tool provides it), 
 - `tests/test_adapters.py` — parsers against **real captured output** in `tests/fixtures/` (an actual nmap XML, nuclei JSONL, ffuf JSON and httpx line from the lab).
 - `tests/test_planning.py` — planner validation (out-of-scope and invented tools dropped), SARIF, report rendering.
 - `tests/test_honesty.py` — reachability is not proof, SQLi needs a signal, triage cannot promote a discovered path.
+- `tests/test_approval.py` — an intrusive action is refused, approved once, consumed, and cannot be replayed; a campaign stops at `awaiting_approval`.
+- `tests/test_pdf.py` — the PDF renderer produces a structurally valid file (xref checked by offset, every finding title present).
+- `tests/test_amass_adapter.py`, `tests/test_llm.py` — parser and model-client behaviour, including the empty-content retry.
+
+Operational checks live in `scripts/`: `verify_evidence.py` proves every finding is
+backed by an intact evidence file, and `soak.py` runs repeated campaigns and fails
+on any audit break or denied action.
 
 CI runs the unit, structural and parser suites on Linux and Windows for Python
 3.11 and 3.12. Its end-to-end job installs the real scanners and runs the lab
