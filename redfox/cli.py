@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 from .audit import AuditLog
+from . import __version__
 from .config import AUTONOMY_LEVELS, Settings
 from .db import Store
 from .engine import Campaign
@@ -222,7 +223,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="redfox", description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--home", default=None, help="state directory (default ~/.redfox)")
-    parser.add_argument("--version", action="version", version="redfox 0.1.0")
+    parser.add_argument("--version", action="version", version=f"redfox {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     p = sub.add_parser("init", help="create an engagement from a scope file")
