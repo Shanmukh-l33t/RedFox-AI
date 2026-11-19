@@ -27,6 +27,7 @@ themselves, the CI runner, and PyPI dependencies beyond `pip-audit` output.
 | 8 | Low | The API has no authentication and is loopback-only by default | Accepted |
 | 9 | Low | Evidence files contain verbatim target responses, including any secrets in them | Accepted |
 | 10 | Info | No `subprocess` outside `runtime.py`; binaries are allowlisted | Verified |
+| 11 | Low | A same-named program on PATH was run as if it were the scanner | Fixed |
 
 ### 1. Credentials in a model prompt (High → fixed)
 
@@ -137,6 +138,19 @@ directory. `Authorization`, `Set-Cookie`, `api_key=`-style assignments are
 redacted on capture (`runtime.redact`), but arbitrary target data is not. The
 engagement directory is operator-controlled data and should be handled with the
 same care as the target itself.
+
+### 11. A same-named binary on PATH (Low → fixed, found after the first pass)
+
+`resolve_binary` took the first PATH match for a tool name. `httpx` is also the
+name of the Python HTTP library's CLI, so on a machine where that is installed
+the adapter ran a different program and parsed nothing — caught when the new
+real-tool CI job ran `whatweb`/`httpx` for the first time, and reproduced on a
+clean clone.
+
+Fixed: a PATH match must identify itself (`-version` must mention
+`projectdiscovery`, or the tool's own name for ffuf/amass) before it is trusted;
+binaries installed into `tools/bin` are preferred and are not affected. Test:
+`test_a_same_named_binary_on_path_is_not_accepted`.
 
 ### 10. Structural invariants (Info → verified)
 

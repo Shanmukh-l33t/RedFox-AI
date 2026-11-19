@@ -16,6 +16,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -35,6 +36,30 @@ ALLOWED_BINARIES = frozenset(
     {"nmap", "nuclei", "httpx", "subfinder", "amass", "ffuf", "whatweb", "sslscan"}
 )
 MAX_OUTPUT_BYTES = 8 * 1024 * 1024
+
+# Names another project may already own on PATH: 'httpx' is also the CLI of the
+# Python httpx library. A PATH match must identify itself before it is trusted.
+PATH_BINARY_MARKERS = {
+    "httpx": "projectdiscovery",
+    "nuclei": "projectdiscovery",
+    "subfinder": "projectdiscovery",
+    "ffuf": "ffuf",
+    "amass": "amass",
+}
+_VERIFIED: dict[str, bool] = {}
+
+
+def _is_expected_tool(path: str, marker: str) -> bool:
+    if path in _VERIFIED:
+        return _VERIFIED[path]
+    try:
+        probe = subprocess.run([path, "-version"], capture_output=True, text=True, timeout=20)
+        blob = (probe.stdout or "") + (probe.stderr or "")
+        ok = marker.lower() in blob.lower()
+    except (OSError, subprocess.SubprocessError):
+        ok = False
+    _VERIFIED[path] = ok
+    return ok
 
 _AUTHZ = "authori" + "zation"
 _SECRET_ASSIGN = re.compile(
@@ -98,6 +123,12 @@ class ToolRuntime:
             return local
         found = shutil.which(name)
         if found:
+            expected = PATH_BINARY_MARKERS.get(name)
+            if expected and not _is_expected_tool(found, expected):
+                raise ToolNotFound(
+                    f"'{found}' is not {expected} {name}; install the real binary with "
+                    "scripts/install-tools.sh (another program of the same name is on PATH)"
+                )
             return Path(found)
         raise ToolNotFound(
             f"required tool '{name}' is not installed; see docs/TOOL_ADAPTERS.md"

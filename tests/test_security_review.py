@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import pytest
 
+import redfox.runtime as runtime_module
+from redfox.audit import AuditLog
+from redfox.config import Settings
+from redfox.db import Store
 from redfox.models import Scope, ScopeError, parse_target
-from redfox.runtime import MAX_OUTPUT_BYTES, _cap_output
+from redfox.policy import PolicyEnforcementPoint
+from redfox.runtime import MAX_OUTPUT_BYTES, ToolRuntime, _cap_output
 
 
 @pytest.mark.parametrize("hostile", [
@@ -62,3 +69,23 @@ def test_output_capture_is_capped() -> None:
 def test_truncated_output_is_still_redacted() -> None:
     leak = b"Authorization: Bearer abc123\n" + b"y" * (MAX_OUTPUT_BYTES + 10)
     assert "abc123" not in _cap_output(leak)
+
+
+def test_a_same_named_binary_on_path_is_not_accepted(monkeypatch, tmp_path) -> None:
+    """'httpx' is also the CLI of the Python httpx library, and it was trusted."""
+    import dataclasses
+
+    base = Settings.load(home=tmp_path / "home")
+    # tools_dir points at the repo checkout; make a copy that has none, so
+    # resolution has to fall through to PATH.
+    settings = dataclasses.replace(base, tools_dir=tmp_path / "no-tools")
+    runtime = ToolRuntime(settings, Store(settings.db_path),
+                          AuditLog(settings.audit_path),
+                          PolicyEnforcementPoint(settings))
+    impostor = tmp_path / "httpx"
+    monkeypatch.setattr(runtime_module.shutil, "which", lambda name: str(impostor))
+    monkeypatch.setattr(runtime_module.subprocess, "run",
+                        lambda *a, **k: SimpleNamespace(stdout="httpx, version 0.27.0",
+                                                        stderr=""))
+    with pytest.raises(runtime_module.ToolNotFound):
+        runtime.resolve_binary("httpx")
