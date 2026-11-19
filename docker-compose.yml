@@ -1,0 +1,32 @@
+# A self-contained target for the containerised path:
+#
+#   docker compose up -d
+#   export REDFOX_ISOLATE=docker REDFOX_DOCKER_NETWORK=redfox-lab
+#   redfox init examples/scope-docker.json
+#   redfox run <engagement>
+#
+# The lab answers to `lab.internal` on this network, so the scope file names it
+# that way and both the scanner containers and the lab resolve the same name.
+# Nothing here is reachable from the host's loopback: that is the point.
+
+services:
+  lab:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lab
+    container_name: redfox-lab
+    networks:
+      redfox-lab:
+        aliases:
+          - lab.internal
+    ports:
+      # Loopback-only convenience for a browser spot-check; the scanners do not
+      # need this mapping and it can be deleted for a fully closed setup.
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8081:8081"
+    restart: unless-stopped
+
+networks:
+  redfox-lab:
+    name: redfox-lab
+    driver: bridge

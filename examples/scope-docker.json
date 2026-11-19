@@ -1,0 +1,22 @@
+{
+  "name": "RedFox containerised lab — tools in containers, target on the same network",
+  "autonomy": 2,
+  "scope": {
+    "allow": [
+      "lab.internal",
+      "http://lab.internal:8080"
+    ],
+    "deny": [],
+    "ports": "8080"
+  },
+  "authorization": {
+    "operator": "Shanmukh Dheekonda",
+    "authorization_ref": "LAB-CONTAINER-2026-11-19",
+    "attested_at": "2026-11-19T00:00:00Z",
+    "lab_isolated": true,
+    "notes": "Lab runs from docker-compose.yml on the redfox-lab network and is reachable only from that network. Run with REDFOX_ISOLATE=docker REDFOX_DOCKER_NETWORK=redfox-lab."
+  },
+  "config": {
+    "tls_verify": false
+  }
+}

@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.5.0
+
+Container isolation covers every adapter, and the containerised path is proven by a
+real campaign rather than a container smoke test.
+
+### Added
+
+- **An image for every tool.** `amass`, `ffuf` (via `secsi/ffuf`, since `ffuf/ffuf`
+  publishes no tags), `whatweb` and `sslscan` are mapped alongside the four that
+  already were. Each was checked by running its version command against the image:
+  the wrapper relies on the image entrypoint being the tool. A test asserts the
+  map covers every adapter and the binary allowlist, so a new adapter cannot
+  quietly have no image.
+- **`redfox isolate setup|status`.** Pulls the images, fills the shared nuclei
+  templates volume, and reports what is present.
+- **Per-engagement networks.** `REDFOX_DOCKER_NETWORK` defaults to `auto`: a
+  `redfox-<engagement>` bridge network, so engagements cannot see each other's
+  containers or the host's loopback.
+- **A containerised lab** (`docker-compose.yml`, `docker/Dockerfile.lab`,
+  `examples/scope-docker.json`) and the run it produced in `examples/docker-run/`.
+
+### Fixed
+
+- **nuclei had no templates inside its image**, so an isolated nuclei run scanned
+  nothing and reported nothing. The templates volume is now mounted and populated
+  by `isolate setup`; `-ut` is used because `-update-templates` combined with
+  `-disable-update-check` exits 0 having done nothing.
+- **Reports deferred forever when proof came from `nuclei_validate`.** Only a
+  `validation` task counted as "validation ran", so a campaign with three
+  validated findings refused to write a report. Proof from any validating task or
+  an already-validated finding now counts.
+- **The PDF renderer crashed on em dashes and ellipses**: the substitution ran
+  before the character-class check, so `ord()` received a multi-character string.
+- **Planner memory crashed on older rows** that stored an observation count
+  instead of a list.
+
 ## v0.4.0
 
 Two gaps from the previous release's own "what it does not do" list are closed, and

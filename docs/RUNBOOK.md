@@ -103,17 +103,32 @@ export REDFOX_ISOLATE=docker
 export REDFOX_DOCKER_NETWORK=bridge   # "host" only for a lab on this machine
 ```
 
-Tools with an image (nmap, nuclei, httpx, subfinder) run in it; the rest are
-refused with `isolation.no_image` rather than run on the host. Pull images ahead
-of time so a campaign is not waiting on a 90 MB download mid-scan:
+Every adapter has an image; a tool without one is refused with
+`isolation.no_image` rather than run on the host. Prepare once:
 
 ```bash
-docker pull instrumentisto/nmap:latest
-docker pull projectdiscovery/nuclei:latest
+redfox isolate setup     # pull images + fill the nuclei templates volume
+redfox isolate status    # what is present, plus the template count
 ```
 
-If every task fails with `isolation.no_image`, either turn isolation off
-deliberately or add the image to `IMAGES` in `redfox/isolation.py`.
+Skip this and nuclei scans with zero templates — it will report nothing, which
+looks like a clean result. `isolate status` shows the count for that reason.
+
+Networks: `REDFOX_DOCKER_NETWORK=auto` (default) creates `redfox-<engagement>`
+per engagement. Use a fixed name to share one network with a target, or `host`
+for a lab on this machine.
+
+A containerised target ships with the repo:
+
+```bash
+docker compose up -d
+export REDFOX_DOCKER_NETWORK=redfox-lab
+redfox init examples/scope-docker.json
+```
+
+The lab answers to `lab.internal` on that network; it binds `0.0.0.0` inside the
+container, which the app only allows with an explicit flag, because the network is
+private and the compose mapping is loopback-only.
 
 ## Serving the UI
 

@@ -668,8 +668,13 @@ class Campaign:
         # then report. The planner may ask for the report too early; the engine owns
         # this ordering so "validated" in a report means it was validated.
         tasks = self.store.tasks_for(eng["id"])
-        validation_ran = any(t["kind"] == "validation" and t["state"] == "done"
-                             for t in tasks)
+        # Proof can come from a validation task, from a validating tool
+        # (nuclei_validate, authcheck, impact), or already be recorded on a
+        # finding. Any of those means validation ran; only a campaign that has
+        # done none of them is told to prove things first.
+        proving = {"validation", "nuclei_validate", "authcheck", "impact"}
+        validation_ran = (any(t["kind"] in proving and t["state"] == "done" for t in tasks)
+                          or any(f["status"] == "validated" for f in findings))
         candidates = [f for f in findings if f["status"] == "candidate"
                       and not (f["source_tool"] == "ffuf" and f["severity"] == "info")]
         if candidates and not validation_ran:
@@ -788,8 +793,10 @@ class Campaign:
                     data = json.loads(rows[0])
                 except ValueError:
                     continue
-                observations = len(data.get("observations") or [])
-                notes.append(f"{tool}: {observations} findings from last run, "
+                # Older rows stored the count, newer ones the list.
+                raw = data.get("observations")
+                count = raw if isinstance(raw, int) else len(raw or [])
+                notes.append(f"{tool}: {count} findings from last run, "
                              f"{data.get('denied', 0)} denied")
             for failure in self.store.recall("tool_missing", tool, 1):
                 notes.append(f"{tool}: unavailable ({failure[:80]})")

@@ -119,3 +119,12 @@ def test_table_header_repeats_when_it_spills(tmp_path) -> None:
     path = write_pdf(tmp_path / "many.pdf", findings, ENG, _summary(findings), META)
     raw = path.read_bytes()
     assert raw.count(b"(Severity)") >= 2
+
+
+def test_characters_that_fold_to_several_characters_do_not_crash() -> None:
+    """An em dash or ellipsis substitutes to a multi-character string."""
+    from redfox.pdf import _sanitise
+
+    out = _sanitise("Summary \u2014 done\u2026 \u4e2d\u6587")
+    assert "done..." in out
+    assert "\u4e2d" not in out  # outside WinAnsi becomes '?'

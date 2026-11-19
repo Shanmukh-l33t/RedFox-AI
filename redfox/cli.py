@@ -20,13 +20,14 @@ import json
 import sys
 from pathlib import Path
 
+from . import __version__, isolation
 from .audit import AuditLog
-from . import __version__
 from .config import AUTONOMY_LEVELS, Settings
 from .db import Store
 from .engine import Campaign
 from .models import Authorization, Scope, ScopeError, ToolCall, parse_target
 from .policy import PolicyEnforcementPoint
+from .runtime import ToolRuntime
 
 
 def _context(home: str | None = None):
@@ -208,6 +209,48 @@ def cmd_impact(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_isolate(args: argparse.Namespace) -> int:
+    """Check or prepare the container runtime used by REDFOX_ISOLATE=docker."""
+    settings, store, audit, policy = _context(args.home)
+    runtime = ToolRuntime(settings, store, audit, policy)
+
+    if not runtime.docker_ready():
+        print("docker: not reachable (is the daemon running?)", file=sys.stderr)
+        return 2
+
+    images = sorted(set(isolation.IMAGES.values()))
+    if args.action == "status":
+        print(f"isolation  : {settings.isolate}")
+        print(f"network    : {settings.docker_network}")
+        for tool, image in sorted(isolation.IMAGES.items()):
+            state = "present" if runtime.image_present(image) else "NOT PULLED"
+            print(f"{tool:16} {image:42} {state}")
+        print(f"nuclei templates: {runtime.template_count()}")
+        return 0
+
+    network = settings.docker_network
+    if network == "auto":
+        print("network    : per-engagement (created on first use)")
+    else:
+        ready = runtime.ensure_network(network)
+        print(f"network    : {network} {'ready' if ready else 'FAILED'}")
+    for image in images:
+        if runtime.image_present(image):
+            print(f"{image}: present")
+            continue
+        code, tail = runtime.pull_image(image)
+        print(f"{image}: {'pulled' if code == 0 else 'PULL FAILED ' + tail[-120:]}")
+
+    templates = runtime.template_count()
+    if templates:
+        print(f"nuclei templates: {templates} present")
+    else:
+        code, tail = runtime.update_nuclei_templates()
+        count = runtime.template_count() if code == 0 else 0
+        print(f"nuclei templates: {'updated, ' + str(count) + ' templates' if code == 0 else 'UPDATE FAILED ' + tail[-120:]}")
+    return 0
+
+
 def cmd_serve(args: argparse.Namespace) -> int:
     import uvicorn
     from .api import create_app
@@ -279,6 +322,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("engagement")
     p.add_argument("--max-steps", type=int, default=3)
     p.set_defaults(func=cmd_impact)
+
+    p = sub.add_parser("isolate", help="container isolation: check or prepare images and network")
+    p.add_argument("action", choices=["status", "setup"])
+    p.set_defaults(func=cmd_isolate)
 
     p = sub.add_parser("serve", help="API and web UI")
     p.add_argument("--host", default="127.0.0.1")

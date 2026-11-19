@@ -1,0 +1,19 @@
+# The deliberately vulnerable lab target, as a container.
+#
+# Small on purpose: the lab is a test fixture, not a product. It exists so a
+# campaign can be run against something real that nobody minds being scanned.
+FROM python:3.12-slim
+
+WORKDIR /app
+COPY lab/vulnapp.py /app/vulnapp.py
+
+# The app writes nothing to disk; run it as an unprivileged user anyway.
+RUN useradd --create-home --uid 10001 lab
+USER lab
+
+EXPOSE 8080 8081
+ENTRYPOINT ["python", "/app/vulnapp.py"]
+# 0.0.0.0 inside the container is safe here: the only network it joins is
+# `redfox-lab`, and the host mapping in compose is loopback-only. The app
+# demands the explicit flag before it will bind a non-loopback address.
+CMD ["--port", "8080", "--admin-port", "8081", "--host", "0.0.0.0", "--i-understand-this-is-exposed"]

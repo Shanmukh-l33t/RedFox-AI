@@ -1,0 +1,196 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R /PageMode /UseNone >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Length 4980 >>
+stream
+BT /F2 20 Tf 55.0 787.00 Td (Penetration test report - RedFox containerised) Tj ET
+BT /F2 20 Tf 55.0 762.00 Td (lab - tools in containers, target on the same) Tj ET
+BT /F2 20 Tf 55.0 737.00 Td (network) Tj ET
+BT /F2 10 Tf 55.0 704.00 Td (Authorized testing only. Findings are listed only where recorded evidence exists.) Tj ET
+0.4 w 0.7 G 55.0 686.00 m 540.0 686.00 l S
+BT /F1 9 Tf 55.0 677.00 Td (Engagement: eng_2eaf84674c3f) Tj ET
+BT /F1 9 Tf 55.0 664.50 Td (Operator: Shanmukh Dheekonda) Tj ET
+BT /F1 9 Tf 55.0 652.00 Td (Authorization ref: LAB-CONTAINER-2026-11-19) Tj ET
+BT /F1 9 Tf 55.0 639.50 Td (Attested: 2026-11-19T00:00:00Z) Tj ET
+BT /F1 9 Tf 55.0 627.00 Td (Autonomy: L2) Tj ET
+BT /F1 9 Tf 55.0 614.50 Td (Scope: {"allow": [{"kind": "domain", "value": "lab.internal"}, {"kind": "url", "value": "http://lab.internal:8080"}], "deny":) Tj ET
+BT /F1 9 Tf 55.0 602.00 Td ([], "ports": "8080"}) Tj ET
+BT /F1 9 Tf 55.0 589.50 Td (Generated: 2026-11-19T20:46:57+00:00) Tj ET
+BT /F1 9 Tf 55.0 577.00 Td (Model: deepseek-v4.1-flash-1017) Tj ET
+BT /F2 14 Tf 55.0 550.50 Td (Executive summary) Tj ET
+BT /F1 10 Tf 55.0 531.50 Td (The engagement covered a single target, http://lab.internal:8080, an HTTP portal hosted at 172.18.0.2,) Tj ET
+BT /F1 10 Tf 55.0 517.50 Td (and was limited to that host and port. Four findings were recorded. The most serious is that the) Tj ET
+BT /F1 10 Tf 55.0 503.50 Td (application's .env configuration file is publicly readable at /.env; this was confirmed by validation and is) Tj ET
+BT /F1 10 Tf 55.0 489.50 Td (rated high, because such files commonly hold credentials, API keys and database connection strings. A) Tj ET
+BT /F1 10 Tf 55.0 475.50 Td (.git/config file is also readable \(medium\), which exposes repository configuration and can help an) Tj ET
+BT /F1 10 Tf 55.0 461.50 Td (attacker map the source tree. Two lower-impact items were also confirmed: Apache /server-status is) Tj ET
+BT /F1 10 Tf 55.0 447.50 Td (publicly reachable \(low\), and a separate validation check identified the exposed .env as a CodeIgniter) Tj ET
+BT /F1 10 Tf 55.0 433.50 Td (environment file \(high\). No exploitation or lateral movement was demonstrated; the exposure of these) Tj ET
+BT /F1 10 Tf 55.0 419.50 Td (files should be treated as a possible secret compromise until the contents are reviewed.) Tj ET
+BT /F2 14 Tf 55.0 391.50 Td (Findings) Tj ET
+BT /F1 9 Tf 55.0 370.50 Td (Critical 0 - High 2 - Medium 1 - Low 1 - Info 0 - total 4) Tj ET
+BT /F2 9 Tf 55.0 357.50 Td (#) Tj ET
+BT /F2 9 Tf 77.0 357.50 Td (Severity) Tj ET
+BT /F2 9 Tf 139.0 357.50 Td (Title) Tj ET
+BT /F2 9 Tf 371.0 357.50 Td (Asset) Tj ET
+BT /F2 9 Tf 483.0 357.50 Td (Status) Tj ET
+0.4 w 0.7 G 55.0 341.30 m 540.0 341.30 l S
+BT /F1 9 Tf 55.0 332.30 Td (1) Tj ET
+BT /F1 9 Tf 77.0 332.30 Td (high) Tj ET
+BT /F1 9 Tf 139.0 332.30 Td (Codeigniter - .env File Discovery) Tj ET
+BT /F1 9 Tf 371.0 332.30 Td (http://lab.internal:8080/...) Tj ET
+BT /F1 9 Tf 483.0 332.30 Td (validated) Tj ET
+BT /F1 9 Tf 55.0 316.10 Td (2) Tj ET
+BT /F1 9 Tf 77.0 316.10 Td (high) Tj ET
+BT /F1 9 Tf 139.0 316.10 Td (Exposed .env file) Tj ET
+BT /F1 9 Tf 371.0 316.10 Td (http://lab.internal:8080/...) Tj ET
+BT /F1 9 Tf 483.0 316.10 Td (candidate) Tj ET
+BT /F1 9 Tf 55.0 299.90 Td (3) Tj ET
+BT /F1 9 Tf 77.0 299.90 Td (medium) Tj ET
+BT /F1 9 Tf 139.0 299.90 Td (Git Configuration - Detect) Tj ET
+BT /F1 9 Tf 371.0 299.90 Td (http://lab.internal:8080/...) Tj ET
+BT /F1 9 Tf 483.0 299.90 Td (validated) Tj ET
+BT /F1 9 Tf 55.0 283.70 Td (4) Tj ET
+BT /F1 9 Tf 77.0 283.70 Td (low) Tj ET
+BT /F1 9 Tf 139.0 283.70 Td (Apache Server Status Disclosure) Tj ET
+BT /F1 9 Tf 371.0 283.70 Td (http://lab.internal:8080/s..) Tj ET
+BT /F1 9 Tf 483.0 283.70 Td (validated) Tj ET
+BT /F2 12 Tf 55.0 253.50 Td (1. Codeigniter - .env File Discovery) Tj ET
+BT /F1 9 Tf 55.0 237.50 Td (Severity: high | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 225.00 Td (Asset: http://lab.internal:8080/.env) Tj ET
+BT /F1 9 Tf 55.0 212.50 Td (Location: http://lab.internal:8080/.env) Tj ET
+BT /F1 10 Tf 55.0 194.00 Td (Codeigniter .env file was discovered.) Tj ET
+BT /F2 9 Tf 55.0 171.00 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 158.50 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 \(X11;) Tj ET
+BT /F1 10 Tf 55.0 144.50 Td (Linux x86_64; rv:140.0\) Gecko/20100101 Firefox/140.0' 'http://lab.internal:8080/.env') Tj ET
+BT /F1 10 Tf 55.0 130.50 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 116.50 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act) Tj ET
+BT /F1 10 Tf 55.0 102.50 Td (_28eaa561dc55_nuclei.log) Tj ET
+BT /F1 9 Tf 55.0 79.50 Td (Evidence: ev_57618950c8be) Tj ET
+0.4 w 0.6 G 55.0 50 m 540.0 50 l S
+BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei, subfinder - audit chain 21 records verified -..) Tj ET
+BT /F1 8 Tf 496.6 36 Td (Page 1 of 3) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 4390 >>
+stream
+BT /F1 9 Tf 55.0 787.00 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_28eaa56) Tj ET
+BT /F1 9 Tf 55.0 774.50 Td (1dc55_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 753.00 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 740.50 Td (Remove the .env file from the web-accessible document root and block requests to dotfiles and) Tj ET
+BT /F1 10 Tf 55.0 726.50 Td (environment files at the web server or proxy layer. Review the file's contents and rotate any credentials,) Tj ET
+BT /F1 10 Tf 55.0 712.50 Td (keys or connection strings it contained.) Tj ET
+0.4 w 0.7 G 55.0 686.50 m 540.0 686.50 l S
+BT /F2 12 Tf 55.0 663.50 Td (2. Exposed .env file) Tj ET
+BT /F1 9 Tf 55.0 647.50 Td (Severity: high \(CVSS 8.3\) | Status: candidate | Detected by: nuclei) Tj ET
+BT /F1 9 Tf 55.0 635.00 Td (Asset: http://lab.internal:8080/.env) Tj ET
+BT /F1 9 Tf 55.0 622.50 Td (Location: http://lab.internal:8080/.env) Tj ET
+BT /F1 10 Tf 55.0 604.00 Td (Nuclei matched the generic-env template against http://lab.internal:8080/.env, indicating that an) Tj ET
+BT /F1 10 Tf 55.0 590.00 Td (environment configuration file may be publicly accessible. Such files commonly contain credentials, API) Tj ET
+BT /F1 10 Tf 55.0 576.00 Td (keys, database connection strings, or other sensitive configuration.) Tj ET
+BT /F2 9 Tf 55.0 553.00 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 540.50 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
+BT /F1 10 Tf 55.0 526.50 Td (\(Macintosh; Intel Mac OS X 10_15_7\) AppleWebKit/605.1.15 \(KHTML, like Gecko\) Version/17.0) Tj ET
+BT /F1 10 Tf 55.0 512.50 Td (Safari/605.4.21' 'http://lab.internal:8080/.env') Tj ET
+BT /F1 10 Tf 55.0 498.50 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 484.50 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act) Tj ET
+BT /F1 10 Tf 55.0 470.50 Td (_420ef6b517b4_nuclei.log) Tj ET
+BT /F1 9 Tf 55.0 447.50 Td (Evidence: ev_fefeb3046579) Tj ET
+BT /F1 9 Tf 55.0 435.00 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_420ef6b5) Tj ET
+BT /F1 9 Tf 55.0 422.50 Td (17b4_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 401.00 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 388.50 Td (Remove the .env file from the web-accessible document root, block access to dotfiles and environment) Tj ET
+BT /F1 10 Tf 55.0 374.50 Td (files at the web server/proxy layer, and rotate any secrets that may have been exposed.) Tj ET
+0.4 w 0.7 G 55.0 348.50 m 540.0 348.50 l S
+BT /F2 12 Tf 55.0 325.50 Td (3. Git Configuration - Detect) Tj ET
+BT /F1 9 Tf 55.0 309.50 Td (Severity: medium \(CVSS 5.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 297.00 Td (Asset: http://lab.internal:8080/.git/config) Tj ET
+BT /F1 9 Tf 55.0 284.50 Td (Location: http://lab.internal:8080/.git/config) Tj ET
+BT /F1 10 Tf 55.0 266.00 Td (Git configuration was detected via the pattern /.git/config and log file on passed URLs.) Tj ET
+BT /F2 9 Tf 55.0 243.00 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 230.50 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 \(X11;) Tj ET
+BT /F1 10 Tf 55.0 216.50 Td (Linux i686\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/132.0.0.0 Safari/537.36') Tj ET
+BT /F1 10 Tf 55.0 202.50 Td ('http://lab.internal:8080/.git/config') Tj ET
+BT /F1 10 Tf 55.0 188.50 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 174.50 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act) Tj ET
+BT /F1 10 Tf 55.0 160.50 Td (_f37525b712cc_nuclei.log) Tj ET
+BT /F1 9 Tf 55.0 137.50 Td (Evidence: ev_481b7e79a1ac) Tj ET
+BT /F1 9 Tf 55.0 125.00 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_f37525b7) Tj ET
+BT /F1 9 Tf 55.0 112.50 Td (12cc_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 91.00 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 78.50 Td (Remove the .git directory from the deployed web root and deny access to /.git/* at the web server or) Tj ET
+0.4 w 0.6 G 55.0 50 m 540.0 50 l S
+BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei, subfinder - audit chain 21 records verified -..) Tj ET
+BT /F1 8 Tf 496.6 36 Td (Page 2 of 3) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 2192 >>
+stream
+BT /F1 10 Tf 55.0 787.00 Td (proxy. If source history was reachable, check it for committed secrets and rotate them.) Tj ET
+0.4 w 0.7 G 55.0 761.00 m 540.0 761.00 l S
+BT /F2 12 Tf 55.0 738.00 Td (4. Apache Server Status Disclosure) Tj ET
+BT /F1 9 Tf 55.0 722.00 Td (Severity: low | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 709.50 Td (Asset: http://lab.internal:8080/server-status) Tj ET
+BT /F1 9 Tf 55.0 697.00 Td (Location: http://lab.internal:8080/server-status) Tj ET
+BT /F1 10 Tf 55.0 678.50 Td (Apache /server-status displays information about your Apache status. If you are not using this feature,) Tj ET
+BT /F1 10 Tf 55.0 664.50 Td (disable it.) Tj ET
+BT /F2 9 Tf 55.0 641.50 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 629.00 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 \(X11;) Tj ET
+BT /F1 10 Tf 55.0 615.00 Td (Linux x86_64\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/113.0.0.0 Safari/537.36') Tj ET
+BT /F1 10 Tf 55.0 601.00 Td ('http://lab.internal:8080/server-status') Tj ET
+BT /F1 10 Tf 55.0 587.00 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 573.00 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act) Tj ET
+BT /F1 10 Tf 55.0 559.00 Td (_bbf7e9fedce6_nuclei.log) Tj ET
+BT /F1 9 Tf 55.0 536.00 Td (Evidence: ev_2790e4cd3d4b) Tj ET
+BT /F1 9 Tf 55.0 523.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_bbf7e9fe) Tj ET
+BT /F1 9 Tf 55.0 511.00 Td (dce6_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 489.50 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 477.00 Td (Disable the Apache /server-status handler if it is not needed, or restrict it to localhost or an) Tj ET
+BT /F1 10 Tf 55.0 463.00 Td (administrative network. If it is required, require authentication and limit the information it reports.) Tj ET
+0.4 w 0.7 G 55.0 437.00 m 540.0 437.00 l S
+0.4 w 0.6 G 55.0 50 m 540.0 50 l S
+BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei, subfinder - audit chain 21 records verified -..) Tj ET
+BT /F1 8 Tf 496.6 36 Td (Page 3 of 3) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
+endobj
+xref
+0 11
+0000000000 65535 f 
+0000000015 00000 n 
+0000000083 00000 n 
+0000000153 00000 n 
+0000000250 00000 n 
+0000000352 00000 n 
+0000005384 00000 n 
+0000005520 00000 n 
+0000009962 00000 n 
+0000010098 00000 n 
+0000012342 00000 n 
+trailer
+<< /Size 11 /Root 1 0 R >>
+startxref
+12479
+%%EOF

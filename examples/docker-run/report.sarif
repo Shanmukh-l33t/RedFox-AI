@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "RedFox AI",
+          "version": "0.1.0",
+          "informationUri": "https://github.com/Shanmukh-l33t/RedFox-AI",
+          "rules": [
+            {
+              "id": "codeigniter-env",
+              "name": "Codeigniter - .env File Discovery",
+              "shortDescription": {
+                "text": "Codeigniter - .env File Discovery"
+              },
+              "fullDescription": {
+                "text": "Codeigniter .env file was discovered."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "high",
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "generic-env",
+              "name": "Exposed .env file",
+              "shortDescription": {
+                "text": "Exposed .env file"
+              },
+              "fullDescription": {
+                "text": "Nuclei matched the generic-env template against http://lab.internal:8080/.env, indicating that an environment configuration file may be publicly accessible. Such files commonly contain credentials, API keys, database connection strings, or other sensitive configuration."
+              },
+              "help": {
+                "text": "Remove the .env file from the web-accessible document root, block access to dotfiles and environment files at the web server/proxy layer, and rotate any secrets that may have been exposed."
+              },
+              "properties": {
+                "severity": "high",
+                "security-severity": "8.3"
+              }
+            },
+            {
+              "id": "git-config",
+              "name": "Git Configuration - Detect",
+              "shortDescription": {
+                "text": "Git Configuration - Detect"
+              },
+              "fullDescription": {
+                "text": "Git configuration was detected via the pattern /.git/config and log file on passed URLs."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "medium",
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "apache-server-status",
+              "name": "Apache Server Status Disclosure",
+              "shortDescription": {
+                "text": "Apache Server Status Disclosure"
+              },
+              "fullDescription": {
+                "text": "Apache /server-status displays information about your Apache status. If you are not using this feature, disable it."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "low",
+                "security-severity": "2.5"
+              }
+            }
+          ]
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "startTimeUtc": "2026-11-19T20:36:31+00:00"
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "codeigniter-env",
+          "level": "error",
+          "message": {
+            "text": "Codeigniter - .env File Discovery \u2014 http://lab.internal:8080/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://lab.internal:8080/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": null,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_57618950c8be"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0' 'http://lab.internal:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_28eaa561dc55_nuclei.log"
+            ]
+          }
+        },
+        {
+          "ruleId": "generic-env",
+          "level": "error",
+          "message": {
+            "text": "Exposed .env file \u2014 http://lab.internal:8080/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://lab.internal:8080/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": 8.3,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_fefeb3046579"
+            ],
+            "sourceTool": "nuclei",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.4.21' 'http://lab.internal:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_420ef6b517b4_nuclei.log"
+            ]
+          }
+        },
+        {
+          "ruleId": "git-config",
+          "level": "warning",
+          "message": {
+            "text": "Git Configuration - Detect \u2014 http://lab.internal:8080/.git/config"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://lab.internal:8080/.git/config"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "cvss": 5.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_481b7e79a1ac"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36' 'http://lab.internal:8080/.git/config'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_f37525b712cc_nuclei.log"
+            ]
+          }
+        },
+        {
+          "ruleId": "apache-server-status",
+          "level": "note",
+          "message": {
+            "text": "Apache Server Status Disclosure \u2014 http://lab.internal:8080/server-status"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://lab.internal:8080/server-status"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "cvss": null,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_2790e4cd3d4b"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36' 'http://lab.internal:8080/server-status'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-docker\\evidence\\eng_2eaf84674c3f\\act_bbf7e9fedce6_nuclei.log"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "engagement": "RedFox containerised lab \u2014 tools in containers, target on the same network",
+        "autonomy": 2,
+        "authorization": "LAB-CONTAINER-2026-11-19",
+        "model": "deepseek-v4.1-flash-1017"
+      }
+    }
+  ]
+}

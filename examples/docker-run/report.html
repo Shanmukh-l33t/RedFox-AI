@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>RedFox AI report — RedFox containerised lab — tools in containers, target on the same network</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; padding:48px 6vw; background:#0d1117; color:#e6edf3;
+         font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif; }
+  h1 { font-size:34px; letter-spacing:-.02em; margin:0 0 8px; }
+  h2 { margin-top:44px; font-size:22px; border-bottom:1px solid #21262d; padding-bottom:8px; }
+  h3 { font-size:18px; margin:0 0 6px; }
+  h4 { font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:#8b949e; margin:16px 0 6px; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px;
+          background:#161b22; padding:2px 6px; border-radius:4px; word-break:break-all; }
+  .notice { border-left:3px solid #d29922; background:#1c1610; padding:12px 16px;
+             border-radius:6px; color:#e3b341; font-size:14px; }
+  .grid { display:flex; gap:16px; flex-wrap:wrap; margin:28px 0; }
+  .stat { flex:1 1 120px; background:#161b22; border:1px solid #21262d; border-radius:10px;
+           padding:14px 16px; }
+  .stat b { display:block; font-size:26px; }
+  .stat span { color:#8b949e; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+  .tablewrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table { width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; }
+  td code, td a { white-space:nowrap; }
+  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid #21262d; }
+  th { color:#8b949e; font-weight:600; font-size:12px; text-transform:uppercase; }
+  .finding { background:#161b22; border:1px solid #21262d; border-radius:12px;
+              padding:20px 22px; margin:16px 0; }
+  .sev { font-size:11px; text-transform:uppercase; letter-spacing:.08em; padding:3px 8px;
+          border-radius:999px; font-weight:700; }
+  .sev.critical { background:#3d1114; color:#ff7b72; }
+  .sev.high { background:#3d1d11; color:#ffa657; }
+  .sev.medium { background:#3d3211; color:#e3b341; }
+  .sev.low { background:#12261e; color:#7ee787; }
+  .sev.info { background:#1c2128; color:#8b949e; }
+  .meta { color:#8b949e; font-size:13px; }
+  .evidence li { font-size:13px; color:#8b949e; }
+  footer { margin-top:48px; color:#6e7681; font-size:12px; }
+</style></head><body>
+<h1>Penetration test report — RedFox containerised lab — tools in containers, target on the same network</h1>
+<p class="meta">Shanmukh Dheekonda ·
+ authorization <code>LAB-CONTAINER-2026-11-19</code> ·
+ autonomy L2 · generated 2026-11-19T20:46:57+00:00</p>
+<p class="notice">Authorized testing only. RedFox AI refuses targets that are not present in an operator-attested authorization scope. Unauthorized use is illegal.</p>
+<div class="grid">
+  <div class="stat"><b>4</b><span>findings</span></div>
+  <div class="stat"><b>0</b><span>critical</span></div>
+  <div class="stat"><b>2</b><span>high</span></div>
+  <div class="stat"><b>1</b><span>medium</span></div>
+  <div class="stat"><b>9</b><span>actions</span></div>
+  <div class="stat"><b>0</b><span>refused</span></div>
+</div>
+<h2>Executive summary</h2>
+<p>The engagement covered a single target, http://lab.internal:8080, an HTTP portal hosted at 172.18.0.2, and was limited to that host and port. Four findings were recorded. The most serious is that the application&#39;s .env configuration file is publicly readable at /.env; this was confirmed by validation and is rated high, because such files commonly hold credentials, API keys and database connection strings. A .git/config file is also readable (medium), which exposes repository configuration and can help an attacker map the source tree. Two lower-impact items were also confirmed: Apache /server-status is publicly reachable (low), and a separate validation check identified the exposed .env as a CodeIgniter environment file (high). No exploitation or lateral movement was demonstrated; the exposure of these files should be treated as a possible secret compromise until the contents are reviewed.</p>
+<h2>Findings</h2>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Severity</th><th>Finding</th>
+<th>Asset</th><th>Status</th></tr></thead>
+<tbody><tr><td>1</td><td><span class='sev high'>high</span></td><td>Codeigniter - .env File Discovery</td><td><code>http://lab.internal:8080/.env</code></td><td>validated</td></tr><tr><td>2</td><td><span class='sev high'>high</span></td><td>Exposed .env file</td><td><code>http://lab.internal:8080/.env</code></td><td>candidate</td></tr><tr><td>3</td><td><span class='sev medium'>medium</span></td><td>Git Configuration - Detect</td><td><code>http://lab.internal:8080/.git/config</code></td><td>validated</td></tr><tr><td>4</td><td><span class='sev low'>low</span></td><td>Apache Server Status Disclosure</td><td><code>http://lab.internal:8080/server-status</code></td><td>validated</td></tr></tbody></table></div>
+
+        <section class="finding">
+          <h3><span class="sev high">high</span>
+              Codeigniter - .env File Discovery</h3>
+          <p class="meta"><code>http://lab.internal:8080/.env</code>
+             · validated · nuclei_validate</p>
+          <p>Codeigniter .env file was discovered.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0&#39; &#39;http://lab.internal:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_28eaa561dc55_nuclei.log</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_57618950c8be</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_28eaa561dc55_nuclei.log</li></ul>
+          <h4>Remediation</h4><p>Remove the .env file from the web-accessible document root and block requests to dotfiles and environment files at the web server or proxy layer. Review the file&#39;s contents and rotate any credentials, keys or connection strings it contained.</p>
+        </section>
+        <section class="finding">
+          <h3><span class="sev high">high</span>
+              Exposed .env file</h3>
+          <p class="meta"><code>http://lab.internal:8080/.env</code>
+             · candidate · nuclei</p>
+          <p>Nuclei matched the generic-env template against http://lab.internal:8080/.env, indicating that an environment configuration file may be publicly accessible. Such files commonly contain credentials, API keys, database connection strings, or other sensitive configuration.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.4.21&#39; &#39;http://lab.internal:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_420ef6b517b4_nuclei.log</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_fefeb3046579</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_420ef6b517b4_nuclei.log</li></ul>
+          <h4>Remediation</h4><p>Remove the .env file from the web-accessible document root, block access to dotfiles and environment files at the web server/proxy layer, and rotate any secrets that may have been exposed.</p>
+        </section>
+        <section class="finding">
+          <h3><span class="sev medium">medium</span>
+              Git Configuration - Detect</h3>
+          <p class="meta"><code>http://lab.internal:8080/.git/config</code>
+             · validated · nuclei_validate</p>
+          <p>Git configuration was detected via the pattern /.git/config and log file on passed URLs.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36&#39; &#39;http://lab.internal:8080/.git/config&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_f37525b712cc_nuclei.log</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_481b7e79a1ac</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_f37525b712cc_nuclei.log</li></ul>
+          <h4>Remediation</h4><p>Remove the .git directory from the deployed web root and deny access to /.git/* at the web server or proxy. If source history was reachable, check it for committed secrets and rotate them.</p>
+        </section>
+        <section class="finding">
+          <h3><span class="sev low">low</span>
+              Apache Server Status Disclosure</h3>
+          <p class="meta"><code>http://lab.internal:8080/server-status</code>
+             · validated · nuclei_validate</p>
+          <p>Apache /server-status displays information about your Apache status. If you are not using this feature, disable it.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36&#39; &#39;http://lab.internal:8080/server-status&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_bbf7e9fedce6_nuclei.log</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_2790e4cd3d4b</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-docker\evidence\eng_2eaf84674c3f\act_bbf7e9fedce6_nuclei.log</li></ul>
+          <h4>Remediation</h4><p>Disable the Apache /server-status handler if it is not needed, or restrict it to localhost or an administrative network. If it is required, require authentication and limit the information it reports.</p>
+        </section>
+<h2>Tooling and trace</h2>
+<p class="meta">Tools used: ffuf, httpx, nmap, nuclei, subfinder ·
+ audit chain 21 records verified ·
+ 388 s wall clock ·
+ 0.0 s in tools ·
+ 8 model calls (7370 in /
+ 3296 out tokens) ·
+ scope <code>{&quot;allow&quot;: [{&quot;kind&quot;: &quot;domain&quot;, &quot;value&quot;: &quot;lab.internal&quot;}, {&quot;kind&quot;: &quot;url&quot;, &quot;value&quot;: &quot;http://lab.internal:8080&quot;}], &quot;deny&quot;: [], &quot;ports&quot;: &quot;8080&quot;}</code></p>
+<footer>Generated by RedFox AI 0.1.0. Findings are listed only where recorded evidence exists.</footer>
+</body></html>

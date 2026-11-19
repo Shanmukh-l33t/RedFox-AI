@@ -205,3 +205,53 @@ def test_learned_memory_is_a_summary_not_a_dump(tmp_path) -> None:
     assert any(n.startswith("nuclei: 2 findings") for n in learned), learned
     assert any("whatweb: unavailable" in n for n in learned), learned
     assert all(len(n) < 160 for n in learned)
+
+
+def test_learned_memory_tolerates_a_stored_count(tmp_path) -> None:
+    """Rows written by an older path hold an int, not a list."""
+    import json as _json
+
+    from redfox.audit import AuditLog
+    from redfox.config import Settings
+    from redfox.db import Store
+    from redfox.engine import Campaign
+    from redfox.policy import PolicyEnforcementPoint
+
+    settings = Settings.load(home=tmp_path / "learn2")
+    store = Store(settings.db_path)
+    campaign = Campaign(settings, store, AuditLog(settings.audit_path),
+                        PolicyEnforcementPoint(settings))
+    store.add_memory("tool_result", "nuclei",
+                     _json.dumps({"observations": 7, "denied": 1}))
+    learned = campaign._learned()
+    assert any("nuclei: 7 findings" in note for note in learned), learned
+
+
+def test_a_validated_finding_counts_as_validation_having_run(tmp_path) -> None:
+    """Proof from nuclei_validate must not be ignored just because no
+    `validation` task ran."""
+    import asyncio
+
+    from redfox.audit import AuditLog
+    from redfox.config import Settings
+    from redfox.db import Store
+    from redfox.engine import Campaign
+    from redfox.policy import PolicyEnforcementPoint
+
+    settings = Settings.load(home=tmp_path / "rep")
+    store = Store(settings.db_path)
+    eid = store.create_engagement("r", {"allow": ["lab.internal"]},
+                                  {"operator": "t", "authorization_ref": "A",
+                                   "attested_at": "2026-01-01"}, 2)
+    store.upsert_finding(eid, "fp_ok", "Git config exposed", "medium",
+                         "http://lab.internal", "described", status="validated",
+                         source_tool="nuclei_validate")
+    # A discovered path stays a candidate and must not block the report.
+    store.upsert_finding(eid, "fp_path", "Interesting path", "info",
+                         "http://lab.internal/x", "discovered", source_tool="ffuf")
+
+    campaign = Campaign(settings, store, AuditLog(settings.audit_path),
+                        PolicyEnforcementPoint(settings))
+    eng = store.get_engagement(eid)
+    result = asyncio.run(campaign._report(eng, __import__("redfox.models", fromlist=["Scope"]).Scope.from_dict(eng["scope"])))
+    assert "deferred" not in result, result

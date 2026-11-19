@@ -137,6 +137,78 @@ class ToolRuntime:
             f"required tool '{name}' is not installed; see docs/TOOL_ADAPTERS.md"
         )
 
+    # ---- container runtime -------------------------------------------
+    def docker_ready(self) -> bool:
+        try:
+            probe = subprocess.run(["docker", "info", "--format", "{{.ServerVersion}}"],
+                                   capture_output=True, text=True, timeout=30)
+            return probe.returncode == 0 and bool((probe.stdout or "").strip())
+        except (OSError, subprocess.SubprocessError):
+            return False
+
+    def ensure_network(self, name: str) -> bool:
+        """Create the engagement's bridge network once; True when it exists."""
+        try:
+            if subprocess.run(["docker", "network", "inspect", name],
+                              capture_output=True, timeout=30).returncode == 0:
+                return True
+            created = subprocess.run(
+                ["docker", "network", "create", "--label", "redfox.managed=1", name],
+                capture_output=True, text=True, timeout=120)
+            return created.returncode == 0
+        except (OSError, subprocess.SubprocessError):
+            return False
+
+    def image_present(self, image: str) -> bool:
+        try:
+            return subprocess.run(["docker", "image", "inspect", image],
+                                  capture_output=True, timeout=30).returncode == 0
+        except (OSError, subprocess.SubprocessError):
+            return False
+
+    def update_nuclei_templates(self) -> tuple[int, str]:
+        """Fill the shared templates volume the nuclei container mounts.
+
+        Without this the nuclei image scans with zero templates and reports
+        nothing at all — a silent downgrade, not a clean result.
+        """
+        image = isolation.IMAGES.get("nuclei")
+        if not image:
+            return 1, "no nuclei image configured"
+        try:
+            done = subprocess.run(
+                ["docker", "run", "--rm",
+                 "-v", f"{isolation.TEMPLATES_VOLUME}:{isolation.TEMPLATES_PATH}",
+                 # Not the long form with -disable-update-check: that flag turns
+                 # the update off, so the command exits 0 having done nothing.
+                 image, "-ut"],
+                capture_output=True, text=True, timeout=1800)
+            return done.returncode, ((done.stdout or "") + (done.stderr or ""))[-200:]
+        except (OSError, subprocess.SubprocessError) as exc:
+            return 1, str(exc)
+
+    def template_count(self) -> int:
+        image = isolation.IMAGES.get("nuclei")
+        if not image:
+            return 0
+        try:
+            done = subprocess.run(
+                ["docker", "run", "--rm", "--entrypoint", "sh",
+                 "-v", f"{isolation.TEMPLATES_VOLUME}:{isolation.TEMPLATES_PATH}",
+                 image, "-c", f"find {isolation.TEMPLATES_PATH} -name '*.yaml' | wc -l"],
+                capture_output=True, text=True, timeout=120)
+            return int((done.stdout or "0").strip() or 0)
+        except (OSError, subprocess.SubprocessError, ValueError):
+            return 0
+
+    def pull_image(self, image: str) -> tuple[int, str]:
+        try:
+            done = subprocess.run(["docker", "pull", image], capture_output=True,
+                                  text=True, timeout=1800)
+            return done.returncode, ((done.stdout or "") + (done.stderr or ""))[-240:]
+        except (OSError, subprocess.SubprocessError) as exc:
+            return 1, str(exc)
+
     def available(self, name: str) -> bool:
         try:
             self.resolve_binary(name)
@@ -188,9 +260,14 @@ class ToolRuntime:
         if self.settings.isolate == "docker":
             # The tool runs in an image, so the host binary is not required; only
             # docker is. The policy decision above is unchanged.
+            network = self.settings.docker_network
+            if network == "auto":
+                # One network per engagement: two engagements cannot see each
+                # other's containers, and neither can reach the host's loopback.
+                network = f"redfox-{engagement['id']}"
+                self.ensure_network(network)
             try:
-                argv = isolation.docker_argv(call.tool, checked, out_path.parent,
-                                             self.settings.docker_network)
+                argv = isolation.docker_argv(call.tool, checked, out_path.parent, network)
             except isolation.IsolationUnavailable as exc:
                 self._finish_action(action_id, None, "")
                 self.store.event(engagement["id"], "isolation.no_image",

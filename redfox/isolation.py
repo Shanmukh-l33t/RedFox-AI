@@ -25,15 +25,32 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-# Images that contain the tool and nothing else worth compromising.
+# Images that contain the tool and nothing else worth compromising. Each was
+# checked by running its version command against the image directly
+# (`docker run --rm <image> <flag>`), because the wrapper relies on the image's
+# entrypoint being the tool itself. `ffuf/ffuf` publishes no tags; `secsi/ffuf`
+# does and reports `ffuf version: 2.3.0`.
 IMAGES = {
     "nmap": "instrumentisto/nmap:latest",
     "nuclei": "projectdiscovery/nuclei:latest",
+    "nuclei_validate": "projectdiscovery/nuclei:latest",
     "httpx": "projectdiscovery/httpx:latest",
     "subfinder": "projectdiscovery/subfinder:latest",
-    "nuclei_validate": "projectdiscovery/nuclei:latest",
+    "amass": "caffix/amass:latest",
+    "ffuf": "secsi/ffuf:latest",
+    "whatweb": "secsi/whatweb:latest",
+    "sslscan": "secsi/sslscan:latest",
 }
 EVIDENCE_MOUNT = "/evidence"
+
+# The nuclei image ships no templates, so a run without this volume scans nothing
+# and reports nothing — a silent downgrade. `redfox isolate setup` populates it.
+VOLUMES = {
+    "nuclei": ("redfox-nuclei-templates", "/root/nuclei-templates"),
+    "nuclei_validate": ("redfox-nuclei-templates", "/root/nuclei-templates"),
+}
+TEMPLATES_VOLUME = "redfox-nuclei-templates"
+TEMPLATES_PATH = "/root/nuclei-templates"
 
 
 class IsolationUnavailable(RuntimeError):
@@ -70,14 +87,17 @@ def docker_argv(tool: str, args: list[str], evidence_dir: Path, network: str) ->
             text = EVIDENCE_MOUNT + _tail(text, root)
         mapped.append(text)
 
-    return [
+    volumes = [f"{root}:{EVIDENCE_MOUNT}"]
+    if tool in VOLUMES:
+        volumes.append(":".join(VOLUMES[tool]))
+
+    args_out = [
         "docker", "run", "--rm",
         "--network", network or "bridge",
         "--cap-drop", "ALL",
         "--security-opt", "no-new-privileges",
         "--pids-limit", "512",
-        "-v", f"{root}:{EVIDENCE_MOUNT}",
-        "-w", EVIDENCE_MOUNT,
-        image,
-        *mapped,
     ]
+    for volume in volumes:
+        args_out += ["-v", volume]
+    return args_out + ["-w", EVIDENCE_MOUNT, image, *mapped]

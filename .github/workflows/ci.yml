@@ -116,7 +116,9 @@ jobs:
         env:
           REDFOX_LLM_PROVIDER: ${{ secrets.REDFOX_LLM_PROVIDER }}
           REDFOX_LLM_MODEL: ${{ secrets.REDFOX_LLM_MODEL }}
+          REDFOX_LLM_BASE_URL: ${{ secrets.REDFOX_LLM_BASE_URL }}
           REDFOX_LLM_API_KEY: ${{ secrets.REDFOX_LLM_API_KEY }}
+          REDFOX_LLM_TIMEOUT: "180"
         run: |
           if [ -z "$REDFOX_LLM_API_KEY" ]; then
             echo "No LLM secret configured; skipping the live campaign."

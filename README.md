@@ -32,7 +32,7 @@ scope file ──► engagement record ──► policy gate ──► tool runt
 
 ## What it does not do (v0.4.0)
 
-- **Isolation is opt-in.** `REDFOX_ISOLATE=docker` runs each tool in its own image with the evidence directory as the only mount; without it, tools run as subprocesses behind the policy gate. `nmap`, `nuclei`, `httpx` and `subfinder` have images; `ffuf`, `amass`, `whatweb` and `sslscan` do not yet and are refused — not silently run on the host — while isolation is on. See [ARCHITECTURE.md](docs/ARCHITECTURE.md#isolation).
+- **Isolation is opt-in.** `REDFOX_ISOLATE=docker` runs each tool in its own image with the evidence directory as the only mount; without it, tools run as subprocesses behind the policy gate. Every adapter has an image (nmap, nuclei, httpx, subfinder, amass, ffuf, whatweb, sslscan); a tool without one is refused rather than run on the host. See [ARCHITECTURE.md](docs/ARCHITECTURE.md#isolation).
 - **Single node.** No Redis/Celery/Postgres. The task queue is a SQLite table; multi-node execution is future work.
 - **No exploitation.** The only intrusive capability is a read-only impact check: it authenticates with operator-supplied credentials and reads one page. It never writes, uploads, deletes or escalates.
 - **`whatweb` needs Ruby, `sslscan` needs its binary.** CI installs both on Linux; where they are absent the adapters report `NOT INSTALLED` rather than pretending.
@@ -88,9 +88,15 @@ redfox impact eng_…
 
 ```bash
 export REDFOX_ISOLATE=docker
-export REDFOX_DOCKER_NETWORK=bridge      # "host" to reach a lab on this machine
+redfox isolate setup                      # pull the images, fill nuclei's templates
+redfox isolate status                     # what is present, template count
 redfox run <engagement>
 ```
+
+`REDFOX_DOCKER_NETWORK` defaults to `auto`: a bridge network per engagement
+(`redfox-<id>`), so two engagements cannot see each other's containers and
+neither can reach the host's loopback. Set it to a network name to share one
+(e.g. `redfox-lab`), or `host` for a local target.
 
 Each tool invocation becomes a `docker run` of an image that contains only that
 tool: no capabilities, no new privileges, a pid limit, and the engagement's
@@ -98,6 +104,18 @@ evidence directory as the only mount. The policy gate is unchanged — it still
 decides whether the call happens, and the scope check runs before the container is
 started. A tool with no image fails with `isolation.no_image` instead of running
 unsandboxed.
+
+The repo ships a containerised target for exactly this path:
+
+```bash
+docker compose up -d                      # vulnerable lab on the redfox-lab network
+export REDFOX_ISOLATE=docker REDFOX_DOCKER_NETWORK=redfox-lab
+redfox init examples/scope-docker.json
+```
+
+That is how `examples/docker-run/` was produced: the lab answers to
+`lab.internal`, the scanner containers join the same network, and nothing is
+reachable from the host's loopback.
 
 What it contains: the toolchain. A hostile template, a wordlist that walks paths,
 or a compromised scanner cannot touch your workstation or your keys. What it does

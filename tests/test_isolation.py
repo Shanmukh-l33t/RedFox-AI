@@ -41,8 +41,9 @@ def test_the_tool_runs_in_an_image_with_only_the_evidence_dir(tmp_path) -> None:
 
 
 def test_no_image_means_refusal_not_a_silent_host_run() -> None:
+    # A future adapter that nobody mapped: refuse rather than fall back to host.
     with pytest.raises(isolation.IsolationUnavailable):
-        isolation.docker_argv("whatweb", [], Path("/tmp"), "bridge")
+        isolation.docker_argv("nikto", [], Path("/tmp"), "bridge")
 
 
 @pytest.fixture()
@@ -88,3 +89,28 @@ def test_a_tool_without_an_image_fails_loudly(iso_runtime, monkeypatch) -> None:
 
     events = [e for e in store.events_since(eid) if e["type"] == "isolation.no_image"]
     assert events and "whatweb" in events[0]["payload_json"]
+
+def test_every_adapter_has_an_image() -> None:
+    """Isolation must not have a hole where an adapter quietly has no image."""
+    from redfox.adapters.registry import build_adapters
+
+    missing = [name for name in build_adapters() if name not in isolation.IMAGES]
+    assert missing == [], f"no container image for {missing}"
+
+
+def test_the_image_map_covers_the_allowlist() -> None:
+    from redfox.runtime import ALLOWED_BINARIES
+
+    assert set(ALLOWED_BINARIES) <= set(isolation.IMAGES)
+
+
+def test_nuclei_gets_the_shared_templates_volume(tmp_path) -> None:
+    argv = isolation.docker_argv("nuclei", ["-u", "http://lab.internal:8080"],
+                                 tmp_path, "redfox-lab")
+    joined = " ".join(argv)
+    assert f"{isolation.TEMPLATES_VOLUME}:{isolation.TEMPLATES_PATH}" in joined
+
+
+def test_other_tools_do_not_get_the_templates_volume(tmp_path) -> None:
+    argv = isolation.docker_argv("nmap", ["-p8080", "lab.internal"], tmp_path, "redfox-lab")
+    assert isolation.TEMPLATES_VOLUME not in " ".join(argv)

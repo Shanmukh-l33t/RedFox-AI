@@ -241,10 +241,12 @@ def _clip(text: str, width: float, size: float, bold: bool = False) -> str:
 
 def _sanitise(text: Any) -> str:
     out = []
-    for ch in str(text if text is not None else ""):
-        ch = _SUBS.get(ch, ch)
-        keep = ch == "\n" or 0x20 <= ord(ch) <= 0x7E or 0xA0 <= ord(ch) <= 0xFF
-        out.append(ch if keep else "?")
+    for raw in str(text if text is not None else ""):
+        # Classify the original character, then fold it: a substitution can be
+        # several characters long, so ord() must not run on the result.
+        keep = (raw == chr(10) or
+                    0x20 <= ord(raw) <= 0x7E or 0xA0 <= ord(raw) <= 0xFF)
+        out.append(_SUBS.get(raw, raw) if keep or raw in _SUBS else "?")
     return "".join(out)
 
 

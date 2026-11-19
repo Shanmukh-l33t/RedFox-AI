@@ -3,7 +3,7 @@
 What was actually run, and what it returned. Every number below came out of a
 command, not an estimate. Re-run any of it from a clean clone.
 
-Date: 2026-11-19 · Tag: `v0.4.0` · Python 3.14.9 (dev), 3.11/3.12 (CI) · Windows 11
+Date: 2026-11-19 · Tag: `v0.5.0` · Python 3.14.9 (dev), 3.11/3.12 (CI) · Windows 11
 
 ## 1. Safety first, and tested
 
@@ -66,6 +66,37 @@ All findings are backed by intact, recorded evidence.
 Report artefacts: SARIF carries 24 results and 20 rules; the first result is
 `generic-env` — *Generic Env File Disclosure — http://127.0.0.1:8080/.env*,
 severity `high`, CVSS 8.3, status `validated`.
+
+## 3b. Containerised run (every tool in its own image)
+
+`docker compose up -d` (lab on the `redfox-lab` network, reachable only as
+`lab.internal`), then a campaign with `REDFOX_ISOLATE=docker
+REDFOX_DOCKER_NETWORK=redfox-lab`:
+
+```
+status          completed
+steps           14
+findings        4  (3 validated, 1 candidate)
+actions         9 allowed, 0 denied
+evidence        9
+audit           OK, 21 records verified
+report          report.md / .html / .pdf / .sarif  ->  examples/docker-run/
+```
+
+Every action's evidence header records the container invocation, for example:
+
+```
+# argv: ['docker','run','--rm','--network','redfox-lab','--cap-drop','ALL',
+#        '--security-opt','no-new-privileges','--pids-limit','512',
+#        '-v','<state>/evidence/eng_...:/evidence',
+#        '-v','redfox-nuclei-templates:/root/nuclei-templates',
+#        '-w','/evidence','projectdiscovery/nuclei:latest',
+#        '-u','http://lab.internal:8080', ...]
+```
+
+The images were checked with their own version commands before being mapped:
+nmap 7.98, nuclei 3.11.1, httpx, subfinder 2.17.0, amass 4.2.0, ffuf 2.3.0,
+whatweb 0.6.4, sslscan 2.2.4.
 
 ## 4. Reproducible by a stranger
 
