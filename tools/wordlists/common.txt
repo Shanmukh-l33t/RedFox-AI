@@ -68,4 +68,15 @@ v2
 vendor
 web
 wp-admin
-wp-login.php
+wp-login.phpproduct
+product/
+item
+items
+article
+profile
+account
+order
+orders
+view
+detail
+download
