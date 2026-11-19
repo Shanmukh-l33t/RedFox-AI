@@ -45,6 +45,30 @@ jobs:
       - name: Scope engine refuses out-of-scope and over-autonomy actions
         run: python -m pytest tests/test_safety_core.py -q
 
+  isolation:
+    name: Container isolation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e ".[dev]"
+      - name: Start the lab target
+        run: |
+          python lab/vulnapp.py --port 8080 --admin-port 8081 &
+          for i in $(seq 1 15); do
+            curl -fsS http://127.0.0.1:8080/ >/dev/null && break
+            sleep 1
+          done
+      - name: Pull the scanner image
+        run: docker pull instrumentisto/nmap:latest
+      - name: nmap inside a container, through the policy gate
+        env:
+          REDFOX_ISOLATE: docker
+          REDFOX_DOCKER_NETWORK: host
+        run: python -m pytest tests/test_isolation_live.py -q -rs
+
   toolchain:
     name: Real tool adapters
     runs-on: ubuntu-latest

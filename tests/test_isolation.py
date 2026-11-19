@@ -1,0 +1,90 @@
+"""Container isolation: what gets wrapped, and what refuses to run."""
+
+from __future__ import annotations
+
+import asyncio
+import dataclasses
+import sys
+from pathlib import Path
+
+import pytest
+
+from redfox import isolation, runtime as runtime_module
+from redfox.audit import AuditLog
+from redfox.config import Settings
+from redfox.db import Store
+from redfox.models import ToolCall
+from redfox.policy import PolicyEnforcementPoint
+from redfox.runtime import ToolNotFound, ToolRuntime
+
+SCOPE = {"allow": ["127.0.0.1", "http://127.0.0.1:8080"], "deny": [],
+         "ports": "80,443,8080-8081"}
+AUTH = {"operator": "test", "authorization_ref": "T-1", "attested_at": "2026-01-01"}
+
+
+def test_the_tool_runs_in_an_image_with_only_the_evidence_dir(tmp_path) -> None:
+    out = tmp_path / "evidence" / "act_1_out.json"
+    argv = isolation.docker_argv(
+        "nuclei", ["-u", "http://127.0.0.1:8080", "-jsonl", f"-o={out}"],
+        tmp_path / "evidence", "redfox-scan")
+
+    assert argv[:2] == ["docker", "run"]
+    assert "projectdiscovery/nuclei:latest" in argv
+    assert "redfox-scan" in argv
+    # The host path becomes the mount, so the container writes where we read.
+    assert f"-o={isolation.EVIDENCE_MOUNT}/act_1_out.json" in argv
+    # The mount is the only place the host path appears; the tool's own
+    # arguments must not carry it.
+    after_image = argv[argv.index("projectdiscovery/nuclei:latest"):]
+    assert str(tmp_path) not in " ".join(after_image)
+    assert "--cap-drop" in argv and "no-new-privileges" in argv
+
+
+def test_no_image_means_refusal_not_a_silent_host_run() -> None:
+    with pytest.raises(isolation.IsolationUnavailable):
+        isolation.docker_argv("whatweb", [], Path("/tmp"), "bridge")
+
+
+@pytest.fixture()
+def iso_runtime(tmp_path: Path):
+    base = Settings.load(home=tmp_path / "home")
+    settings = dataclasses.replace(base, isolate="docker", docker_network="lab")
+    store = Store(settings.db_path)
+    audit = AuditLog(settings.audit_path)
+    runtime = ToolRuntime(settings, store, audit, PolicyEnforcementPoint(settings))
+    eid = store.create_engagement("iso", SCOPE, AUTH, 2)
+    return runtime, store, store.get_engagement(eid), eid
+
+
+def test_an_isolated_call_executes_through_docker(iso_runtime, monkeypatch) -> None:
+    runtime, store, engagement, eid = iso_runtime
+    captured = {}
+
+    def fake(tool, args, evidence_dir, network):
+        captured.update(tool=tool, args=args, network=network)
+        return [sys.executable, "-c", "print('nuclei ran in a container')"]
+
+    monkeypatch.setattr(runtime_module.isolation, "docker_argv", fake)
+    result = asyncio.run(runtime.execute(
+        engagement, ToolCall(tool="nuclei", target="http://127.0.0.1:8080",
+                             argv=("-u", "http://127.0.0.1:8080"), risk="active"), "recon"))
+
+    assert result.decision.allowed
+    assert "container" in result.stdout
+    assert captured["network"] == "lab"
+
+
+def test_a_tool_without_an_image_fails_loudly(iso_runtime, monkeypatch) -> None:
+    runtime, store, engagement, eid = iso_runtime
+
+    def refuse(*_args, **_kwargs):
+        raise isolation.IsolationUnavailable("no image for whatweb")
+
+    monkeypatch.setattr(runtime_module.isolation, "docker_argv", refuse)
+    with pytest.raises(ToolNotFound):
+        asyncio.run(runtime.execute(
+            engagement, ToolCall(tool="whatweb", target="http://127.0.0.1:8080",
+                                 argv=("http://127.0.0.1:8080",), risk="active"), "recon"))
+
+    events = [e for e in store.events_since(eid) if e["type"] == "isolation.no_image"]
+    assert events and "whatweb" in events[0]["payload_json"]

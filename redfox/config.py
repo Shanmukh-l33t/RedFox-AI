@@ -54,6 +54,8 @@ class Settings:
     quiet_hours: str  # "22:00-06:00" or empty
     retention_days: int
     api_token: str = ""  # empty: the API is loopback-only and unauthenticated
+    isolate: str = "off"  # "docker" runs each tool in its own image
+    docker_network: str = "bridge"
 
     @property
     def db_path(self) -> Path:
@@ -98,6 +100,8 @@ class Settings:
             max_steps=_int("REDFOX_MAX_STEPS", 40),
             tool_timeout_s=_int("REDFOX_TOOL_TIMEOUT", 600),
             api_token=os.environ.get("REDFOX_API_TOKEN", ""),
+            isolate=os.environ.get("REDFOX_ISOLATE", "off").lower(),
+            docker_network=os.environ.get("REDFOX_DOCKER_NETWORK", "bridge"),
             quiet_hours=os.environ.get("REDFOX_QUIET_HOURS", ""),
             retention_days=_int("REDFOX_RETENTION_DAYS", 365),
         )

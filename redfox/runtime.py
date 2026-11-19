@@ -23,13 +23,12 @@ import time
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from . import isolation
 from .audit import AuditLog
 from .config import Settings
+from .db import Store
 from .models import Decision, ExecutionResult, HttpCall, HttpResponse, ToolCall
 from .policy import PolicyEnforcementPoint
-
-if TYPE_CHECKING:
-    from .db import Store
 
 # Binaries an adapter may name. Anything else is refused before policy runs,
 # so a bad adapter string cannot become arbitrary execution.
@@ -182,11 +181,24 @@ class ToolRuntime:
                                    stderr=decision.reason,
                                    duration_s=round(time.time() - started, 3))
 
-        binary = self.resolve_binary(call.tool)
         out_path = self.settings.evidence_dir / engagement["id"] / f"{action_id}_out.json"
         out_path.parent.mkdir(parents=True, exist_ok=True)
         raw_argv = tuple(str(out_path) if item == "{out}" else item for item in call.argv)
-        argv = [str(binary), *_validate_argv(raw_argv)]
+        checked = _validate_argv(raw_argv)
+        if self.settings.isolate == "docker":
+            # The tool runs in an image, so the host binary is not required; only
+            # docker is. The policy decision above is unchanged.
+            try:
+                argv = isolation.docker_argv(call.tool, checked, out_path.parent,
+                                             self.settings.docker_network)
+            except isolation.IsolationUnavailable as exc:
+                self._finish_action(action_id, None, "")
+                self.store.event(engagement["id"], "isolation.no_image",
+                                 {"tool": call.tool, "reason": str(exc)[:200]})
+                raise ToolNotFound(str(exc)) from exc
+        else:
+            binary = self.resolve_binary(call.tool)
+            argv = [str(binary), *checked]
 
         try:
             proc = await asyncio.create_subprocess_exec(
