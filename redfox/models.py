@@ -9,6 +9,7 @@ internet.
 from __future__ import annotations
 
 import ipaddress
+import re
 from dataclasses import dataclass, field
 from typing import Any, Literal
 from urllib.parse import urlsplit
@@ -65,6 +66,8 @@ def _build_rule(kind: str, value: str) -> ScopeRule:
         host = value.lower().strip(".")
         if any(ch in host for ch in "*?/ ") or not host:
             raise ScopeError(f"invalid or wildcard domain: {value!r}")
+        if host.startswith("-"):
+            raise ScopeError(f"invalid domain: {value!r}")
         if len(host.split(".")) < 2 and host != "localhost":
             raise ScopeError(f"domain must be fully qualified: {value!r}")
         return ScopeRule("domain", host)
@@ -118,20 +121,51 @@ def parse_target(raw: str) -> Target:
         parts = urlsplit(text)
         if not parts.hostname:
             raise ScopeError(f"url without host: {raw!r}")
+        if not _valid_host(parts.hostname.lower()):
+            raise ScopeError(f"invalid host in target: {parts.hostname!r}")
         port = parts.port or default_port(parts.scheme)
         return Target("url", parts.hostname.lower(), parts.scheme, port, parts.path or "/")
     if "/" in text:
-        net = ipaddress.ip_network(text, strict=False)
-        return Target("cidr", str(net))
+        try:
+            net = ipaddress.ip_network(text, strict=False)
+            return Target("cidr", str(net))
+        except ValueError:
+            # Not a network: it is host:port/path written without a scheme.
+            parts = urlsplit("//" + text)
+            if parts.hostname and _valid_host(parts.hostname.lower()):
+                return Target("url", parts.hostname.lower(), "http",
+                              parts.port or default_port("http"), parts.path or "/")
+            raise ScopeError(f"target is not a valid host, network or URL: {raw!r}")
     try:
         ipaddress.ip_address(text)
         return Target("ip", str(ipaddress.ip_address(text)))
     except ValueError:
-        return Target("domain", text.lower().strip("."))
+        host = text.lower().strip(".")
+        if not _valid_host(host):
+            raise ScopeError(f"target is not a valid hostname: {raw!r}")
+        return Target("domain", host)
 
 
 def _domain_matches(host: str, rule: str) -> bool:
     return host == rule or host.endswith("." + rule)
+
+
+HOSTNAME = re.compile(r"^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?"
+                      r"(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*\.?$")
+
+
+def _valid_host(host: str) -> bool:
+    """Reject anything that is not a hostname.
+
+    A target string reaches a tool as one argv item. Without this, a value like
+    ``-oN /tmp/x`` would be parsed by the tool as an option rather than a host —
+    argument injection that no amount of "we never use a shell" prevents.
+    """
+    if not host or len(host) > 253:
+        return False
+    if host.startswith("-") or any(ch in host for ch in " \t\r\n\"'`$;|&<>"):
+        return False
+    return bool(HOSTNAME.match(host))
 
 
 def _rule_matches(target: Target, rule: ScopeRule) -> bool:

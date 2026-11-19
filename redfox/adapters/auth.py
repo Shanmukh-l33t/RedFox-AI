@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import Any, Iterable
 
 from ..models import HttpCall, HttpResponse
+from ..secrets import resolve_credential
 from .base import Observation
 
 DEFAULT_MAX_ATTEMPTS = 5
@@ -36,9 +37,10 @@ class AuthCheck:
         limit = int(spec.get("max_attempts", DEFAULT_MAX_ATTEMPTS))
         calls: list[HttpCall] = []
         for cand in candidates[:limit]:
+            cred = resolve_credential(cand)
             data = {
-                spec.get("username_field", "username"): str(cand.get("username", "")),
-                spec.get("password_field", "password"): str(cand.get("password", "")),
+                spec.get("username_field", "username"): cred["username"],
+                spec.get("password_field", "password"): cred["password"],
             }
             calls.append(HttpCall(
                 tool=self.name, target=target_url, method="POST", url=target_url,
@@ -79,4 +81,5 @@ class AuthCheck:
 
 def candidate_pairs(spec: dict[str, Any]) -> Iterable[tuple[str, str]]:
     for cred in spec.get("credentials") or []:
-        yield str(cred.get("username", "")), str(cred.get("password", ""))
+        resolved = resolve_credential(cred)
+        yield resolved["username"], resolved["password"]

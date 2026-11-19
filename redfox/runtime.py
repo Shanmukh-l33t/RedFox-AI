@@ -34,6 +34,7 @@ if TYPE_CHECKING:
 ALLOWED_BINARIES = frozenset(
     {"nmap", "nuclei", "httpx", "subfinder", "amass", "ffuf", "whatweb", "sslscan"}
 )
+MAX_OUTPUT_BYTES = 8 * 1024 * 1024
 
 _AUTHZ = "authori" + "zation"
 _SECRET_ASSIGN = re.compile(
@@ -41,6 +42,23 @@ _SECRET_ASSIGN = re.compile(
 )
 _SECRET_BEARER = re.compile("(?i)(" + _AUTHZ + ":)[^\\n]+")
 _SECRET_COOKIE = re.compile(r"(?i)(set-cookie:\s*)(\S+)")
+
+
+def _slug(name: str) -> str:
+    """A filename component that cannot escape the evidence directory."""
+    return re.sub(r"[^a-z0-9_-]", "", str(name).lower())[:32] or "tool"
+
+
+def _cap_output(raw: bytes) -> str:
+    """Decode and redact a tool's stdout, keeping at most MAX_OUTPUT_BYTES.
+
+    A tool that floods stdout would otherwise be read whole into memory and then
+    into an evidence file. Parsers tolerate the trailing marker line.
+    """
+    text = redact(raw[:MAX_OUTPUT_BYTES].decode("utf-8", "replace"))
+    if len(raw) > MAX_OUTPUT_BYTES:
+        text += f"\n[truncated: output exceeded {MAX_OUTPUT_BYTES} bytes]"
+    return text
 
 
 def redact(text: str) -> str:
@@ -162,7 +180,7 @@ class ToolRuntime:
         finally:
             self._procs.pop(action_id, None)
 
-        stdout = redact(stdout_b.decode("utf-8", "replace"))
+        stdout = _cap_output(stdout_b)
         stderr = redact(stderr_b.decode("utf-8", "replace"))
         if out_path.exists():
             file_text = redact(out_path.read_text(encoding="utf-8", errors="replace"))
@@ -250,7 +268,7 @@ class ToolRuntime:
 
         duration = round(time.time() - started, 3)
         digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
-        path = self.settings.evidence_dir / engagement["id"] / f"{action_id}_{call.tool}.http"
+        path = self.settings.evidence_dir / engagement["id"] / f"{action_id}_{_slug(call.tool)}.http"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(
             f"# {call.method} {call.url}\n# status: {status}\n# duration_s: {duration}\n"
@@ -279,7 +297,7 @@ class ToolRuntime:
                         duration: float) -> tuple[Path, str]:
         directory = self.settings.evidence_dir / eid
         directory.mkdir(parents=True, exist_ok=True)
-        path = directory / f"{action_id}_{call.tool}.log"
+        path = directory / f"{action_id}_{_slug(call.tool)}.log"
         banner = (
             f"# tool: {call.tool}\n# target: {call.target}\n# argv: {argv}\n"
             f"# started: {time.strftime('%Y-%m-%dT%H:%M:%S')}\n"

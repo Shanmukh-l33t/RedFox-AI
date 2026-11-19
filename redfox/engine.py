@@ -24,6 +24,7 @@ from .llm import LLMClient, LLMError
 from .models import Authorization, ExecutionResult, Scope, ScopeError, ToolCall, parse_target
 from .policy import PolicyEnforcementPoint
 from .runtime import ToolNotFound, ToolRuntime
+from .secrets import MissingSecret, redacted
 
 TOOL_TASKS = {"subfinder", "nmap", "httpx", "nuclei", "nuclei_validate",
               "ffuf", "whatweb", "sslscan"}
@@ -272,7 +273,12 @@ class Campaign:
         checker = AuthCheck()
         allowed = denied = 0
         accepted = 0
-        for call in checker.plan(url, spec):
+        try:
+            calls = checker.plan(url, spec)
+        except MissingSecret as exc:
+            self.store.event(eng["id"], "secrets.missing", {"error": str(exc)[:300]})
+            return {"error": str(exc), "skipped": "credential reference unresolved"}
+        for call in calls:
             response = await self.runtime.execute_http(eng, call, task["agent"], task["id"])
             if not response.decision.allowed:
                 denied += 1
@@ -302,7 +308,7 @@ class Campaign:
         } for f in candidates[:15]]
         try:
             plan = await self._agents["validation"].plan(
-                payload, (eng.get("config") or {}).get("auth_check"))
+                payload, redacted((eng.get("config") or {}).get("auth_check")))
         except LLMError as exc:
             self.store.event(eng["id"], "validation.error", {"error": str(exc)[:300]})
             plan = []
@@ -621,6 +627,9 @@ class Campaign:
         origin = impact.origin_of(str(spec.get("login_url") or ""))
         try:
             result = await impact.demonstrate_access(self.runtime, eng, spec)
+        except MissingSecret as exc:
+            self.store.event(eng["id"], "secrets.missing", {"error": str(exc)[:300]})
+            return {"error": str(exc), "skipped": "credential reference unresolved"}
         finally:
             # One approval authorizes one operation (which may be several
             # requests), and it is spent when the operation ends — pass or fail.

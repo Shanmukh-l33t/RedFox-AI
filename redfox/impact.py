@@ -14,6 +14,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from .models import HttpCall
+from .secrets import resolve_credential
 
 PROBE = "impact_probe"
 
@@ -33,18 +34,18 @@ async def demonstrate_access(runtime: Any, engagement: dict, spec: dict[str, Any
         return {"confirmed": False, "reason": "impact spec is incomplete",
                 "evidence_ids": []}
 
-    cred = credentials[0]
+    cred = resolve_credential(credentials[0])
     origin = origin_of(login_url)
     data = {
-        str(spec.get("username_field") or "username"): str(cred.get("username", "")),
-        str(spec.get("password_field") or "password"): str(cred.get("password", "")),
+        str(spec.get("username_field") or "username"): cred["username"],
+        str(spec.get("password_field") or "password"): cred["password"],
     }
 
     login = await runtime.execute_http(
         engagement,
         HttpCall(tool=PROBE, target=origin, method="POST", url=login_url, data=data,
                  risk="intrusive",
-                 reason=f"authorized impact check: authenticate as {cred.get('username')}"),
+                 reason=f"authorized impact check: authenticate as {cred['username']}"),
         agent,
     )
     if not login.decision.allowed:
@@ -86,5 +87,5 @@ async def demonstrate_access(runtime: Any, engagement: dict, spec: dict[str, Any
         "evidence_ids": evidence,
         "login_url": login_url,
         "protected_url": target_url,
-        "username": str(cred.get("username", "")),
+        "username": cred["username"],
     }
