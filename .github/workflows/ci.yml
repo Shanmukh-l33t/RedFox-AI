@@ -57,8 +57,12 @@ jobs:
       - name: Install scanner binaries
         run: |
           sudo apt-get update
-          sudo apt-get install -y nmap whatweb sslscan
+          sudo apt-get install -y nmap sslscan
           bash ./scripts/install-tools.sh
+          # The Ubuntu whatweb package is broken on the runner (its wrapper looks
+          # for /usr/bin/lib/messages), so take the script from upstream.
+          git clone --depth 1 https://github.com/urbanadventurer/WhatWeb /tmp/whatweb
+          sudo ln -sf /tmp/whatweb/whatweb /usr/local/bin/whatweb
       - name: Start the lab target
         run: |
           python lab/vulnapp.py --port 8080 --admin-port 8081 &
@@ -67,12 +71,6 @@ jobs:
             sleep 1
           done
           curl -fsS http://127.0.0.1:8080/ >/dev/null
-      - name: Debug whatweb output
-        run: |
-          whatweb --log-json=/tmp/w.json --color=never -a 1 http://127.0.0.1:8080 || true
-          echo "--- stdout done ---"
-          ls -la /tmp/w.json || echo "NO LOG FILE"
-          head -c 1200 /tmp/w.json || true
       - name: Adapters against real binaries
         run: python -m pytest tests/test_toolchain.py -q -rs
 
