@@ -132,3 +132,52 @@ def test_unknown_task_kind_does_not_crash_the_campaign(tmp_path) -> None:
         eng, Scope.from_dict(eng["scope"]),
         {"kind": "metasploit", "agent": "enum", "payload": {}, "id": "t1"}))
     assert "error" in result
+
+def test_authcheck_without_a_spec_is_skipped_not_fatal(tmp_path) -> None:
+    """The planner may request authcheck on an engagement with no login configured."""
+    import asyncio
+
+    from redfox.audit import AuditLog
+    from redfox.config import Settings
+    from redfox.db import Store
+    from redfox.engine import Campaign
+    from redfox.policy import PolicyEnforcementPoint
+
+    settings = Settings.load(home=tmp_path / "home2")
+    store = Store(settings.db_path)
+    campaign = Campaign(settings, store, AuditLog(settings.audit_path),
+                        PolicyEnforcementPoint(settings))
+    eng = {"id": "eng_y", "autonomy": 2, "scope": {"allow": ["lab.internal"]},
+           "authorization": {"operator": "t", "authorization_ref": "A",
+                             "attested_at": "2026-01-01"}, "config": {}}
+    store.create_engagement("y", eng["scope"], eng["authorization"], 2)
+    result = asyncio.run(campaign._run_authcheck(
+        eng, {"kind": "authcheck", "agent": "validation", "payload": {}, "id": "t2"}))
+    assert "skipped" in result
+
+
+def test_validate_task_resolves_template_from_location(tmp_path) -> None:
+    """A planner-proposed nuclei_validate names a URL, not a fingerprint."""
+    import asyncio
+
+    from redfox.audit import AuditLog
+    from redfox.config import Settings
+    from redfox.db import Store
+    from redfox.engine import Campaign
+    from redfox.policy import PolicyEnforcementPoint
+
+    settings = Settings.load(home=tmp_path / "home3")
+    store = Store(settings.db_path)
+    eid = store.create_engagement("z", {"allow": ["lab.internal"]},
+                                  {"operator": "t", "authorization_ref": "A",
+                                   "attested_at": "2026-01-01"}, 2)
+    store.upsert_finding(eid, "fp_z", "Git config exposed", "medium", "http://lab.internal",
+                         "described", location="http://lab.internal/.git/config",
+                         source_tool="nuclei", template_id="git-config")
+    campaign = Campaign(settings, store, AuditLog(settings.audit_path),
+                        PolicyEnforcementPoint(settings))
+    eng = store.get_engagement(eid)
+    ctx = campaign._tool_context(eng, Scope.from_dict(eng["scope"]),
+                                 {"kind": "nuclei_validate",
+                                  "payload": {"target": "http://lab.internal/.git/config"}})
+    assert ctx["template_ids"] == ["git-config"]
