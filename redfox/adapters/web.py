@@ -7,6 +7,7 @@ crash, or an empty result produces no observations — never a synthesised one.
 from __future__ import annotations
 
 import json
+import re
 from typing import Any, Iterable
 
 from ..models import ExecutionResult, Target, ToolCall
@@ -164,6 +165,31 @@ class FfufAdapter(ToolAdapter):
         return out
 
 
+_CONSOLE = re.compile(r"^(https?://\S+)\s+\[(\d{3})[^\]]*\]\s*(.*)$")
+
+
+def _from_console(stdout: str) -> list[Observation]:
+    """whatweb's default line: `URL [200 OK] Plugin[value], Other[value]`.
+
+    Some builds do not create the --log-json file, so the human-readable line is
+    the only thing to parse. Numbers and bare flags are noise, not technologies.
+    """
+    out: list[Observation] = []
+    for line in stdout.splitlines():
+        match = _CONSOLE.match(line.strip())
+        if not match:
+            continue
+        url, status, rest = match.groups()
+        tech = [part.split("[")[0].strip()
+                for part in rest.split(", ")
+                if "[" in part and not part.split("[")[0].strip().isdigit()]
+        out.append(Observation("url", {
+            "url": url, "status": int(status), "title": "", "server": "",
+            "tech": tech, "content_length": None, "final_url": url,
+        }))
+    return out
+
+
 class WhatwebAdapter(ToolAdapter):
     name = "whatweb"
     binary = "whatweb"
@@ -189,11 +215,11 @@ class WhatwebAdapter(ToolAdapter):
             text = text[marker + len("[output-file]"):]
         start = text.find("[")
         if start < 0:
-            return out
+            return _from_console(result.stdout)
         try:
             payload = json.loads(text[start:])
         except json.JSONDecodeError:
-            return out
+            return _from_console(result.stdout)
         for row in payload if isinstance(payload, list) else [payload]:
             tech = []
             for name, details in (row.get("plugins") or {}).items():

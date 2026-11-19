@@ -148,3 +148,13 @@ def test_whatweb_parses_json_after_the_output_file_marker() -> None:
     assert observations[0].data["status"] == 200
     assert "Python/3.12" in observations[0].data["tech"]
     assert "HTML5" in observations[0].data["tech"]
+
+
+def test_whatweb_parses_the_console_line_when_there_is_no_json_log() -> None:
+    line = ("http://127.0.0.1:8080 [200 OK] Country[RESERVED][ZZ], "
+            "HTTPServer[labhttp/1.0], IP[127.0.0.1], Title[Portal]\n")
+    observations = WhatwebAdapter().parse(result(line))
+    assert len(observations) == 1
+    assert observations[0].data["status"] == 200
+    assert "HTTPServer" in observations[0].data["tech"]
+    assert "127.0.0.1" not in observations[0].data["tech"]  # the IP value, not a plugin

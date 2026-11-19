@@ -72,33 +72,6 @@ jobs:
             sleep 1
           done
           curl -fsS http://127.0.0.1:8080/ >/dev/null
-      - name: Debug whatweb
-        run: |
-          python - <<'PY'
-          import asyncio, pathlib
-          from redfox.config import Settings
-          from redfox.db import Store
-          from redfox.audit import AuditLog
-          from redfox.policy import PolicyEnforcementPoint
-          from redfox.runtime import ToolRuntime
-          from redfox.adapters.registry import ToolBox
-          from redfox.models import parse_target
-          s = Settings.load(home=pathlib.Path("/tmp/dbg"))
-          r = ToolRuntime(s, Store(s.db_path), AuditLog(s.audit_path), PolicyEnforcementPoint(s))
-          eid = r.store.create_engagement("d", {"allow": ["127.0.0.1", "http://127.0.0.1:8080"],
-                                                "deny": [], "ports": "80,443,8080-8081"},
-                                          {"operator": "x", "authorization_ref": "y",
-                                           "attested_at": "2026-01-01"}, 2)
-          eng = r.store.get_engagement(eid)
-          a = ToolBox(r).get("whatweb")
-          for call in a.plan(parse_target("http://127.0.0.1:8080"), {}):
-              res = asyncio.run(r.execute(eng, call, "recon"))
-              print("ALLOWED", res.decision.allowed, res.decision.reason)
-              print("EXIT", res.exit_code)
-              print("OUT", repr(res.stdout[:900]))
-              print("EVIDENCE", res.evidence_path)
-              print("PARSED", a.parse(res))
-          PY
       - name: Adapters against real binaries
         run: python -m pytest tests/test_toolchain.py -q -rs
 
