@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Install the scanner binaries RedFox adapters use into tools/bin.
 # Linux/macOS. Windows: use scripts/install-tools.ps1.
-set -euo pipefail
+set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BIN="$ROOT/tools/bin"
@@ -28,23 +28,30 @@ latest_url() { # repo, regex
     | grep -E "$2" | head -1
 }
 
-install_zip() { # name, repo, pattern
-  local name=$1 repo=$2 pattern=$3 url
+install_pkg() { # name, repo, pattern
+  local name=$1 repo=$2 pattern=$3 url dest
   url="$(latest_url "$repo" "$pattern")"
-  if [ -z "$url" ]; then echo "!! no release asset for $name ($pattern)"; return 1; fi
+  if [ -z "$url" ]; then
+    echo "!! no release asset for $name ($pattern) — skipping"
+    return 0
+  fi
   echo "-> $name  $url"
-  curl -fsSL "$url" -o "$TMP/$name.zip"
-  if command -v unzip >/dev/null; then unzip -qo "$TMP/$name.zip" -d "$TMP/$name"
-  else python3 -c "import zipfile,sys;zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" "$TMP/$name.zip" "$TMP/$name"; fi
-  find "$TMP/$name" -type f -name "$name" -perm -u+x -exec cp {} "$BIN/" \; 2>/dev/null || \
-    find "$TMP/$name" -type f -name "$name" -exec cp {} "$BIN/" \;
-  chmod +x "$BIN/$name"
+  dest="$TMP/$name"
+  mkdir -p "$dest"
+  case "$url" in
+    *.zip)    curl -fsSL "$url" -o "$TMP/$name.zip" && unzip -qo "$TMP/$name.zip" -d "$dest" ;;
+    *.tar.gz) curl -fsSL "$url" -o "$TMP/$name.tgz" && tar -xzf "$TMP/$name.tgz" -C "$dest" ;;
+    *) echo "!! unsupported archive for $name: $url"; return 0 ;;
+  esac || { echo "!! download/extract failed for $name"; return 0; }
+  find "$dest" -type f -name "$name" -exec cp {} "$BIN/" \;
+  [ -f "$BIN/$name" ] && chmod +x "$BIN/$name" || echo "!! $name binary not found in archive"
 }
 
-install_zip nuclei   projectdiscovery/nuclei   "${os}_${a}\.zip"
-install_zip httpx    projectdiscovery/httpx    "${os}_${a}\.zip"
-install_zip subfinder projectdiscovery/subfinder "${os}_${a}\.zip"
-install_zip ffuf     ffuf/ffuf                 "${os}_${a}\.zip"
+# ProjectDiscovery ship .zip on linux/windows and .zip on macOS; ffuf ships .tar.gz.
+install_pkg nuclei    projectdiscovery/nuclei    "${os}_${a}\.(zip|tar\.gz)$"
+install_pkg httpx     projectdiscovery/httpx     "${os}_${a}\.(zip|tar\.gz)$"
+install_pkg subfinder projectdiscovery/subfinder "${os}_${a}\.(zip|tar\.gz)$"
+install_pkg ffuf      ffuf/ffuf                 "${os}_${a}\.(zip|tar\.gz)$"
 
 if ! command -v nmap >/dev/null; then
   echo "!! nmap is not installed. Install it with your package manager:"
