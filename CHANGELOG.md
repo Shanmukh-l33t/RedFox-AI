@@ -33,10 +33,15 @@ The full review, with what was checked and what was accepted, is in
   `toolchain` CI job installs the binaries and runs it, so adapter regressions
   fail the build instead of being skipped.
 
+- **Verification record** (`docs/VERIFICATION.md`): a clean-clone campaign — 26
+  findings, 9 validated, 19/19 evidence intact, audit chain verified — run as a
+  stranger would, which is what found the broken Windows installer.
+- **Planner memory is a summary, not a dump.** One line per tool (observations
+  found, denials, or why it was unavailable) instead of raw tool output.
+
 ### Changed
 
-- Longer soak (5 rounds, 10 steps each) recorded in the runbook: 0 denials, 0 audit
-  failures, 5 MB peak.
+- Longer soak (5 rounds, 10 steps each): 0 denials, 0 audit failures, 5 MB peak.
 
 ## v0.2.0
 

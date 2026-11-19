@@ -181,3 +181,27 @@ def test_validate_task_resolves_template_from_location(tmp_path) -> None:
                                  {"kind": "nuclei_validate",
                                   "payload": {"target": "http://lab.internal/.git/config"}})
     assert ctx["template_ids"] == ["git-config"]
+
+
+def test_learned_memory_is_a_summary_not_a_dump(tmp_path) -> None:
+    """The planner gets one line per tool, including what failed."""
+    import json as _json
+
+    from redfox.audit import AuditLog
+    from redfox.config import Settings
+    from redfox.db import Store
+    from redfox.engine import Campaign
+    from redfox.policy import PolicyEnforcementPoint
+
+    settings = Settings.load(home=tmp_path / "learn")
+    store = Store(settings.db_path)
+    campaign = Campaign(settings, store, AuditLog(settings.audit_path),
+                        PolicyEnforcementPoint(settings))
+    store.add_memory("tool_result", "nuclei",
+                     _json.dumps({"observations": [{"a": 1}, {"b": 2}], "denied": 0}))
+    store.add_memory("tool_missing", "whatweb", "whatweb is not installed")
+
+    learned = campaign._learned()
+    assert any(n.startswith("nuclei: 2 findings") for n in learned), learned
+    assert any("whatweb: unavailable" in n for n in learned), learned
+    assert all(len(n) < 160 for n in learned)

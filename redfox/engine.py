@@ -770,9 +770,30 @@ class Campaign:
                 "tools_run": sorted({a["tool"] for a in actions
                                      if a["decision"] == "allowed"}),
             },
-            "learned": self.store.recall("tool_result", "nuclei", 3)[:2],
+            "learned": self._learned(),
             "available_tools": [t["name"] for t in self.toolbox.catalog() if t["available"]],
         }
+
+    def _learned(self) -> list[str]:
+        """What earlier steps learned, in one line per tool.
+
+        The planner gets outcomes, not raw tool output: the full observation dump
+        bloats a prompt and the model cannot act on it any better.
+        """
+        notes: list[str] = []
+        for tool in ("nuclei", "httpx", "ffuf", "nmap", "whatweb", "sslscan"):
+            rows = self.store.recall("tool_result", tool, 1)
+            if rows:
+                try:
+                    data = json.loads(rows[0])
+                except ValueError:
+                    continue
+                observations = len(data.get("observations") or [])
+                notes.append(f"{tool}: {observations} findings from last run, "
+                             f"{data.get('denied', 0)} denied")
+            for failure in self.store.recall("tool_missing", tool, 1):
+                notes.append(f"{tool}: unavailable ({failure[:80]})")
+        return notes[:6]
 
     # ---- summary -----------------------------------------------------
     def summary(self, eid: str, denial_spike: bool = False,
