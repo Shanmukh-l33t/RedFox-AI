@@ -1,5 +1,8 @@
 # RedFox AI
 
+[![CI](https://github.com/Shanmukh-l33t/RedFox-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/Shanmukh-l33t/RedFox-AI/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+
 **An autonomous, scope-bound AI penetration-testing platform.** It takes an engagement you are authorized to test, plans the work with LLM agents, runs real security tooling through a policy gate, validates what it finds, and produces an evidence-backed report.
 
 > ## Authorized testing only
@@ -155,6 +158,13 @@ Each finding carries a fingerprint, severity, CVSS (when the tool provides it), 
 - `tests/test_structural_guarantees.py` — no process creation outside `runtime.py`, no `shell=True`, adapters cannot reach the runtime.
 - `tests/test_adapters.py` — parsers against **real captured output** in `tests/fixtures/` (an actual nmap XML, nuclei JSONL, ffuf JSON and httpx line from the lab).
 - `tests/test_planning.py` — planner validation (out-of-scope and invented tools dropped), SARIF, report rendering.
+- `tests/test_honesty.py` — reachability is not proof, SQLi needs a signal, triage cannot promote a discovered path.
+
+CI runs the unit, structural and parser suites on Linux and Windows for Python
+3.11 and 3.12. Its end-to-end job installs the real scanners and runs the lab
+campaign only when an LLM secret is configured; without one it prints that it is
+skipping and the rest of the suite still gates the pull request. The recorded run
+in `examples/` is the evidence that the full path works.
 
 ## Repository layout
 
