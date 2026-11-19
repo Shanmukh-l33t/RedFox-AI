@@ -70,7 +70,8 @@
       "properties": {
         "engagement": "RedFox lab target \u2014 gated impact demonstration",
         "autonomy": 3,
-        "authorization": "LAB-SELF-OWNED-2026-11-19-L3"
+        "authorization": "LAB-SELF-OWNED-2026-11-19-L3",
+        "model": "deepseek-v4.1-flash-1017"
       }
     }
   ]

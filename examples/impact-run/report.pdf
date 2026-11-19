@@ -13,7 +13,7 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
 endobj
 5 0 obj
-<< /Length 4599 >>
+<< /Length 4400 >>
 stream
 BT /F2 20 Tf 55.0 787.00 Td (Penetration test report - RedFox lab target -) Tj ET
 BT /F2 20 Tf 55.0 762.00 Td (gated impact demonstration) Tj ET
@@ -26,15 +26,15 @@ BT /F1 9 Tf 55.0 664.50 Td (Attested: 2026-11-19T00:00:00Z) Tj ET
 BT /F1 9 Tf 55.0 652.00 Td (Autonomy: L3) Tj ET
 BT /F1 9 Tf 55.0 639.50 Td (Scope: {"allow": [{"kind": "ip", "value": "127.0.0.1"}, {"kind": "url", "value": "http://127.0.0.1:8080"}], "deny": [], "ports":) Tj ET
 BT /F1 9 Tf 55.0 627.00 Td ("8080"}) Tj ET
-BT /F1 9 Tf 55.0 614.50 Td (Generated: 2026-11-19T07:20:38+00:00) Tj ET
-BT /F1 9 Tf 55.0 602.00 Td (Model: gpt-5-mini) Tj ET
+BT /F1 9 Tf 55.0 614.50 Td (Generated: 2026-11-19T08:50:50+00:00) Tj ET
+BT /F1 9 Tf 55.0 602.00 Td (Model: deepseek-v4.1-flash-1017) Tj ET
 BT /F2 14 Tf 55.0 575.50 Td (Executive summary) Tj ET
-BT /F1 10 Tf 55.0 556.50 Td (During the engagement, operator-supplied credentials were used to authenticate via POST) Tj ET
-BT /F1 10 Tf 55.0 542.50 Td (http://127.0.0.1:8080/login and then successfully access the administrative interface at) Tj ET
-BT /F1 10 Tf 55.0 528.50 Td (http://127.0.0.1:8080/admin/. The /admin/ endpoint returned signed-in content without any additional) Tj ET
-BT /F1 10 Tf 55.0 514.50 Td (authorization checks. This behavior demonstrates missing or insufficient server-side authorization controls on) Tj ET
-BT /F1 10 Tf 55.0 500.50 Td (the administrative endpoint. Reproduction steps provided were POST /login with the reported credentials) Tj ET
-BT /F1 10 Tf 55.0 486.50 Td (followed by GET /admin/ with the session cookie.) Tj ET
+BT /F1 10 Tf 55.0 556.50 Td (The engagement validated one high-severity finding on http://127.0.0.1:8080/admin/. Using) Tj ET
+BT /F1 10 Tf 55.0 542.50 Td (operator-supplied credentials, a user could authenticate and reach the admin page without further) Tj ET
+BT /F1 10 Tf 55.0 528.50 Td (authorization checks, and signed-in content was returned. Access to the administrative area therefore) Tj ET
+BT /F1 10 Tf 55.0 514.50 Td (depends on valid credentials but is not restricted by an additional role or permission check.) Tj ET
+BT /F1 10 Tf 55.0 500.50 Td (Remediation should focus on server-side authorization for /admin/ and enforcing least privilege for) Tj ET
+BT /F1 10 Tf 55.0 486.50 Td (accounts that can sign in.) Tj ET
 BT /F2 14 Tf 55.0 458.50 Td (Findings) Tj ET
 BT /F1 9 Tf 55.0 437.50 Td (Critical 0 - High 1 - Medium 0 - Low 0 - Info 0 - total 1) Tj ET
 BT /F2 9 Tf 55.0 424.50 Td (#) Tj ET
@@ -46,7 +46,7 @@ BT /F2 9 Tf 483.0 424.50 Td (Status) Tj ET
 BT /F1 9 Tf 55.0 399.30 Td (1) Tj ET
 BT /F1 9 Tf 77.0 399.30 Td (high) Tj ET
 BT /F1 9 Tf 139.0 399.30 Td (Authenticated access to http://127.0.0.1:8080/admin/) Tj ET
-BT /F1 9 Tf 371.0 399.30 Td (http://127.0.0.1:8080/adm..) Tj ET
+BT /F1 9 Tf 371.0 399.30 Td (http://127.0.0.1:8080/ad..) Tj ET
 BT /F1 9 Tf 483.0 399.30 Td (validated) Tj ET
 BT /F2 12 Tf 55.0 369.10 Td (1. Authenticated access to http://127.0.0.1:8080/admin/) Tj ET
 BT /F1 9 Tf 55.0 353.10 Td (Severity: high | Status: validated | Detected by: impact_probe) Tj ET
@@ -58,19 +58,18 @@ BT /F2 9 Tf 55.0 272.60 Td (Reproduction) Tj ET
 BT /F1 10 Tf 55.0 260.10 Td (1. POST http://127.0.0.1:8080/login with the reported credentials) Tj ET
 BT /F1 10 Tf 55.0 246.10 Td (2. GET http://127.0.0.1:8080/admin/ with the session cookie) Tj ET
 BT /F1 9 Tf 55.0 223.10 Td (Evidence: ev_3a1718a2ae9b) Tj ET
-BT /F1 9 Tf 55.0 210.60 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-l3\\evidence\\eng_60e88e4dc7c8\\act_2a9cd539946c_imp) Tj ET
-BT /F1 9 Tf 55.0 198.10 Td (act_probe.http], ev_61dfe843c0b7) Tj ET
-BT /F1 9 Tf 55.0 185.60 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-l3\\evidence\\eng_60e88e4dc7c8\\act_2ae5f6e71089_impa) Tj ET
-BT /F1 9 Tf 55.0 173.10 Td (ct_probe.http]) Tj ET
+BT /F1 9 Tf 55.0 210.60 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-l3\\evidence\\eng_60e88e4dc7c8\\act_2a9cd539946) Tj ET
+BT /F1 9 Tf 55.0 198.10 Td (c_impact_probe.http], ev_61dfe843c0b7) Tj ET
+BT /F1 9 Tf 55.0 185.60 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-l3\\evidence\\eng_60e88e4dc7c8\\act_2ae5f6e7108) Tj ET
+BT /F1 9 Tf 55.0 173.10 Td (9_impact_probe.http]) Tj ET
 BT /F2 9 Tf 55.0 151.60 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 139.10 Td (Enforce server-side authorization on /admin/ so that only accounts with an administrative role can access it;) Tj ET
-BT /F1 10 Tf 55.0 125.10 Td (validate the authenticated user's role on every request and refuse access for non-admins. After applying the) Tj ET
-BT /F1 10 Tf 55.0 111.10 Td (change, retest using the reported reproduction steps \(POST /login, then GET /admin/ with the session cookie\)) Tj ET
-BT /F1 10 Tf 55.0 97.10 Td (to confirm only authorized accounts can view signed-in content.) Tj ET
-0.4 w 0.7 G 55.0 71.10 m 540.0 71.10 l S
+BT /F1 10 Tf 55.0 139.10 Td (Add server-side role or permission checks on /admin/ for every request rather than relying only on) Tj ET
+BT /F1 10 Tf 55.0 125.10 Td (authentication, and restrict admin access to accounts explicitly granted that role. Review existing) Tj ET
+BT /F1 10 Tf 55.0 111.10 Td (accounts and sessions to confirm least privilege.) Tj ET
+0.4 w 0.7 G 55.0 85.10 m 540.0 85.10 l S
 0.4 w 0.6 G 55.0 50 m 540.0 50 l S
-BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: impact_probe - audit chain 8 records verified - actions 2 run / 1 refused) Tj ET
-BT /F1 8 Tf 499.1 36 Td (Page 1 of 1) Tj ET
+BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: impact_probe - audit chain 8 records verified - actions 2 run / 1 refu..) Tj ET
+BT /F1 8 Tf 496.6 36 Td (Page 1 of 1) Tj ET
 endstream
 endobj
 6 0 obj
@@ -84,9 +83,9 @@ xref
 0000000140 00000 n 
 0000000237 00000 n 
 0000000339 00000 n 
-0000004990 00000 n 
+0000004791 00000 n 
 trailer
 << /Size 7 /Root 1 0 R >>
 startxref
-5126
+4927
 %%EOF

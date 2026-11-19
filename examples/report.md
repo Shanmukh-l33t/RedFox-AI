@@ -10,12 +10,12 @@
 | Attested | 2026-11-19T00:00:00Z |
 | Autonomy | L2 |
 | Scope | `{"allow": [{"kind": "ip", "value": "127.0.0.1"}, {"kind": "url", "value": "http://127.0.0.1:8080"}, {"kind": "url", "value": "http://127.0.0.1:8081"}], "deny": [], "ports": "8080-8081"}` |
-| Generated | 2026-11-19T08:34:05+00:00 |
+| Generated | 2026-11-19T08:50:47+00:00 |
 | Model | deepseek-v4.1-flash-1017 |
 
 ## Executive summary
 
-An authorized scan of the self-owned RedFox lab target covered two local HTTP services on 127.0.0.1, ports 8080 and 8081, and produced twelve validated findings across the two hosts. The most serious issue is that both hosts serve their application .env file at /.env, exposing database credentials and tokens; this is reported as high severity through the CodeIgniter, generic, and Laravel detections, which all point at the same exposed file on each port. Four medium-severity findings cover downloadable backup archives at /backup.zip and exposed Git metadata at /.git/config on both ports, either of which can leak source code and configuration. Two low-severity findings are Apache /server-status pages that disclose server activity information on 8080 and 8081. No other vulnerabilities, exploitation results, or tool coverage are included in these findings.
+This authorized test of the self-owned RedFox lab target covered two local web services on 127.0.0.1, ports 8080 and 8081. Twelve validated findings were recorded: six high, four medium, and two low. The high findings are all .env file exposures, and both ports serve the same exposed file, which each of three separate detections flagged, so there are effectively two sensitive files rather than six distinct issues. The medium findings are an exposed backup.zip and an exposed .git/config on each port, and the low findings are Apache /server-status pages on each port. All of the exposed content is reachable without authentication, and the .env files are described as containing database credentials and tokens. No other issues are reported here, and all findings should be treated as live until the files are removed and any secrets they held are rotated.
 
 ## Findings
 
@@ -70,7 +70,7 @@ Codeigniter .env file was discovered.
 
 **Remediation**
 
-Stop serving .env from the web root on port 8081 and return 403 or 404 for dotfiles, then rotate any database credentials or tokens the file contained.
+Remove /.env from the web root of http://127.0.0.1:8081 or block it at the server level, and confirm it returns 404. Treat the credentials and tokens it contained as compromised and rotate them.
 
 ### 2. Codeigniter - .env File Discovery
 
@@ -93,7 +93,7 @@ Codeigniter .env file was discovered.
 
 **Remediation**
 
-Block web access to .env on port 8080 via server configuration that denies dotfile requests, and rotate the secrets it exposed.
+Remove /.env from the web root of http://127.0.0.1:8080 or block it at the server level, and confirm it returns 404. Treat the credentials and tokens it contained as compromised and rotate them.
 
 ### 3. Generic Env File Disclosure
 
@@ -117,7 +117,7 @@ A .env file was discovered containing sensitive information like database creden
 
 **Remediation**
 
-Treat the .env file on port 8080 as compromised: rotate the database credentials and tokens it contains, keep secrets in environment variables outside the web root, and deny direct requests to the file.
+This is the same /.env file on http://127.0.0.1:8080 reported separately, so fix it once: take the file out of the served directory, deny access to dotfiles, and rotate the database credentials and tokens it held.
 
 ### 4. Generic Env File Disclosure
 
@@ -141,7 +141,7 @@ A .env file was discovered containing sensitive information like database creden
 
 **Remediation**
 
-Treat the .env file on port 8081 as compromised: rotate the database credentials and tokens it contains, move secrets outside the web root, and deny direct requests to the file.
+This is the same /.env file on http://127.0.0.1:8081 reported separately, so fix it once: take the file out of the served directory, deny access to dotfiles, and rotate the database credentials and tokens it held.
 
 ### 5. Laravel - Sensitive Information Disclosure
 
@@ -165,7 +165,7 @@ A Laravel .env file was discovered, which stores sensitive information like data
 
 **Remediation**
 
-Remove the Laravel .env from public reach on port 8080 and rotate the application key, database credentials, and any tokens it held.
+Same exposure as the other /.env findings on port 8080. Remove the file from the web root, block dotfile access, and rotate the Laravel application keys and any database credentials it contained.
 
 ### 6. Laravel - Sensitive Information Disclosure
 
@@ -189,7 +189,7 @@ A Laravel .env file was discovered, which stores sensitive information like data
 
 **Remediation**
 
-Remove the Laravel .env from public reach on port 8081 and rotate the application key, database credentials, and any tokens it held.
+Same exposure as the other /.env findings on port 8081. Remove the file from the web root, block dotfile access, and rotate the Laravel application keys and any database credentials it contained.
 
 ### 7. Compressed Backup File - Detect
 
@@ -212,7 +212,7 @@ Multiple compressed backup files were detected.
 
 **Remediation**
 
-Remove backup.zip from the web root on port 8081, store backups outside the served directory, and require authentication for any download path.
+Remove /backup.zip from the served content on http://127.0.0.1:8081, and store backups outside the web root. Review what the archive contained and rotate any secrets or credentials it held.
 
 ### 8. Compressed Backup File - Detect
 
@@ -236,7 +236,7 @@ Multiple compressed backup files were detected.
 
 **Remediation**
 
-Remove backup.zip from the web root on port 8080, store backups outside the served directory, and require authentication for any download path.
+Remove /backup.zip from the served content on http://127.0.0.1:8080, and store backups outside the web root. Review what the archive contained and rotate any secrets or credentials it held.
 
 ### 9. Git Configuration - Detect
 
@@ -260,7 +260,7 @@ Git configuration was detected via the pattern /.git/config and log file on pass
 
 **Remediation**
 
-Deny access to the .git directory on port 8080 so /.git/config and repository contents are not served, and rebuild the deployment without repository metadata.
+Deny access to the /.git/ path on http://127.0.0.1:8080 or remove the repository metadata from the web root. Check the repository's history and remotes for anything sensitive before making it public again.
 
 ### 10. Git Configuration - Detect
 
@@ -283,7 +283,7 @@ Git configuration was detected via the pattern /.git/config and log file on pass
 
 **Remediation**
 
-Deny access to the .git directory on port 8081 so /.git/config and repository contents are not served, and deploy builds without repository metadata.
+Deny access to the /.git/ path on http://127.0.0.1:8081 or remove the repository metadata from the web root. Check the repository's history and remotes for anything sensitive before making it public again.
 
 ### 11. Apache Server Status Disclosure
 
@@ -306,7 +306,7 @@ Apache /server-status displays information about your Apache status. If you are 
 
 **Remediation**
 
-Disable mod_status or restrict /server-status on port 8080 to localhost or trusted administrative addresses.
+Disable the mod_status handler or restrict /server-status on http://127.0.0.1:8080 to trusted local addresses. This is a low-severity information leak, not an access bypass.
 
 ### 12. Apache Server Status Disclosure
 
@@ -330,7 +330,7 @@ Apache /server-status displays information about your Apache status. If you are 
 
 **Remediation**
 
-Disable mod_status or restrict /server-status on port 8081 to localhost or trusted administrative addresses.
+Disable the mod_status handler or restrict /server-status on http://127.0.0.1:8081 to trusted local addresses. This is a low-severity information leak, not an access bypass.
 
 ### 13. Discovered path http://127.0.0.1:8080/admin/
 
@@ -521,8 +521,8 @@ Content discovery returned HTTP 200 (185 bytes).
 - Tools used: ffuf, httpx, nmap, nuclei
 - Audit chain: 48 records verified
 - Tool time: 0.0 s across 22 actions
-- Campaign wall clock: 1258 s
-- Model calls: 17 (26356 in / 14275 out tokens, deepseek-v4.1-flash-1017)
+- Campaign wall clock: 1278 s
+- Model calls: 18 (31716 in / 15929 out tokens, deepseek-v4.1-flash-1017)
 - Evidence files: 22
 
 ## Limitations

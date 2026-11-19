@@ -143,7 +143,7 @@ Rules: exclusions always win; a wildcard is rejected; a CIDR must be expanded to
 
 ![RedFox AI campaign view](docs/campaign-ui.png)
 
-*A completed L2 campaign against the lab target: 19 findings recorded, 6 validated with evidence, 12 policy-gated actions, audit chain verified.*
+*A completed L2 campaign against the lab target: 25 findings recorded, 12 validated with evidence, 22 policy-gated actions, audit chain verified.*
 
 ## Models
 

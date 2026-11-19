@@ -39,7 +39,7 @@
 <h1>Penetration test report — RedFox lab target (authorized, self-owned)</h1>
 <p class="meta">Shanmukh Dheekonda ·
  authorization <code>LAB-SELF-OWNED-2026-11-19</code> ·
- autonomy L2 · generated 2026-11-19T08:33:45+00:00</p>
+ autonomy L2 · generated 2026-11-19T08:49:07+00:00</p>
 <p class="notice">Authorized testing only. RedFox AI refuses targets that are not present in an operator-attested authorization scope. Unauthorized use is illegal.</p>
 <div class="grid">
   <div class="stat"><b>25</b><span>findings</span></div>
@@ -50,7 +50,7 @@
   <div class="stat"><b>0</b><span>refused</span></div>
 </div>
 <h2>Executive summary</h2>
-<p>An authorized scan of the self-owned RedFox lab target covered two local HTTP services on 127.0.0.1, ports 8080 and 8081, and produced twelve validated findings across the two hosts. The most serious issue is that both hosts serve their application .env file at /.env, exposing database credentials and tokens; this is reported as high severity through the CodeIgniter, generic, and Laravel detections, which all point at the same exposed file on each port. Four medium-severity findings cover downloadable backup archives at /backup.zip and exposed Git metadata at /.git/config on both ports, either of which can leak source code and configuration. Two low-severity findings are Apache /server-status pages that disclose server activity information on 8080 and 8081. No other vulnerabilities, exploitation results, or tool coverage are included in these findings.</p>
+<p>This authorized test of the self-owned RedFox lab target covered two local web services on 127.0.0.1, ports 8080 and 8081. Twelve validated findings were recorded: six high, four medium, and two low. The high findings are all .env file exposures, and both ports serve the same exposed file, which each of three separate detections flagged, so there are effectively two sensitive files rather than six distinct issues. The medium findings are an exposed backup.zip and an exposed .git/config on each port, and the low findings are Apache /server-status pages on each port. All of the exposed content is reachable without authentication, and the .env files are described as containing database credentials and tokens. No other issues are reported here, and all findings should be treated as live until the files are removed and any secrets they held are rotated.</p>
 <h2>Findings</h2>
 <div class="tablewrap"><table><thead><tr><th>#</th><th>Severity</th><th>Finding</th>
 <th>Asset</th><th>Status</th></tr></thead>
@@ -64,7 +64,7 @@
           <p>Codeigniter .env file was discovered.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36&#39; &#39;http://127.0.0.1:8081/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_19d0d19da67f_nuclei.log</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_731592002254</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_19d0d19da67f_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Stop serving .env from the web root on port 8081 and return 403 or 404 for dotfiles, then rotate any database credentials or tokens the file contained.</p>
+          <h4>Remediation</h4><p>Remove /.env from the web root of http://127.0.0.1:8081 or block it at the server level, and confirm it returns 404. Treat the credentials and tokens it contained as compromised and rotate them.</p>
         </section>
         <section class="finding">
           <h3><span class="sev high">high</span>
@@ -74,7 +74,7 @@
           <p>Codeigniter .env file was discovered.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (X11; Linux i686; rv:1.9.7.20) Gecko/ Firefox/3.6.7&#39; &#39;http://127.0.0.1:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_a15078b16a76_nuclei.log</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_0275d2172cd5</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_a15078b16a76_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Block web access to .env on port 8080 via server configuration that denies dotfile requests, and rotate the secrets it exposed.</p>
+          <h4>Remediation</h4><p>Remove /.env from the web root of http://127.0.0.1:8080 or block it at the server level, and confirm it returns 404. Treat the credentials and tokens it contained as compromised and rotate them.</p>
         </section>
         <section class="finding">
           <h3><span class="sev high">high</span>
@@ -84,7 +84,7 @@
           <p>A .env file was discovered containing sensitive information like database credentials and tokens. It should not be publicly accessible.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh, Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.13 Safari/605.1.15&#39; &#39;http://127.0.0.1:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_512560822a36_nuclei.log</li><li>Re-ran nuclei template(s): generic-env</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_abf07f11e678</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_512560822a36_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Treat the .env file on port 8080 as compromised: rotate the database credentials and tokens it contains, keep secrets in environment variables outside the web root, and deny direct requests to the file.</p>
+          <h4>Remediation</h4><p>This is the same /.env file on http://127.0.0.1:8080 reported separately, so fix it once: take the file out of the served directory, deny access to dotfiles, and rotate the database credentials and tokens it held.</p>
         </section>
         <section class="finding">
           <h3><span class="sev high">high</span>
@@ -94,7 +94,7 @@
           <p>A .env file was discovered containing sensitive information like database credentials and tokens. It should not be publicly accessible.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1&#39; &#39;http://127.0.0.1:8081/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_7c117f7d32e3_nuclei.log</li><li>Re-ran nuclei template(s): generic-env</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_3ae012d13906</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_7c117f7d32e3_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Treat the .env file on port 8081 as compromised: rotate the database credentials and tokens it contains, move secrets outside the web root, and deny direct requests to the file.</p>
+          <h4>Remediation</h4><p>This is the same /.env file on http://127.0.0.1:8081 reported separately, so fix it once: take the file out of the served directory, deny access to dotfiles, and rotate the database credentials and tokens it held.</p>
         </section>
         <section class="finding">
           <h3><span class="sev high">high</span>
@@ -104,7 +104,7 @@
           <p>A Laravel .env file was discovered, which stores sensitive information like database credentials and tokens. It should not be publicly accessible.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36&#39; &#39;http://127.0.0.1:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_e6af54a8ee5b_nuclei.log</li><li>Re-ran nuclei template(s): laravel-env</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_861ec23ce25a</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_e6af54a8ee5b_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Remove the Laravel .env from public reach on port 8080 and rotate the application key, database credentials, and any tokens it held.</p>
+          <h4>Remediation</h4><p>Same exposure as the other /.env findings on port 8080. Remove the file from the web root, block dotfile access, and rotate the Laravel application keys and any database credentials it contained.</p>
         </section>
         <section class="finding">
           <h3><span class="sev high">high</span>
@@ -114,7 +114,7 @@
           <p>A Laravel .env file was discovered, which stores sensitive information like database credentials and tokens. It should not be publicly accessible.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36&#39; &#39;http://127.0.0.1:8081/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_ba26266aa4d7_nuclei.log</li><li>Re-ran nuclei template(s): laravel-env</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_55bf1daad011</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_ba26266aa4d7_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Remove the Laravel .env from public reach on port 8081 and rotate the application key, database credentials, and any tokens it held.</p>
+          <h4>Remediation</h4><p>Same exposure as the other /.env findings on port 8081. Remove the file from the web root, block dotfile access, and rotate the Laravel application keys and any database credentials it contained.</p>
         </section>
         <section class="finding">
           <h3><span class="sev medium">medium</span>
@@ -124,7 +124,7 @@
           <p>Multiple compressed backup files were detected.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Kubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36&#39; &#39;http://127.0.0.1:8081/backup.zip&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_39c90ac50ffc_nuclei.log</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_f292f8f6a2db</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_39c90ac50ffc_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Remove backup.zip from the web root on port 8081, store backups outside the served directory, and require authentication for any download path.</p>
+          <h4>Remediation</h4><p>Remove /backup.zip from the served content on http://127.0.0.1:8081, and store backups outside the web root. Review what the archive contained and rotate any secrets or credentials it held.</p>
         </section>
         <section class="finding">
           <h3><span class="sev medium">medium</span>
@@ -134,7 +134,7 @@
           <p>Multiple compressed backup files were detected.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.8&#39; &#39;http://127.0.0.1:8080/backup.zip&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_cb53c8208309_nuclei.log</li><li>Re-ran nuclei template(s): zip-backup-files</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_ccc7283d77d9</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_cb53c8208309_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Remove backup.zip from the web root on port 8080, store backups outside the served directory, and require authentication for any download path.</p>
+          <h4>Remediation</h4><p>Remove /backup.zip from the served content on http://127.0.0.1:8080, and store backups outside the web root. Review what the archive contained and rotate any secrets or credentials it held.</p>
         </section>
         <section class="finding">
           <h3><span class="sev medium">medium</span>
@@ -144,7 +144,7 @@
           <p>Git configuration was detected via the pattern /.git/config and log file on passed URLs.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Ubuntu; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36&#39; &#39;http://127.0.0.1:8080/.git/config&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_77e5048d06c5_nuclei.log</li><li>Re-ran nuclei template(s): git-config</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_272ab8f32172</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_77e5048d06c5_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Deny access to the .git directory on port 8080 so /.git/config and repository contents are not served, and rebuild the deployment without repository metadata.</p>
+          <h4>Remediation</h4><p>Deny access to the /.git/ path on http://127.0.0.1:8080 or remove the repository metadata from the web root. Check the repository&#39;s history and remotes for anything sensitive before making it public again.</p>
         </section>
         <section class="finding">
           <h3><span class="sev medium">medium</span>
@@ -154,7 +154,7 @@
           <p>Git configuration was detected via the pattern /.git/config and log file on passed URLs.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Kubuntu; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36&#39; &#39;http://127.0.0.1:8081/.git/config&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_b8e7ce22cd18_nuclei.log</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_bdf99a7804ea</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_b8e7ce22cd18_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Deny access to the .git directory on port 8081 so /.git/config and repository contents are not served, and deploy builds without repository metadata.</p>
+          <h4>Remediation</h4><p>Deny access to the /.git/ path on http://127.0.0.1:8081 or remove the repository metadata from the web root. Check the repository&#39;s history and remotes for anything sensitive before making it public again.</p>
         </section>
         <section class="finding">
           <h3><span class="sev low">low</span>
@@ -164,7 +164,7 @@
           <p>Apache /server-status displays information about your Apache status. If you are not using this feature, disable it.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0&#39; &#39;http://127.0.0.1:8080/server-status&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_b7792a8a8968_nuclei.log</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_c75d3a478aac</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_b7792a8a8968_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Disable mod_status or restrict /server-status on port 8080 to localhost or trusted administrative addresses.</p>
+          <h4>Remediation</h4><p>Disable the mod_status handler or restrict /server-status on http://127.0.0.1:8080 to trusted local addresses. This is a low-severity information leak, not an access bypass.</p>
         </section>
         <section class="finding">
           <h3><span class="sev low">low</span>
@@ -174,7 +174,7 @@
           <p>Apache /server-status displays information about your Apache status. If you are not using this feature, disable it.</p>
           <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh; PPC Mac OS X 10_8_9 rv:6.0; ms-MY) AppleWebKit/532.11.2 (KHTML, like Gecko) Version/5.0 Safari/532.11.2&#39; &#39;http://127.0.0.1:8081/server-status&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_375aa3ca9878_nuclei.log</li><li>Re-ran nuclei template(s): apache-server-status</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_5b59096fb2bd</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-ds3\evidence\eng_ce49e2303238\act_375aa3ca9878_nuclei.log</li></ul>
-          <h4>Remediation</h4><p>Disable mod_status or restrict /server-status on port 8081 to localhost or trusted administrative addresses.</p>
+          <h4>Remediation</h4><p>Disable the mod_status handler or restrict /server-status on http://127.0.0.1:8081 to trusted local addresses. This is a low-severity information leak, not an access bypass.</p>
         </section>
         <section class="finding">
           <h3><span class="sev info">info</span>
@@ -309,10 +309,10 @@
 <h2>Tooling and trace</h2>
 <p class="meta">Tools used: ffuf, httpx, nmap, nuclei ·
  audit chain 48 records verified ·
- 1258 s wall clock ·
+ 1278 s wall clock ·
  0.0 s in tools ·
- 17 model calls (26356 in /
- 14275 out tokens) ·
+ 18 model calls (31716 in /
+ 15929 out tokens) ·
  scope <code>{&quot;allow&quot;: [{&quot;kind&quot;: &quot;ip&quot;, &quot;value&quot;: &quot;127.0.0.1&quot;}, {&quot;kind&quot;: &quot;url&quot;, &quot;value&quot;: &quot;http://127.0.0.1:8080&quot;}, {&quot;kind&quot;: &quot;url&quot;, &quot;value&quot;: &quot;http://127.0.0.1:8081&quot;}], &quot;deny&quot;: [], &quot;ports&quot;: &quot;8080-8081&quot;}</code></p>
 <footer>Generated by RedFox AI 0.1.0. Findings are listed only where recorded evidence exists.</footer>
 </body></html>

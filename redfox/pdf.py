@@ -195,8 +195,10 @@ def _hairline(st: dict[str, Any], gap: float = 4.0) -> None:
 
 
 def _width(text: str, size: float = 10, bold: bool = False) -> float:
+    # 6% conservative: an overflow at the page edge is worse than wrapping early,
+    # and the base-14 width table is an approximation of the real metrics.
     units = sum(_WIDTHS[ord(ch) - 32] if 32 <= ord(ch) <= 126 else 556 for ch in text)
-    return units * size / 1000.0 * (1.10 if bold else 1.0)
+    return units * size / 1000.0 * (1.10 if bold else 1.0) * 1.06
 
 
 def _wrap(text: str, size: float = 10, width: float = WIDTH,

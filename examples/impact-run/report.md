@@ -10,12 +10,12 @@
 | Attested | 2026-11-19T00:00:00Z |
 | Autonomy | L3 |
 | Scope | `{"allow": [{"kind": "ip", "value": "127.0.0.1"}, {"kind": "url", "value": "http://127.0.0.1:8080"}], "deny": [], "ports": "8080"}` |
-| Generated | 2026-11-19T07:20:48+00:00 |
-| Model | gpt-5-mini |
+| Generated | 2026-11-19T08:50:57+00:00 |
+| Model | deepseek-v4.1-flash-1017 |
 
 ## Executive summary
 
-During the engagement, operator-supplied credentials were used to authenticate via POST http://127.0.0.1:8080/login and then successfully access the administrative interface at http://127.0.0.1:8080/admin/. The /admin/ endpoint returned signed-in content without any additional authorization checks. This behavior demonstrates missing or insufficient server-side authorization controls on the administrative endpoint. Reproduction steps provided were POST /login with the reported credentials followed by GET /admin/ with the session cookie.
+The engagement validated one high-severity finding on http://127.0.0.1:8080/admin/. Using operator-supplied credentials, a user could authenticate and reach the admin page without further authorization checks, and signed-in content was returned. Access to the administrative area therefore depends on valid credentials but is not restricted by an additional role or permission check. Remediation should focus on server-side authorization for /admin/ and enforcing least privilege for accounts that can sign in.
 
 ## Findings
 
@@ -47,7 +47,7 @@ Operator-supplied credentials authenticate and reach http://127.0.0.1:8080/admin
 
 **Remediation**
 
-Enforce server-side authorization on /admin/ so that only accounts with an administrative role can access it; validate the authenticated user's role on every request and refuse access for non-admins. After applying the change, retest using the reported reproduction steps (POST /login, then GET /admin/ with the session cookie) to confirm only authorized accounts can view signed-in content.
+Add server-side role or permission checks on /admin/ for every request rather than relying only on authentication, and restrict admin access to accounts explicitly granted that role. Review existing accounts and sessions to confirm least privilege.
 
 ## Tooling and actions
 
@@ -56,8 +56,8 @@ Enforce server-side authorization on /admin/ so that only accounts with an admin
 - Tools used: impact_probe
 - Audit chain: 8 records verified
 - Tool time: 0.0 s across 2 actions
-- Campaign wall clock: 3 s
-- Model calls: 0 (0 in / 0 out tokens, gpt-5-mini)
+- Campaign wall clock: 49 s
+- Model calls: 0 (0 in / 0 out tokens, deepseek-v4.1-flash-1017)
 - Evidence files: 2
 
 ## Limitations
