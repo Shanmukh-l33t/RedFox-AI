@@ -79,3 +79,31 @@ def test_nmap_runs_in_a_container_and_still_finds_the_port(tmp_path: Path) -> No
     assert any(o.data.get("port") == 8080 for o in observations), observations
     # Evidence was written where the runtime reads it, through the mount.
     assert Path(result.evidence_path).exists()
+
+def test_ffuf_finds_paths_through_the_mounted_wordlist(tmp_path: Path) -> None:
+    """The wordlist lives on the host; it is mounted read-only into the container.
+
+    Without the mount ffuf stats a path it cannot see and reports nothing at all.
+    """
+    wordlist = Path("tools/wordlists/common.txt")
+    if not wordlist.exists():
+        pytest.skip("wordlist missing")
+
+    base = Settings.load(home=tmp_path / "ffuf")
+    settings = dataclasses.replace(
+        base, isolate="docker",
+        docker_network=os.environ.get("REDFOX_DOCKER_NETWORK", "host"))
+    store = Store(settings.db_path)
+    runtime = ToolRuntime(settings, store, AuditLog(settings.audit_path),
+                          PolicyEnforcementPoint(settings))
+    eid = store.create_engagement("iso", SCOPE, AUTH, 2)
+    engagement = store.get_engagement(eid)
+
+    adapter = ToolBox(runtime).get("ffuf")
+    observations = []
+    for call in adapter.plan(parse_target(LAB), {"wordlist": str(wordlist)}):
+        result = asyncio.run(runtime.execute(engagement, call, "recon"))
+        assert result.exit_code == 0, result.stderr[:400]
+        observations.extend(adapter.parse(result))
+
+    assert observations, "ffuf parsed nothing: is the wordlist mounted?"

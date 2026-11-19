@@ -138,6 +138,29 @@ class ToolRuntime:
         )
 
     # ---- container runtime -------------------------------------------
+    @staticmethod
+    def _container_inputs(args: list[str], evidence_dir: Path) -> tuple[tuple[str, str], ...]:
+        """Host files a tool must read inside the container, mounted read-only.
+
+        ffuf's wordlist lives on the host; a container that cannot see it scans
+        nothing and reports nothing. Only existing files are lifted in, each from
+        its own directory, so the container gains no other access.
+        """
+        root = str(evidence_dir.resolve())
+        found: list[tuple[str, str]] = []
+        for arg in args:
+            try:
+                candidate = Path(str(arg))
+                if not candidate.is_file():
+                    continue
+                resolved = str(candidate.resolve())
+            except OSError:
+                continue
+            if resolved.startswith(root) or any(resolved == host for host, _ in found):
+                continue
+            found.append((resolved, f"/inputs/{len(found)}/{candidate.name}"))
+        return tuple(found)
+
     def docker_ready(self) -> bool:
         try:
             probe = subprocess.run(["docker", "info", "--format", "{{.ServerVersion}}"],
@@ -266,8 +289,10 @@ class ToolRuntime:
                 # other's containers, and neither can reach the host's loopback.
                 network = f"redfox-{engagement['id']}"
                 self.ensure_network(network)
+            inputs = self._container_inputs(checked, out_path.parent)
             try:
-                argv = isolation.docker_argv(call.tool, checked, out_path.parent, network)
+                argv = isolation.docker_argv(call.tool, checked, out_path.parent,
+                                             network, inputs)
             except isolation.IsolationUnavailable as exc:
                 self._finish_action(action_id, None, "")
                 self.store.event(engagement["id"], "isolation.no_image",

@@ -61,8 +61,10 @@ jobs:
             curl -fsS http://127.0.0.1:8080/ >/dev/null && break
             sleep 1
           done
-      - name: Pull the scanner image
-        run: docker pull instrumentisto/nmap:latest
+      - name: Pull the scanner images
+        run: |
+          docker pull instrumentisto/nmap:latest
+          docker pull secsi/ffuf:latest
       - name: nmap inside a container, through the policy gate
         env:
           REDFOX_ISOLATE: docker

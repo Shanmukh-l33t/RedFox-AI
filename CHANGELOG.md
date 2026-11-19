@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.5.1
+
+### Fixed
+
+- **ffuf in a container found nothing.** The wordlist lives on the host and the
+  container could only see the evidence directory, so ffuf stat'ed a path it could
+  not read and reported zero paths — a silent empty result, the same shape as the
+  missing nuclei templates. Host files a tool must read (a wordlist, a template
+  directory) are now mounted read-only into the container and their arguments
+  rewritten, one directory per file. Verified locally: 7 paths found through the
+  mount, and in CI by the isolation job.
+
 ## v0.5.0
 
 Container isolation covers every adapter, and the containerised path is proven by a

@@ -61,11 +61,18 @@ def _tail(path: str, root: str) -> str:
     return path[len(root):].replace("\\", "/")
 
 
-def docker_argv(tool: str, args: list[str], evidence_dir: Path, network: str) -> list[str]:
+def docker_argv(tool: str, args: list[str], evidence_dir: Path, network: str,
+                inputs: tuple[tuple[str, str], ...] = ()) -> list[str]:
     """Wrap one tool invocation as a container run.
 
     `args` are the argv that would have gone to the host binary, with `{out}`
     already substituted to a host path; any such path is rewritten to the mount.
+
+    `inputs` are host files the tool must read (a wordlist, a template directory):
+    (host_path, container_path). Their parent directories are mounted read-only,
+    so a campaign can hand ffuf its wordlist without giving the container the rest
+    of the filesystem. Without this a containerised ffuf runs with a path it
+    cannot see and reports nothing.
     """
     image = IMAGES.get(tool)
     if image is None:
@@ -77,9 +84,16 @@ def docker_argv(tool: str, args: list[str], evidence_dir: Path, network: str) ->
         raise IsolationUnavailable("docker is not on PATH but REDFOX_ISOLATE=docker")
 
     root = str(Path(evidence_dir).resolve())
+    # Relative arguments (a wordlist is usually relative) resolve against the
+    # same working directory that built `inputs`, so compare resolved paths.
+    rewrite = {str(Path(host).resolve()): container for host, container in inputs}
     mapped = []
     for arg in args:
         text = str(arg)
+        resolved_arg = str(Path(text).resolve())
+        if resolved_arg in rewrite:
+            mapped.append(rewrite[resolved_arg])
+            continue
         flag, sep, value = text.partition("=")
         if sep and value.startswith(root):
             text = f"{flag}={EVIDENCE_MOUNT}{_tail(value, root)}"
@@ -90,6 +104,10 @@ def docker_argv(tool: str, args: list[str], evidence_dir: Path, network: str) ->
     volumes = [f"{root}:{EVIDENCE_MOUNT}"]
     if tool in VOLUMES:
         volumes.append(":".join(VOLUMES[tool]))
+    for host, container in inputs:
+        # as_posix: docker wants forward slashes even when the host is Windows.
+        volumes.append(f"{Path(host).parent.as_posix()}:"
+                       f"{Path(container).parent.as_posix()}:ro")
 
     args_out = [
         "docker", "run", "--rm",

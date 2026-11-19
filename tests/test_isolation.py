@@ -61,8 +61,8 @@ def test_an_isolated_call_executes_through_docker(iso_runtime, monkeypatch) -> N
     runtime, store, engagement, eid = iso_runtime
     captured = {}
 
-    def fake(tool, args, evidence_dir, network):
-        captured.update(tool=tool, args=args, network=network)
+    def fake(tool, args, evidence_dir, network, inputs=()):
+        captured.update(tool=tool, args=args, network=network, inputs=inputs)
         return [sys.executable, "-c", "print('nuclei ran in a container')"]
 
     monkeypatch.setattr(runtime_module.isolation, "docker_argv", fake)
@@ -114,3 +114,26 @@ def test_nuclei_gets_the_shared_templates_volume(tmp_path) -> None:
 def test_other_tools_do_not_get_the_templates_volume(tmp_path) -> None:
     argv = isolation.docker_argv("nmap", ["-p8080", "lab.internal"], tmp_path, "redfox-lab")
     assert isolation.TEMPLATES_VOLUME not in " ".join(argv)
+
+
+def test_a_wordlist_is_mounted_read_only_and_its_path_rewritten(tmp_path) -> None:
+    wordlist = tmp_path / "wordlists" / "common.txt"
+    wordlist.parent.mkdir()
+    wordlist.write_text("admin\nproduct\n", encoding="utf-8")
+
+    inputs = ToolRuntime._container_inputs(
+        ["-w", str(wordlist), "-u", "http://lab.internal:8080/FUZZ"], tmp_path / "evidence")
+    assert inputs == ((str(wordlist.resolve()), "/inputs/0/common.txt"),)
+
+    argv = isolation.docker_argv("ffuf", ["-w", str(wordlist)], tmp_path / "evidence",
+                                 "redfox-lab", inputs)
+    joined = " ".join(argv)
+    assert "/inputs/0/common.txt" in joined
+    assert f"{wordlist.parent.as_posix()}:/inputs/0:ro" in joined
+    assert str(wordlist) not in " ".join(argv[argv.index("secsi/ffuf:latest"):])
+
+
+def test_files_inside_the_evidence_dir_are_not_remounted(tmp_path) -> None:
+    inside = tmp_path / "own.txt"
+    inside.write_text("x", encoding="utf-8")
+    assert ToolRuntime._container_inputs([str(inside)], tmp_path) == ()

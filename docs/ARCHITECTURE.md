@@ -140,8 +140,11 @@ With isolation on, an invocation becomes:
 docker run --rm --network $REDFOX_DOCKER_NETWORK   --cap-drop ALL --security-opt no-new-privileges --pids-limit 512   -v <evidence dir>:/evidence -w /evidence <tool image> <tool argv>
 ```
 
-- The only mount is the engagement's evidence directory; `{out}` is rewritten to
-  `/evidence/...` so the tool writes where the runtime reads.
+- The only writable mount is the engagement's evidence directory; `{out}` is
+  rewritten to `/evidence/...` so the tool writes where the runtime reads.
+- A host file the tool must *read* (ffuf's wordlist) is mounted read-only from its
+  own directory at `/inputs/<n>/<name>` and the argument rewritten. Without it the
+  tool stats a path it cannot see and reports nothing.
 - The image holds one tool. The host filesystem, the operator's keys, and every
   other tool on the machine are out of reach.
 - `--network` defaults to `bridge` (no route to the host's loopback). Use `host`
