@@ -39,7 +39,7 @@
 <h1>Penetration test report — RedFox lab target — gated impact demonstration</h1>
 <p class="meta">Shanmukh Dheekonda ·
  authorization <code>LAB-SELF-OWNED-2026-11-19-L3</code> ·
- autonomy L3 · generated 2026-11-19T08:50:50+00:00</p>
+ autonomy L3 · generated 2026-11-19T09:11:31+00:00</p>
 <p class="notice">Authorized testing only. RedFox AI refuses targets that are not present in an operator-attested authorization scope. Unauthorized use is illegal.</p>
 <div class="grid">
   <div class="stat"><b>1</b><span>findings</span></div>
@@ -50,7 +50,7 @@
   <div class="stat"><b>1</b><span>refused</span></div>
 </div>
 <h2>Executive summary</h2>
-<p>The engagement validated one high-severity finding on http://127.0.0.1:8080/admin/. Using operator-supplied credentials, a user could authenticate and reach the admin page without further authorization checks, and signed-in content was returned. Access to the administrative area therefore depends on valid credentials but is not restricted by an additional role or permission check. Remediation should focus on server-side authorization for /admin/ and enforcing least privilege for accounts that can sign in.</p>
+<p>This engagement tested the RedFox lab target within the authorized scope of 127.0.0.1 on port 8080. One finding was validated: a high-severity issue at http://127.0.0.1:8080/admin/, where operator-supplied credentials successfully authenticated and reached the administrative page without any further authorization checks, and signed-in content was returned in the response. The practical impact is that anyone holding valid credentials for a non-administrative account may be able to view administrative content, depending on what those credentials represent. No other findings were validated during this engagement, so this issue is the sole item for remediation follow-up.</p>
 <h2>Findings</h2>
 <div class="tablewrap"><table><thead><tr><th>#</th><th>Severity</th><th>Finding</th>
 <th>Asset</th><th>Status</th></tr></thead>
@@ -64,12 +64,12 @@
           <p>Operator-supplied credentials authenticate and reach http://127.0.0.1:8080/admin/ without further authorization checks. Signed-in content was returned in the response.</p>
           <h4>Reproduction</h4><ol><li>POST http://127.0.0.1:8080/login with the reported credentials</li><li>GET http://127.0.0.1:8080/admin/ with the session cookie</li></ol>
           <h4>Evidence</h4><ul class="evidence"><li><code>ev_3a1718a2ae9b</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-l3\evidence\eng_60e88e4dc7c8\act_2a9cd539946c_impact_probe.http</li><li><code>ev_61dfe843c0b7</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-l3\evidence\eng_60e88e4dc7c8\act_2ae5f6e71089_impact_probe.http</li></ul>
-          <h4>Remediation</h4><p>Add server-side role or permission checks on /admin/ for every request rather than relying only on authentication, and restrict admin access to accounts explicitly granted that role. Review existing accounts and sessions to confirm least privilege.</p>
+          <h4>Remediation</h4><p>Enforce an authorization check on http://127.0.0.1:8080/admin/ so that access depends on the signed-in account&#39;s role, not just on holding a valid session. Confirm the behavior with a non-administrative account and, where possible, restrict the admin path to the accounts that require it.</p>
         </section>
 <h2>Tooling and trace</h2>
 <p class="meta">Tools used: impact_probe ·
  audit chain 8 records verified ·
- 49 s wall clock ·
+ 5458 s wall clock ·
  0.0 s in tools ·
  0 model calls (0 in /
  0 out tokens) ·

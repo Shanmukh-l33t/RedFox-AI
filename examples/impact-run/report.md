@@ -10,12 +10,12 @@
 | Attested | 2026-11-19T00:00:00Z |
 | Autonomy | L3 |
 | Scope | `{"allow": [{"kind": "ip", "value": "127.0.0.1"}, {"kind": "url", "value": "http://127.0.0.1:8080"}], "deny": [], "ports": "8080"}` |
-| Generated | 2026-11-19T08:50:57+00:00 |
+| Generated | 2026-11-19T09:11:36+00:00 |
 | Model | deepseek-v4.1-flash-1017 |
 
 ## Executive summary
 
-The engagement validated one high-severity finding on http://127.0.0.1:8080/admin/. Using operator-supplied credentials, a user could authenticate and reach the admin page without further authorization checks, and signed-in content was returned. Access to the administrative area therefore depends on valid credentials but is not restricted by an additional role or permission check. Remediation should focus on server-side authorization for /admin/ and enforcing least privilege for accounts that can sign in.
+This engagement tested the RedFox lab target within the authorized scope of 127.0.0.1 on port 8080. One finding was validated: a high-severity issue at http://127.0.0.1:8080/admin/, where operator-supplied credentials successfully authenticated and reached the administrative page without any further authorization checks, and signed-in content was returned in the response. The practical impact is that anyone holding valid credentials for a non-administrative account may be able to view administrative content, depending on what those credentials represent. No other findings were validated during this engagement, so this issue is the sole item for remediation follow-up.
 
 ## Findings
 
@@ -47,7 +47,7 @@ Operator-supplied credentials authenticate and reach http://127.0.0.1:8080/admin
 
 **Remediation**
 
-Add server-side role or permission checks on /admin/ for every request rather than relying only on authentication, and restrict admin access to accounts explicitly granted that role. Review existing accounts and sessions to confirm least privilege.
+Enforce an authorization check on http://127.0.0.1:8080/admin/ so that access depends on the signed-in account's role, not just on holding a valid session. Confirm the behavior with a non-administrative account and, where possible, restrict the admin path to the accounts that require it.
 
 ## Tooling and actions
 
@@ -56,7 +56,7 @@ Add server-side role or permission checks on /admin/ for every request rather th
 - Tools used: impact_probe
 - Audit chain: 8 records verified
 - Tool time: 0.0 s across 2 actions
-- Campaign wall clock: 49 s
+- Campaign wall clock: 5458 s
 - Model calls: 0 (0 in / 0 out tokens, deepseek-v4.1-flash-1017)
 - Evidence files: 2
 

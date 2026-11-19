@@ -103,9 +103,16 @@ def _pages(findings: list[dict[str, Any]], engagement: dict[str, Any],
         _new_page(st)
     _row(st, ("#", "Severity", "Title", "Asset", "Status"), COLS, bold=True)
     _hairline(st, gap=0)
+    page_before = len(st["pages"])
     for i, finding in enumerate(findings, 1):
         _row(st, (i, finding.get("severity", ""), finding.get("title", ""),
                   finding.get("asset", ""), finding.get("status", "")), COLS)
+        if len(st["pages"]) != page_before:
+            # The table spilled onto a new page: repeat the header so the
+            # columns stay readable away from page one.
+            page_before = len(st["pages"])
+            _row(st, ("#", "Severity", "Title", "Asset", "Status"), COLS, bold=True)
+            _hairline(st, gap=0)
     if not findings:
         _para(st, "No findings were recorded for this engagement. Findings appear here "
                   "only when recorded evidence exists.", 10, 14, gap=6)

@@ -1,6 +1,11 @@
 """Soak/load check: repeat fresh init + campaign rounds against the lab target.
 
     python scripts/soak.py --rounds 3 --steps 12 [--home DIR] [--no-lab]
+
+The scope used is examples/scope-lab.json, which authorizes ports 8080/8081 only:
+passing different --port/--admin-port values will be refused by the policy gate,
+which is the correct behaviour, not a bug in this script. Peak memory is
+tracemalloc (Python allocations), not process RSS.
 """
 
 from __future__ import annotations

@@ -110,3 +110,12 @@ def test_wrap_never_overflows_margins() -> None:
     words = pdf._wrap("word " * 200, 10, pdf.WIDTH)
     assert all(pdf._width(line, 10) <= pdf.WIDTH for line in words)
     assert " ".join(words).split() == ("word " * 200).split()
+
+def test_table_header_repeats_when_it_spills(tmp_path) -> None:
+    """A findings table that crosses a page boundary must re-print its header."""
+    from redfox.pdf import write_pdf
+
+    findings = [_finding(i) for i in range(1, 40)]
+    path = write_pdf(tmp_path / "many.pdf", findings, ENG, _summary(findings), META)
+    raw = path.read_bytes()
+    assert raw.count(b"(Severity)") >= 2

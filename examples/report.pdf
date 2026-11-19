@@ -13,7 +13,7 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
 endobj
 5 0 obj
-<< /Length 7562 >>
+<< /Length 7561 >>
 stream
 BT /F2 20 Tf 55.0 787.00 Td (Penetration test report - RedFox lab target) Tj ET
 BT /F2 20 Tf 55.0 762.00 Td (\(authorized, self-owned\)) Tj ET
@@ -26,18 +26,18 @@ BT /F1 9 Tf 55.0 664.50 Td (Attested: 2026-11-19T00:00:00Z) Tj ET
 BT /F1 9 Tf 55.0 652.00 Td (Autonomy: L2) Tj ET
 BT /F1 9 Tf 55.0 639.50 Td (Scope: {"allow": [{"kind": "ip", "value": "127.0.0.1"}, {"kind": "url", "value": "http://127.0.0.1:8080"}, {"kind": "url",) Tj ET
 BT /F1 9 Tf 55.0 627.00 Td ("value": "http://127.0.0.1:8081"}], "deny": [], "ports": "8080-8081"}) Tj ET
-BT /F1 9 Tf 55.0 614.50 Td (Generated: 2026-11-19T08:49:07+00:00) Tj ET
+BT /F1 9 Tf 55.0 614.50 Td (Generated: 2026-11-19T09:11:06+00:00) Tj ET
 BT /F1 9 Tf 55.0 602.00 Td (Model: deepseek-v4.1-flash-1017) Tj ET
 BT /F2 14 Tf 55.0 575.50 Td (Executive summary) Tj ET
-BT /F1 10 Tf 55.0 556.50 Td (This authorized test of the self-owned RedFox lab target covered two local web services on 127.0.0.1,) Tj ET
-BT /F1 10 Tf 55.0 542.50 Td (ports 8080 and 8081. Twelve validated findings were recorded: six high, four medium, and two low. The) Tj ET
-BT /F1 10 Tf 55.0 528.50 Td (high findings are all .env file exposures, and both ports serve the same exposed file, which each of) Tj ET
-BT /F1 10 Tf 55.0 514.50 Td (three separate detections flagged, so there are effectively two sensitive files rather than six distinct) Tj ET
-BT /F1 10 Tf 55.0 500.50 Td (issues. The medium findings are an exposed backup.zip and an exposed .git/config on each port, and) Tj ET
-BT /F1 10 Tf 55.0 486.50 Td (the low findings are Apache /server-status pages on each port. All of the exposed content is reachable) Tj ET
-BT /F1 10 Tf 55.0 472.50 Td (without authentication, and the .env files are described as containing database credentials and tokens.) Tj ET
-BT /F1 10 Tf 55.0 458.50 Td (No other issues are reported here, and all findings should be treated as live until the files are removed) Tj ET
-BT /F1 10 Tf 55.0 444.50 Td (and any secrets they held are rotated.) Tj ET
+BT /F1 10 Tf 55.0 556.50 Td (Twelve validated findings were recorded against the two in-scope web services on 127.0.0.1, ports) Tj ET
+BT /F1 10 Tf 55.0 542.50 Td (8080 \(Portal\) and 8081 \(Internal\). The most serious issue is that a .env file is publicly readable on both) Tj ET
+BT /F1 10 Tf 55.0 528.50 Td (ports; seven high-severity findings cover this, since separate templates for CodeIgniter, generic env,) Tj ET
+BT /F1 10 Tf 55.0 514.50 Td (and Laravel each matched the same exposed file on each host. Those files were confirmed to contain) Tj ET
+BT /F1 10 Tf 55.0 500.50 Td (sensitive information such as database credentials and tokens, with a recorded CVSS of 8.3 for the) Tj ET
+BT /F1 10 Tf 55.0 486.50 Td (generic and Laravel matches. Four medium-severity findings cover downloadable backup.zip archives) Tj ET
+BT /F1 10 Tf 55.0 472.50 Td (and readable .git/config files on both ports, and two low-severity findings show Apache /server-status) Tj ET
+BT /F1 10 Tf 55.0 458.50 Td (exposed on both ports. Nothing beyond these twelve findings was confirmed, and no exploitation of the) Tj ET
+BT /F1 10 Tf 55.0 444.50 Td (exposed credentials was attempted or observed.) Tj ET
 BT /F2 14 Tf 55.0 416.50 Td (Findings) Tj ET
 BT /F1 9 Tf 55.0 395.50 Td (Critical 0 - High 6 - Medium 4 - Low 2 - Info 13 - total 25) Tj ET
 BT /F2 9 Tf 55.0 382.50 Td (#) Tj ET
@@ -145,80 +145,85 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
 endobj
 7 0 obj
-<< /Length 5345 >>
+<< /Length 5477 >>
 stream
 BT /F1 9 Tf 55.0 787.00 Td (19) Tj ET
 BT /F1 9 Tf 77.0 787.00 Td (info) Tj ET
 BT /F1 9 Tf 139.0 787.00 Td (Discovered path http://127.0.0.1:8081/backup.zip) Tj ET
 BT /F1 9 Tf 371.0 787.00 Td (http://127.0.0.1:8081/ba..) Tj ET
 BT /F1 9 Tf 483.0 787.00 Td (candidate) Tj ET
-BT /F1 9 Tf 55.0 770.80 Td (20) Tj ET
-BT /F1 9 Tf 77.0 770.80 Td (info) Tj ET
-BT /F1 9 Tf 139.0 770.80 Td (Discovered path http://127.0.0.1:8081/files/) Tj ET
-BT /F1 9 Tf 371.0 770.80 Td (http://127.0.0.1:8081/file..) Tj ET
-BT /F1 9 Tf 483.0 770.80 Td (candidate) Tj ET
-BT /F1 9 Tf 55.0 754.60 Td (21) Tj ET
-BT /F1 9 Tf 77.0 754.60 Td (info) Tj ET
-BT /F1 9 Tf 139.0 754.60 Td (Discovered path http://127.0.0.1:8081/internal) Tj ET
-BT /F1 9 Tf 371.0 754.60 Td (http://127.0.0.1:8081/int..) Tj ET
-BT /F1 9 Tf 483.0 754.60 Td (candidate) Tj ET
-BT /F1 9 Tf 55.0 738.40 Td (22) Tj ET
-BT /F1 9 Tf 77.0 738.40 Td (info) Tj ET
-BT /F1 9 Tf 139.0 738.40 Td (Discovered path http://127.0.0.1:8081/login) Tj ET
-BT /F1 9 Tf 371.0 738.40 Td (http://127.0.0.1:8081/lo..) Tj ET
-BT /F1 9 Tf 483.0 738.40 Td (candidate) Tj ET
-BT /F1 9 Tf 55.0 722.20 Td (23) Tj ET
-BT /F1 9 Tf 77.0 722.20 Td (info) Tj ET
-BT /F1 9 Tf 139.0 722.20 Td (Discovered path http://127.0.0.1:8081/phpinfo.php) Tj ET
-BT /F1 9 Tf 371.0 722.20 Td (http://127.0.0.1:8081/ph..) Tj ET
-BT /F1 9 Tf 483.0 722.20 Td (candidate) Tj ET
-BT /F1 9 Tf 55.0 706.00 Td (24) Tj ET
-BT /F1 9 Tf 77.0 706.00 Td (info) Tj ET
-BT /F1 9 Tf 139.0 706.00 Td (Discovered path http://127.0.0.1:8081/search) Tj ET
-BT /F1 9 Tf 371.0 706.00 Td (http://127.0.0.1:8081/se..) Tj ET
-BT /F1 9 Tf 483.0 706.00 Td (candidate) Tj ET
-BT /F1 9 Tf 55.0 689.80 Td (25) Tj ET
-BT /F1 9 Tf 77.0 689.80 Td (info) Tj ET
-BT /F1 9 Tf 139.0 689.80 Td (Discovered path http://127.0.0.1:8081/server-status) Tj ET
-BT /F1 9 Tf 371.0 689.80 Td (http://127.0.0.1:8081/se..) Tj ET
-BT /F1 9 Tf 483.0 689.80 Td (candidate) Tj ET
-BT /F2 12 Tf 55.0 659.60 Td (1. Codeigniter - .env File Discovery) Tj ET
-BT /F1 9 Tf 55.0 643.60 Td (Severity: high | Status: validated | Detected by: nuclei_validate) Tj ET
-BT /F1 9 Tf 55.0 631.10 Td (Asset: http://127.0.0.1:8081/.env) Tj ET
-BT /F1 9 Tf 55.0 618.60 Td (Location: http://127.0.0.1:8081/.env) Tj ET
-BT /F1 10 Tf 55.0 600.10 Td (Codeigniter .env file was discovered.) Tj ET
-BT /F2 9 Tf 55.0 577.10 Td (Reproduction) Tj ET
-BT /F1 10 Tf 55.0 564.60 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
-BT /F1 10 Tf 55.0 550.60 Td (\(Macintosh; Intel Mac OS X 10_15_7\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/130.0.0.0) Tj ET
-BT /F1 10 Tf 55.0 536.60 Td (Safari/537.36' 'http://127.0.0.1:8081/.env') Tj ET
-BT /F1 10 Tf 55.0 522.60 Td (2. Evidence file:) Tj ET
-BT /F1 10 Tf 55.0 508.60 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
-BT /F1 10 Tf 55.0 494.60 Td (19d0d19da67f_nuclei.log) Tj ET
-BT /F1 9 Tf 55.0 471.60 Td (Evidence: ev_731592002254) Tj ET
-BT /F1 9 Tf 55.0 459.10 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_19d0d19da) Tj ET
-BT /F1 9 Tf 55.0 446.60 Td (67f_nuclei.log]) Tj ET
-BT /F2 9 Tf 55.0 425.10 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 412.60 Td (Remove /.env from the web root of http://127.0.0.1:8081 or block it at the server level, and confirm it) Tj ET
-BT /F1 10 Tf 55.0 398.60 Td (returns 404. Treat the credentials and tokens it contained as compromised and rotate them.) Tj ET
-0.4 w 0.7 G 55.0 372.60 m 540.0 372.60 l S
-BT /F2 12 Tf 55.0 349.60 Td (2. Codeigniter - .env File Discovery) Tj ET
-BT /F1 9 Tf 55.0 333.60 Td (Severity: high | Status: validated | Detected by: nuclei_validate) Tj ET
-BT /F1 9 Tf 55.0 321.10 Td (Asset: http://127.0.0.1:8080/.env) Tj ET
-BT /F1 9 Tf 55.0 308.60 Td (Location: http://127.0.0.1:8080/.env) Tj ET
-BT /F1 10 Tf 55.0 290.10 Td (Codeigniter .env file was discovered.) Tj ET
-BT /F2 9 Tf 55.0 267.10 Td (Reproduction) Tj ET
-BT /F1 10 Tf 55.0 254.60 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 \(X11;) Tj ET
-BT /F1 10 Tf 55.0 240.60 Td (Linux i686; rv:1.9.7.20\) Gecko/ Firefox/3.6.7' 'http://127.0.0.1:8080/.env') Tj ET
-BT /F1 10 Tf 55.0 226.60 Td (2. Evidence file:) Tj ET
-BT /F1 10 Tf 55.0 212.60 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
-BT /F1 10 Tf 55.0 198.60 Td (a15078b16a76_nuclei.log) Tj ET
-BT /F1 9 Tf 55.0 175.60 Td (Evidence: ev_0275d2172cd5) Tj ET
-BT /F1 9 Tf 55.0 163.10 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_a15078b16) Tj ET
-BT /F1 9 Tf 55.0 150.60 Td (a76_nuclei.log]) Tj ET
-BT /F2 9 Tf 55.0 129.10 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 116.60 Td (Remove /.env from the web root of http://127.0.0.1:8080 or block it at the server level, and confirm it) Tj ET
-BT /F1 10 Tf 55.0 102.60 Td (returns 404. Treat the credentials and tokens it contained as compromised and rotate them.) Tj ET
-0.4 w 0.7 G 55.0 76.60 m 540.0 76.60 l S
+BT /F2 9 Tf 55.0 770.80 Td (#) Tj ET
+BT /F2 9 Tf 77.0 770.80 Td (Severity) Tj ET
+BT /F2 9 Tf 139.0 770.80 Td (Title) Tj ET
+BT /F2 9 Tf 371.0 770.80 Td (Asset) Tj ET
+BT /F2 9 Tf 483.0 770.80 Td (Status) Tj ET
+0.4 w 0.7 G 55.0 754.60 m 540.0 754.60 l S
+BT /F1 9 Tf 55.0 745.60 Td (20) Tj ET
+BT /F1 9 Tf 77.0 745.60 Td (info) Tj ET
+BT /F1 9 Tf 139.0 745.60 Td (Discovered path http://127.0.0.1:8081/files/) Tj ET
+BT /F1 9 Tf 371.0 745.60 Td (http://127.0.0.1:8081/file..) Tj ET
+BT /F1 9 Tf 483.0 745.60 Td (candidate) Tj ET
+BT /F1 9 Tf 55.0 729.40 Td (21) Tj ET
+BT /F1 9 Tf 77.0 729.40 Td (info) Tj ET
+BT /F1 9 Tf 139.0 729.40 Td (Discovered path http://127.0.0.1:8081/internal) Tj ET
+BT /F1 9 Tf 371.0 729.40 Td (http://127.0.0.1:8081/int..) Tj ET
+BT /F1 9 Tf 483.0 729.40 Td (candidate) Tj ET
+BT /F1 9 Tf 55.0 713.20 Td (22) Tj ET
+BT /F1 9 Tf 77.0 713.20 Td (info) Tj ET
+BT /F1 9 Tf 139.0 713.20 Td (Discovered path http://127.0.0.1:8081/login) Tj ET
+BT /F1 9 Tf 371.0 713.20 Td (http://127.0.0.1:8081/lo..) Tj ET
+BT /F1 9 Tf 483.0 713.20 Td (candidate) Tj ET
+BT /F1 9 Tf 55.0 697.00 Td (23) Tj ET
+BT /F1 9 Tf 77.0 697.00 Td (info) Tj ET
+BT /F1 9 Tf 139.0 697.00 Td (Discovered path http://127.0.0.1:8081/phpinfo.php) Tj ET
+BT /F1 9 Tf 371.0 697.00 Td (http://127.0.0.1:8081/ph..) Tj ET
+BT /F1 9 Tf 483.0 697.00 Td (candidate) Tj ET
+BT /F1 9 Tf 55.0 680.80 Td (24) Tj ET
+BT /F1 9 Tf 77.0 680.80 Td (info) Tj ET
+BT /F1 9 Tf 139.0 680.80 Td (Discovered path http://127.0.0.1:8081/search) Tj ET
+BT /F1 9 Tf 371.0 680.80 Td (http://127.0.0.1:8081/se..) Tj ET
+BT /F1 9 Tf 483.0 680.80 Td (candidate) Tj ET
+BT /F1 9 Tf 55.0 664.60 Td (25) Tj ET
+BT /F1 9 Tf 77.0 664.60 Td (info) Tj ET
+BT /F1 9 Tf 139.0 664.60 Td (Discovered path http://127.0.0.1:8081/server-status) Tj ET
+BT /F1 9 Tf 371.0 664.60 Td (http://127.0.0.1:8081/se..) Tj ET
+BT /F1 9 Tf 483.0 664.60 Td (candidate) Tj ET
+BT /F2 12 Tf 55.0 634.40 Td (1. Codeigniter - .env File Discovery) Tj ET
+BT /F1 9 Tf 55.0 618.40 Td (Severity: high | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 605.90 Td (Asset: http://127.0.0.1:8081/.env) Tj ET
+BT /F1 9 Tf 55.0 593.40 Td (Location: http://127.0.0.1:8081/.env) Tj ET
+BT /F1 10 Tf 55.0 574.90 Td (Codeigniter .env file was discovered.) Tj ET
+BT /F2 9 Tf 55.0 551.90 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 539.40 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
+BT /F1 10 Tf 55.0 525.40 Td (\(Macintosh; Intel Mac OS X 10_15_7\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/130.0.0.0) Tj ET
+BT /F1 10 Tf 55.0 511.40 Td (Safari/537.36' 'http://127.0.0.1:8081/.env') Tj ET
+BT /F1 10 Tf 55.0 497.40 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 483.40 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
+BT /F1 10 Tf 55.0 469.40 Td (19d0d19da67f_nuclei.log) Tj ET
+BT /F1 9 Tf 55.0 446.40 Td (Evidence: ev_731592002254) Tj ET
+BT /F1 9 Tf 55.0 433.90 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_19d0d19da) Tj ET
+BT /F1 9 Tf 55.0 421.40 Td (67f_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 399.90 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 387.40 Td (Block public access to /.env on port 8081 at the web server and move secrets out of files served by the) Tj ET
+BT /F1 10 Tf 55.0 373.40 Td (web root. This is the same exposed file reported under the generic-env and Laravel-env findings for) Tj ET
+BT /F1 10 Tf 55.0 359.40 Td (8081.) Tj ET
+0.4 w 0.7 G 55.0 333.40 m 540.0 333.40 l S
+BT /F2 12 Tf 55.0 310.40 Td (2. Codeigniter - .env File Discovery) Tj ET
+BT /F1 9 Tf 55.0 294.40 Td (Severity: high | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 281.90 Td (Asset: http://127.0.0.1:8080/.env) Tj ET
+BT /F1 9 Tf 55.0 269.40 Td (Location: http://127.0.0.1:8080/.env) Tj ET
+BT /F1 10 Tf 55.0 250.90 Td (Codeigniter .env file was discovered.) Tj ET
+BT /F2 9 Tf 55.0 227.90 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 215.40 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 \(X11;) Tj ET
+BT /F1 10 Tf 55.0 201.40 Td (Linux i686; rv:1.9.7.20\) Gecko/ Firefox/3.6.7' 'http://127.0.0.1:8080/.env') Tj ET
+BT /F1 10 Tf 55.0 187.40 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 173.40 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
+BT /F1 10 Tf 55.0 159.40 Td (a15078b16a76_nuclei.log) Tj ET
+BT /F1 9 Tf 55.0 136.40 Td (Evidence: ev_0275d2172cd5) Tj ET
+BT /F1 9 Tf 55.0 123.90 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_a15078b16) Tj ET
+BT /F1 9 Tf 55.0 111.40 Td (a76_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 89.90 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 77.40 Td (Block public access to /.env on port 8080 at the web server and move secrets out of files served by the) Tj ET
 0.4 w 0.6 G 55.0 50 m 540.0 50 l S
 BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei - audit chain 48 records verified - actions 22..) Tj ET
 BT /F1 8 Tf 491.9 36 Td (Page 2 of 11) Tj ET
@@ -228,50 +233,53 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
 endobj
 9 0 obj
-<< /Length 4035 >>
+<< /Length 4179 >>
 stream
-BT /F2 12 Tf 55.0 773.00 Td (3. Generic Env File Disclosure) Tj ET
-BT /F1 9 Tf 55.0 757.00 Td (Severity: high \(CVSS 8.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
-BT /F1 9 Tf 55.0 744.50 Td (Asset: http://127.0.0.1:8080/.env) Tj ET
-BT /F1 9 Tf 55.0 732.00 Td (Location: http://127.0.0.1:8080/.env) Tj ET
-BT /F1 10 Tf 55.0 713.50 Td (A .env file was discovered containing sensitive information like database credentials and tokens. It) Tj ET
-BT /F1 10 Tf 55.0 699.50 Td (should not be publicly accessible.) Tj ET
-BT /F2 9 Tf 55.0 676.50 Td (Reproduction) Tj ET
-BT /F1 10 Tf 55.0 664.00 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
-BT /F1 10 Tf 55.0 650.00 Td (\(Macintosh, Intel Mac OS X 10_15_7\) AppleWebKit/605.1.15 \(KHTML, like Gecko\) Version/17.13) Tj ET
-BT /F1 10 Tf 55.0 636.00 Td (Safari/605.1.15' 'http://127.0.0.1:8080/.env') Tj ET
-BT /F1 10 Tf 55.0 622.00 Td (2. Evidence file:) Tj ET
-BT /F1 10 Tf 55.0 608.00 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
-BT /F1 10 Tf 55.0 594.00 Td (512560822a36_nuclei.log) Tj ET
-BT /F1 10 Tf 55.0 580.00 Td (3. Re-ran nuclei template\(s\): generic-env) Tj ET
-BT /F1 9 Tf 55.0 557.00 Td (Evidence: ev_abf07f11e678) Tj ET
-BT /F1 9 Tf 55.0 544.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_512560822) Tj ET
-BT /F1 9 Tf 55.0 532.00 Td (a36_nuclei.log]) Tj ET
-BT /F2 9 Tf 55.0 510.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 498.00 Td (This is the same /.env file on http://127.0.0.1:8080 reported separately, so fix it once: take the file out of) Tj ET
-BT /F1 10 Tf 55.0 484.00 Td (the served directory, deny access to dotfiles, and rotate the database credentials and tokens it held.) Tj ET
-0.4 w 0.7 G 55.0 458.00 m 540.0 458.00 l S
-BT /F2 12 Tf 55.0 435.00 Td (4. Generic Env File Disclosure) Tj ET
-BT /F1 9 Tf 55.0 419.00 Td (Severity: high \(CVSS 8.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
-BT /F1 9 Tf 55.0 406.50 Td (Asset: http://127.0.0.1:8081/.env) Tj ET
-BT /F1 9 Tf 55.0 394.00 Td (Location: http://127.0.0.1:8081/.env) Tj ET
-BT /F1 10 Tf 55.0 375.50 Td (A .env file was discovered containing sensitive information like database credentials and tokens. It) Tj ET
-BT /F1 10 Tf 55.0 361.50 Td (should not be publicly accessible.) Tj ET
-BT /F2 9 Tf 55.0 338.50 Td (Reproduction) Tj ET
-BT /F1 10 Tf 55.0 326.00 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
-BT /F1 10 Tf 55.0 312.00 Td (\(Macintosh; Intel Mac OS X 10_15_7\) AppleWebKit/605.1.15 \(KHTML, like Gecko\) Version/17.5) Tj ET
-BT /F1 10 Tf 55.0 298.00 Td (Mobile/15E148 Safari/604.1' 'http://127.0.0.1:8081/.env') Tj ET
-BT /F1 10 Tf 55.0 284.00 Td (2. Evidence file:) Tj ET
-BT /F1 10 Tf 55.0 270.00 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
-BT /F1 10 Tf 55.0 256.00 Td (7c117f7d32e3_nuclei.log) Tj ET
-BT /F1 10 Tf 55.0 242.00 Td (3. Re-ran nuclei template\(s\): generic-env) Tj ET
-BT /F1 9 Tf 55.0 219.00 Td (Evidence: ev_3ae012d13906) Tj ET
-BT /F1 9 Tf 55.0 206.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_7c117f7d32) Tj ET
-BT /F1 9 Tf 55.0 194.00 Td (e3_nuclei.log]) Tj ET
-BT /F2 9 Tf 55.0 172.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 160.00 Td (This is the same /.env file on http://127.0.0.1:8081 reported separately, so fix it once: take the file out of) Tj ET
-BT /F1 10 Tf 55.0 146.00 Td (the served directory, deny access to dotfiles, and rotate the database credentials and tokens it held.) Tj ET
-0.4 w 0.7 G 55.0 120.00 m 540.0 120.00 l S
+BT /F1 10 Tf 55.0 787.00 Td (web root. This is the same exposed file reported under the generic-env and Laravel-env findings for) Tj ET
+BT /F1 10 Tf 55.0 773.00 Td (8080.) Tj ET
+0.4 w 0.7 G 55.0 747.00 m 540.0 747.00 l S
+BT /F2 12 Tf 55.0 724.00 Td (3. Generic Env File Disclosure) Tj ET
+BT /F1 9 Tf 55.0 708.00 Td (Severity: high \(CVSS 8.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 695.50 Td (Asset: http://127.0.0.1:8080/.env) Tj ET
+BT /F1 9 Tf 55.0 683.00 Td (Location: http://127.0.0.1:8080/.env) Tj ET
+BT /F1 10 Tf 55.0 664.50 Td (A .env file was discovered containing sensitive information like database credentials and tokens. It) Tj ET
+BT /F1 10 Tf 55.0 650.50 Td (should not be publicly accessible.) Tj ET
+BT /F2 9 Tf 55.0 627.50 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 615.00 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
+BT /F1 10 Tf 55.0 601.00 Td (\(Macintosh, Intel Mac OS X 10_15_7\) AppleWebKit/605.1.15 \(KHTML, like Gecko\) Version/17.13) Tj ET
+BT /F1 10 Tf 55.0 587.00 Td (Safari/605.1.15' 'http://127.0.0.1:8080/.env') Tj ET
+BT /F1 10 Tf 55.0 573.00 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 559.00 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
+BT /F1 10 Tf 55.0 545.00 Td (512560822a36_nuclei.log) Tj ET
+BT /F1 10 Tf 55.0 531.00 Td (3. Re-ran nuclei template\(s\): generic-env) Tj ET
+BT /F1 9 Tf 55.0 508.00 Td (Evidence: ev_abf07f11e678) Tj ET
+BT /F1 9 Tf 55.0 495.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_512560822) Tj ET
+BT /F1 9 Tf 55.0 483.00 Td (a36_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 461.50 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 449.00 Td (Remove /.env from the publicly served directory and deny requests to dotfiles. Rotate the database) Tj ET
+BT /F1 10 Tf 55.0 435.00 Td (credentials and tokens it exposed, since they must be treated as compromised.) Tj ET
+0.4 w 0.7 G 55.0 409.00 m 540.0 409.00 l S
+BT /F2 12 Tf 55.0 386.00 Td (4. Generic Env File Disclosure) Tj ET
+BT /F1 9 Tf 55.0 370.00 Td (Severity: high \(CVSS 8.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 357.50 Td (Asset: http://127.0.0.1:8081/.env) Tj ET
+BT /F1 9 Tf 55.0 345.00 Td (Location: http://127.0.0.1:8081/.env) Tj ET
+BT /F1 10 Tf 55.0 326.50 Td (A .env file was discovered containing sensitive information like database credentials and tokens. It) Tj ET
+BT /F1 10 Tf 55.0 312.50 Td (should not be publicly accessible.) Tj ET
+BT /F2 9 Tf 55.0 289.50 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 277.00 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
+BT /F1 10 Tf 55.0 263.00 Td (\(Macintosh; Intel Mac OS X 10_15_7\) AppleWebKit/605.1.15 \(KHTML, like Gecko\) Version/17.5) Tj ET
+BT /F1 10 Tf 55.0 249.00 Td (Mobile/15E148 Safari/604.1' 'http://127.0.0.1:8081/.env') Tj ET
+BT /F1 10 Tf 55.0 235.00 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 221.00 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
+BT /F1 10 Tf 55.0 207.00 Td (7c117f7d32e3_nuclei.log) Tj ET
+BT /F1 10 Tf 55.0 193.00 Td (3. Re-ran nuclei template\(s\): generic-env) Tj ET
+BT /F1 9 Tf 55.0 170.00 Td (Evidence: ev_3ae012d13906) Tj ET
+BT /F1 9 Tf 55.0 157.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_7c117f7d32) Tj ET
+BT /F1 9 Tf 55.0 145.00 Td (e3_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 123.50 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 111.00 Td (Remove /.env from the publicly served directory and deny requests to dotfiles. Rotate the database) Tj ET
+BT /F1 10 Tf 55.0 97.00 Td (credentials and tokens it exposed, since they must be treated as compromised.) Tj ET
+0.4 w 0.7 G 55.0 71.00 m 540.0 71.00 l S
 0.4 w 0.6 G 55.0 50 m 540.0 50 l S
 BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei - audit chain 48 records verified - actions 22..) Tj ET
 BT /F1 8 Tf 491.9 36 Td (Page 3 of 11) Tj ET
@@ -281,7 +289,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
 endobj
 11 0 obj
-<< /Length 4008 >>
+<< /Length 4028 >>
 stream
 BT /F2 12 Tf 55.0 773.00 Td (5. Laravel - Sensitive Information Disclosure) Tj ET
 BT /F1 9 Tf 55.0 757.00 Td (Severity: high \(CVSS 8.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
@@ -301,8 +309,8 @@ BT /F1 9 Tf 55.0 557.00 Td (Evidence: ev_861ec23ce25a) Tj ET
 BT /F1 9 Tf 55.0 544.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_e6af54a8e) Tj ET
 BT /F1 9 Tf 55.0 532.00 Td (e5b_nuclei.log]) Tj ET
 BT /F2 9 Tf 55.0 510.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 498.00 Td (Same exposure as the other /.env findings on port 8080. Remove the file from the web root, block) Tj ET
-BT /F1 10 Tf 55.0 484.00 Td (dotfile access, and rotate the Laravel application keys and any database credentials it contained.) Tj ET
+BT /F1 10 Tf 55.0 498.00 Td (Serve the Laravel application with the document root outside the project root so .env is not reachable,) Tj ET
+BT /F1 10 Tf 55.0 484.00 Td (and add a rule blocking dotfile requests. Rotate the application key and any credentials in the file.) Tj ET
 0.4 w 0.7 G 55.0 458.00 m 540.0 458.00 l S
 BT /F2 12 Tf 55.0 435.00 Td (6. Laravel - Sensitive Information Disclosure) Tj ET
 BT /F1 9 Tf 55.0 419.00 Td (Severity: high \(CVSS 8.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
@@ -322,8 +330,8 @@ BT /F1 9 Tf 55.0 219.00 Td (Evidence: ev_55bf1daad011) Tj ET
 BT /F1 9 Tf 55.0 206.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_ba26266aa) Tj ET
 BT /F1 9 Tf 55.0 194.00 Td (4d7_nuclei.log]) Tj ET
 BT /F2 9 Tf 55.0 172.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 160.00 Td (Same exposure as the other /.env findings on port 8081. Remove the file from the web root, block) Tj ET
-BT /F1 10 Tf 55.0 146.00 Td (dotfile access, and rotate the Laravel application keys and any database credentials it contained.) Tj ET
+BT /F1 10 Tf 55.0 160.00 Td (Serve the Laravel application with the document root outside the project root so .env is not reachable,) Tj ET
+BT /F1 10 Tf 55.0 146.00 Td (and add a rule blocking dotfile requests. Rotate the application key and any credentials in the file.) Tj ET
 0.4 w 0.7 G 55.0 120.00 m 540.0 120.00 l S
 0.4 w 0.6 G 55.0 50 m 540.0 50 l S
 BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei - audit chain 48 records verified - actions 22..) Tj ET
@@ -334,7 +342,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 11 0 R >>
 endobj
 13 0 obj
-<< /Length 3649 >>
+<< /Length 3577 >>
 stream
 BT /F2 12 Tf 55.0 773.00 Td (7. Compressed Backup File - Detect) Tj ET
 BT /F1 9 Tf 55.0 757.00 Td (Severity: medium \(CVSS 5.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
@@ -352,8 +360,8 @@ BT /F1 9 Tf 55.0 585.00 Td (Evidence: ev_f292f8f6a2db) Tj ET
 BT /F1 9 Tf 55.0 572.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_39c90ac50f) Tj ET
 BT /F1 9 Tf 55.0 560.00 Td (fc_nuclei.log]) Tj ET
 BT /F2 9 Tf 55.0 538.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 526.00 Td (Remove /backup.zip from the served content on http://127.0.0.1:8081, and store backups outside the) Tj ET
-BT /F1 10 Tf 55.0 512.00 Td (web root. Review what the archive contained and rotate any secrets or credentials it held.) Tj ET
+BT /F1 10 Tf 55.0 526.00 Td (Remove backup.zip from the web root and store backups outside any publicly served path. Review) Tj ET
+BT /F1 10 Tf 55.0 512.00 Td (what the archive contained and rotate any secrets it held.) Tj ET
 0.4 w 0.7 G 55.0 486.00 m 540.0 486.00 l S
 BT /F2 12 Tf 55.0 463.00 Td (8. Compressed Backup File - Detect) Tj ET
 BT /F1 9 Tf 55.0 447.00 Td (Severity: medium \(CVSS 5.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
@@ -372,8 +380,8 @@ BT /F1 9 Tf 55.0 261.00 Td (Evidence: ev_ccc7283d77d9) Tj ET
 BT /F1 9 Tf 55.0 248.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_cb53c8208) Tj ET
 BT /F1 9 Tf 55.0 236.00 Td (309_nuclei.log]) Tj ET
 BT /F2 9 Tf 55.0 214.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 202.00 Td (Remove /backup.zip from the served content on http://127.0.0.1:8080, and store backups outside the) Tj ET
-BT /F1 10 Tf 55.0 188.00 Td (web root. Review what the archive contained and rotate any secrets or credentials it held.) Tj ET
+BT /F1 10 Tf 55.0 202.00 Td (Remove backup.zip from the web root and store backups outside any publicly served path. Review) Tj ET
+BT /F1 10 Tf 55.0 188.00 Td (what the archive contained and rotate any secrets it held.) Tj ET
 0.4 w 0.7 G 55.0 162.00 m 540.0 162.00 l S
 0.4 w 0.6 G 55.0 50 m 540.0 50 l S
 BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei - audit chain 48 records verified - actions 22..) Tj ET
@@ -384,7 +392,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 13 0 R >>
 endobj
 15 0 obj
-<< /Length 3776 >>
+<< /Length 3896 >>
 stream
 BT /F2 12 Tf 55.0 773.00 Td (9. Git Configuration - Detect) Tj ET
 BT /F1 9 Tf 55.0 757.00 Td (Severity: medium \(CVSS 5.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
@@ -403,28 +411,30 @@ BT /F1 9 Tf 55.0 571.00 Td (Evidence: ev_272ab8f32172) Tj ET
 BT /F1 9 Tf 55.0 558.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_77e5048d0) Tj ET
 BT /F1 9 Tf 55.0 546.00 Td (6c5_nuclei.log]) Tj ET
 BT /F2 9 Tf 55.0 524.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 512.00 Td (Deny access to the /.git/ path on http://127.0.0.1:8080 or remove the repository metadata from the web) Tj ET
-BT /F1 10 Tf 55.0 498.00 Td (root. Check the repository's history and remotes for anything sensitive before making it public again.) Tj ET
-0.4 w 0.7 G 55.0 472.00 m 540.0 472.00 l S
-BT /F2 12 Tf 55.0 449.00 Td (10. Git Configuration - Detect) Tj ET
-BT /F1 9 Tf 55.0 433.00 Td (Severity: medium \(CVSS 5.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
-BT /F1 9 Tf 55.0 420.50 Td (Asset: http://127.0.0.1:8081/.git/config) Tj ET
-BT /F1 9 Tf 55.0 408.00 Td (Location: http://127.0.0.1:8081/.git/config) Tj ET
-BT /F1 10 Tf 55.0 389.50 Td (Git configuration was detected via the pattern /.git/config and log file on passed URLs.) Tj ET
-BT /F2 9 Tf 55.0 366.50 Td (Reproduction) Tj ET
-BT /F1 10 Tf 55.0 354.00 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
-BT /F1 10 Tf 55.0 340.00 Td (\(Kubuntu; Linux i686\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/136.0.0.0 Safari/537.36') Tj ET
-BT /F1 10 Tf 55.0 326.00 Td ('http://127.0.0.1:8081/.git/config') Tj ET
-BT /F1 10 Tf 55.0 312.00 Td (2. Evidence file:) Tj ET
-BT /F1 10 Tf 55.0 298.00 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
-BT /F1 10 Tf 55.0 284.00 Td (b8e7ce22cd18_nuclei.log) Tj ET
-BT /F1 9 Tf 55.0 261.00 Td (Evidence: ev_bdf99a7804ea) Tj ET
-BT /F1 9 Tf 55.0 248.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_b8e7ce22c) Tj ET
-BT /F1 9 Tf 55.0 236.00 Td (d18_nuclei.log]) Tj ET
-BT /F2 9 Tf 55.0 214.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 202.00 Td (Deny access to the /.git/ path on http://127.0.0.1:8081 or remove the repository metadata from the web) Tj ET
-BT /F1 10 Tf 55.0 188.00 Td (root. Check the repository's history and remotes for anything sensitive before making it public again.) Tj ET
-0.4 w 0.7 G 55.0 162.00 m 540.0 162.00 l S
+BT /F1 10 Tf 55.0 512.00 Td (Block access to the .git directory at the web server and deploy builds without version control metadata.) Tj ET
+BT /F1 10 Tf 55.0 498.00 Td (If the repository was reachable, check whether full source could be reconstructed and treat any) Tj ET
+BT /F1 10 Tf 55.0 484.00 Td (embedded secrets as exposed.) Tj ET
+0.4 w 0.7 G 55.0 458.00 m 540.0 458.00 l S
+BT /F2 12 Tf 55.0 435.00 Td (10. Git Configuration - Detect) Tj ET
+BT /F1 9 Tf 55.0 419.00 Td (Severity: medium \(CVSS 5.3\) | Status: validated | Detected by: nuclei_validate) Tj ET
+BT /F1 9 Tf 55.0 406.50 Td (Asset: http://127.0.0.1:8081/.git/config) Tj ET
+BT /F1 9 Tf 55.0 394.00 Td (Location: http://127.0.0.1:8081/.git/config) Tj ET
+BT /F1 10 Tf 55.0 375.50 Td (Git configuration was detected via the pattern /.git/config and log file on passed URLs.) Tj ET
+BT /F2 9 Tf 55.0 352.50 Td (Reproduction) Tj ET
+BT /F1 10 Tf 55.0 340.00 Td (1. Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0) Tj ET
+BT /F1 10 Tf 55.0 326.00 Td (\(Kubuntu; Linux i686\) AppleWebKit/537.36 \(KHTML, like Gecko\) Chrome/136.0.0.0 Safari/537.36') Tj ET
+BT /F1 10 Tf 55.0 312.00 Td ('http://127.0.0.1:8081/.git/config') Tj ET
+BT /F1 10 Tf 55.0 298.00 Td (2. Evidence file:) Tj ET
+BT /F1 10 Tf 55.0 284.00 Td (C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_) Tj ET
+BT /F1 10 Tf 55.0 270.00 Td (b8e7ce22cd18_nuclei.log) Tj ET
+BT /F1 9 Tf 55.0 247.00 Td (Evidence: ev_bdf99a7804ea) Tj ET
+BT /F1 9 Tf 55.0 234.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_b8e7ce22c) Tj ET
+BT /F1 9 Tf 55.0 222.00 Td (d18_nuclei.log]) Tj ET
+BT /F2 9 Tf 55.0 200.50 Td (Remediation) Tj ET
+BT /F1 10 Tf 55.0 188.00 Td (Block access to the .git directory at the web server and deploy builds without version control metadata.) Tj ET
+BT /F1 10 Tf 55.0 174.00 Td (If the repository was reachable, check whether full source could be reconstructed and treat any) Tj ET
+BT /F1 10 Tf 55.0 160.00 Td (embedded secrets as exposed.) Tj ET
+0.4 w 0.7 G 55.0 134.00 m 540.0 134.00 l S
 0.4 w 0.6 G 55.0 50 m 540.0 50 l S
 BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei - audit chain 48 records verified - actions 22..) Tj ET
 BT /F1 8 Tf 491.9 36 Td (Page 6 of 11) Tj ET
@@ -434,7 +444,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 15 0 R >>
 endobj
 17 0 obj
-<< /Length 3839 >>
+<< /Length 3789 >>
 stream
 BT /F2 12 Tf 55.0 773.00 Td (11. Apache Server Status Disclosure) Tj ET
 BT /F1 9 Tf 55.0 757.00 Td (Severity: low | Status: validated | Detected by: nuclei_validate) Tj ET
@@ -453,8 +463,8 @@ BT /F1 9 Tf 55.0 571.00 Td (Evidence: ev_c75d3a478aac) Tj ET
 BT /F1 9 Tf 55.0 558.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_b7792a8a8) Tj ET
 BT /F1 9 Tf 55.0 546.00 Td (968_nuclei.log]) Tj ET
 BT /F2 9 Tf 55.0 524.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 512.00 Td (Disable the mod_status handler or restrict /server-status on http://127.0.0.1:8080 to trusted local) Tj ET
-BT /F1 10 Tf 55.0 498.00 Td (addresses. This is a low-severity information leak, not an access bypass.) Tj ET
+BT /F1 10 Tf 55.0 512.00 Td (Disable /server-status or restrict it to localhost and trusted admin addresses. The page leaks request) Tj ET
+BT /F1 10 Tf 55.0 498.00 Td (and worker details useful for reconnaissance.) Tj ET
 0.4 w 0.7 G 55.0 472.00 m 540.0 472.00 l S
 BT /F2 12 Tf 55.0 449.00 Td (12. Apache Server Status Disclosure) Tj ET
 BT /F1 9 Tf 55.0 433.00 Td (Severity: low | Status: validated | Detected by: nuclei_validate) Tj ET
@@ -474,8 +484,8 @@ BT /F1 9 Tf 55.0 233.00 Td (Evidence: ev_5b59096fb2bd) Tj ET
 BT /F1 9 Tf 55.0 220.50 Td ([C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_375aa3ca9) Tj ET
 BT /F1 9 Tf 55.0 208.00 Td (878_nuclei.log]) Tj ET
 BT /F2 9 Tf 55.0 186.50 Td (Remediation) Tj ET
-BT /F1 10 Tf 55.0 174.00 Td (Disable the mod_status handler or restrict /server-status on http://127.0.0.1:8081 to trusted local) Tj ET
-BT /F1 10 Tf 55.0 160.00 Td (addresses. This is a low-severity information leak, not an access bypass.) Tj ET
+BT /F1 10 Tf 55.0 174.00 Td (Disable /server-status or restrict it to localhost and trusted admin addresses. The page leaks request) Tj ET
+BT /F1 10 Tf 55.0 160.00 Td (and worker details useful for reconnaissance.) Tj ET
 0.4 w 0.7 G 55.0 134.00 m 540.0 134.00 l S
 0.4 w 0.6 G 55.0 50 m 540.0 50 l S
 BT /F1 8 Tf 55.0 36 Td (Generated by RedFox AI 0.1.0 - tools: ffuf, httpx, nmap, nuclei - audit chain 48 records verified - actions 22..) Tj ET
@@ -654,29 +664,29 @@ xref
 0000000210 00000 n 
 0000000307 00000 n 
 0000000409 00000 n 
-0000008023 00000 n 
-0000008159 00000 n 
-0000013556 00000 n 
-0000013692 00000 n 
-0000017779 00000 n 
-0000017916 00000 n 
-0000021977 00000 n 
-0000022115 00000 n 
-0000025817 00000 n 
-0000025955 00000 n 
-0000029784 00000 n 
-0000029922 00000 n 
-0000033814 00000 n 
-0000033952 00000 n 
-0000037093 00000 n 
-0000037231 00000 n 
-0000040379 00000 n 
-0000040517 00000 n 
-0000043651 00000 n 
-0000043789 00000 n 
-0000044796 00000 n 
+0000008022 00000 n 
+0000008158 00000 n 
+0000013687 00000 n 
+0000013823 00000 n 
+0000018054 00000 n 
+0000018191 00000 n 
+0000022272 00000 n 
+0000022410 00000 n 
+0000026040 00000 n 
+0000026178 00000 n 
+0000030127 00000 n 
+0000030265 00000 n 
+0000034107 00000 n 
+0000034245 00000 n 
+0000037386 00000 n 
+0000037524 00000 n 
+0000040672 00000 n 
+0000040810 00000 n 
+0000043944 00000 n 
+0000044082 00000 n 
+0000045089 00000 n 
 trailer
 << /Size 27 /Root 1 0 R >>
 startxref
-44934
+45227
 %%EOF
