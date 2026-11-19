@@ -1,0 +1,34 @@
+{
+  "name": "RedFox lab target (authorized, self-owned)",
+  "autonomy": 2,
+  "scope": {
+    "allow": [
+      "127.0.0.1",
+      "http://127.0.0.1:8080",
+      "http://127.0.0.1:8081"
+    ],
+    "deny": [],
+    "ports": "8080,8081"
+  },
+  "authorization": {
+    "operator": "Shanmukh Dheekonda",
+    "authorization_ref": "LAB-SELF-OWNED-2026-11-19",
+    "attested_at": "2026-11-19T00:00:00Z",
+    "lab_isolated": true,
+    "notes": "Loopback-only lab target shipped in lab/vulnapp.py. No third-party systems."
+  },
+  "config": {
+    "tls_verify": false,
+    "auto_intrusive": false,
+    "auth_check": {
+      "url": "http://127.0.0.1:8080/login",
+      "username_field": "username",
+      "password_field": "password",
+      "credentials": [
+        {"username": "admin", "password": "admin"},
+        {"username": "admin", "password": "password"}
+      ],
+      "max_attempts": 2
+    }
+  }
+}

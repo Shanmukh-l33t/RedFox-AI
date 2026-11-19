@@ -188,7 +188,9 @@ class Campaign:
 
     async def _validation(self, eng: dict, scope: Scope) -> dict[str, Any]:
         candidates = [f for f in self.store.findings_for(eng["id"])
-                      if f["status"] == "candidate"]
+                      if f["status"] == "candidate"
+                      # A reachable path is an observation, not a claim to prove.
+                      and not (f["source_tool"] == "ffuf" and f["severity"] == "info")]
         if not candidates:
             return {"skipped": "no candidates"}
         payload = [{
@@ -250,9 +252,27 @@ class Campaign:
                             eng, http_call, "validation")
                         obs = checker.parse(http_call, response, spec)
                         if obs.data.get("accepted"):
-                            confirmed = True
+                            # The proof belongs to a credential finding, not to
+                            # whatever candidate happened to point at the login URL.
+                            username = obs.data.get("username", "")
+                            cred_fp = fingerprint("auth", login_url, username)
+                            self.store.upsert_finding(
+                                eng["id"], cred_fp,
+                                f"Valid credentials for {login_url}", "critical",
+                                login_url,
+                                f"Operator-supplied credentials for '{username}' were "
+                                f"accepted by {login_url} (HTTP {response.status}).",
+                                status="validated", location=login_url,
+                                evidence_ids=[response.evidence_id],
+                                reproduction=[f"POST {login_url} with the reported "
+                                              "credentials",
+                                              f"Observed HTTP {response.status} with "
+                                              "authenticated content"],
+                                source_tool="authcheck",
+                            )
                             evidence_ids.append(response.evidence_id)
-                    reproduction = [f"POST {login_url} with operator-supplied credentials"]
+                    reproduction = [f"POST {login_url} with operator-supplied credentials "
+                                    "(see the credential finding)"]
             elif method == "http_probe":
                 url = item.get("url") or finding.get("location") or finding["asset"]
                 parts = urlsplit(url)
@@ -439,7 +459,10 @@ class Campaign:
 
     async def _triage(self, eng: dict) -> dict[str, Any]:
         candidates = [f for f in self.store.findings_for(eng["id"])
-                      if f["status"] == "candidate"]
+                      if f["status"] == "candidate"
+                      # Path discoveries are observations. Sending them to triage
+                      # invites invented titles and severities for a reachable URL.
+                      and f["source_tool"] != "ffuf"]
         if not candidates:
             return {"skipped": "no candidates"}
         payload = [{
@@ -483,6 +506,20 @@ class Campaign:
     async def _report(self, eng: dict, scope: Scope) -> dict[str, Any]:
         findings = [f for f in self.store.findings_for(eng["id"])
                     if f["status"] in {"validated", "candidate"}]
+        # A report is not "done" while candidates sit unproven: prove them first,
+        # then report. The planner may ask for the report too early; the engine owns
+        # this ordering so "validated" in a report means it was validated.
+        tasks = self.store.tasks_for(eng["id"])
+        validation_ran = any(t["kind"] == "validation" and t["state"] == "done"
+                             for t in tasks)
+        candidates = [f for f in findings if f["status"] == "candidate"
+                      and not (f["source_tool"] == "ffuf" and f["severity"] == "info")]
+        if candidates and not validation_ran:
+            self.store.add_task(eng["id"], "validation", "validation", "validation",
+                                {"reason": "report deferred until candidates are proven"})
+            self.store.event(eng["id"], "report.deferred",
+                             {"candidates": len(candidates)})
+            return {"deferred": "validation", "candidates": len(candidates)}
         meta = self._meta(eng)
         try:
             summary = await self._agents["report"].write(findings, {

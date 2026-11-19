@@ -83,7 +83,11 @@ def _row_count(body: str) -> int:
 
 async def confirm_exposure(runtime: Any, engagement: dict, url: str,
                            marker: str = "", agent: str = "validation") -> dict[str, Any]:
-    """Re-fetch a finding's location and confirm the exposed content is still there."""
+    """Re-fetch a finding's location and confirm the specific exposed content.
+
+    Without a marker this proves nothing: a URL returning 200 is not evidence of
+    a vulnerability, so the result is inconclusive rather than confirmed.
+    """
     resp: HttpResponse = await runtime.execute_http(
         engagement, HttpCall(tool="http_probe", target=url, method="GET", url=url,
                              risk="validation", reason="reproduce reported exposure"), agent)
@@ -91,9 +95,11 @@ async def confirm_exposure(runtime: Any, engagement: dict, url: str,
     if marker and marker in body:
         return {"confirmed": True, "reason": f"marker '{marker}' still served",
                 "evidence_ids": [resp.evidence_id]}
-    if not marker and resp.status == 200 and len(body) > 0:
-        return {"confirmed": True, "reason": "location still returns content",
-                "evidence_ids": [resp.evidence_id]}
+    if not marker:
+        return {"confirmed": False,
+                "reason": f"no marker to verify (HTTP {resp.status}); reachability alone "
+                          "is not proof",
+                "evidence_ids": [resp.evidence_id] if resp.evidence_id else []}
     return {"confirmed": False, "reason": f"HTTP {resp.status}, marker not found",
             "evidence_ids": [resp.evidence_id] if resp.evidence_id else []}
 

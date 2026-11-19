@@ -83,10 +83,11 @@ class NucleiAdapter(ToolAdapter):
             else:
                 argv += ["-tags", self.DISCOVERY_TAGS]
             yield ToolCall(
-                tool=self.name, target=url, argv=tuple(argv), risk=self.risk,
+                tool=self.binary, target=url, argv=tuple(argv), risk=self.risk,
                 timeout_s=900,
                 reason=("confirm candidate with templates " + ",".join(template_ids)
                         if self.validate else "template sweep over discovery/misconfig classes"),
+                meta={"adapter": self.name},
             )
 
     def parse(self, result: ExecutionResult) -> list[Observation]:

@@ -1,0 +1,33 @@
+{
+  "name": "example engagement",
+  "autonomy": 2,
+  "scope": {
+    "allow": [
+      "app.example.com",
+      "10.10.0.0/24",
+      "https://app.example.com:8443"
+    ],
+    "deny": [
+      "admin.app.example.com"
+    ],
+    "ports": "80,443,8000-8100"
+  },
+  "authorization": {
+    "operator": "Your Name",
+    "authorization_ref": "SOW-2026-014",
+    "attested_at": "2026-01-01T00:00:00Z",
+    "lab_isolated": false,
+    "notes": "Signed scope document held by the operator. Exclusions per section 4."
+  },
+  "config": {
+    "tls_verify": true,
+    "auto_intrusive": false,
+    "auth_check": {
+      "url": "https://app.example.com/login",
+      "username_field": "username",
+      "password_field": "password",
+      "credentials": [],
+      "max_attempts": 3
+    }
+  }
+}
