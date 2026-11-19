@@ -271,7 +271,8 @@ def _counts(findings: list[dict[str, Any]]) -> dict[str, int]:
 
 
 def _esc(text: Any) -> str:
-    return (str(text).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+    return (str(text).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;").replace("'", "&#39;"))
 
 
 def write_bundle(directory: Path, findings: list[dict[str, Any]], engagement: dict[str, Any],

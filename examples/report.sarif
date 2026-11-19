@@ -1,0 +1,578 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "RedFox AI",
+          "version": "0.1.0",
+          "informationUri": "https://github.com/Shanmukh-l33t/RedFox-AI",
+          "rules": [
+            {
+              "id": "ea17d92cf5ee355b3d256b2023483e98",
+              "name": "Valid credentials for http://127.0.0.1:8080/login",
+              "shortDescription": {
+                "text": "Valid credentials for http://127.0.0.1:8080/login"
+              },
+              "fullDescription": {
+                "text": "Operator-supplied credentials for 'admin' were accepted by http://127.0.0.1:8080/login (HTTP 200)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "critical",
+                "security-severity": "9.5"
+              }
+            },
+            {
+              "id": "codeigniter-env",
+              "name": "Codeigniter - .env File Discovery",
+              "shortDescription": {
+                "text": "Codeigniter - .env File Discovery"
+              },
+              "fullDescription": {
+                "text": "Codeigniter .env file was discovered."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "high",
+                "security-severity": "8.0"
+              }
+            },
+            {
+              "id": "generic-env",
+              "name": "Generic Env File Disclosure",
+              "shortDescription": {
+                "text": "Generic Env File Disclosure"
+              },
+              "fullDescription": {
+                "text": "A .env file was discovered containing sensitive information like database credentials and tokens. It should not be publicly accessible."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "high",
+                "security-severity": "8.3"
+              }
+            },
+            {
+              "id": "laravel-env",
+              "name": "Laravel - Sensitive Information Disclosure",
+              "shortDescription": {
+                "text": "Laravel - Sensitive Information Disclosure"
+              },
+              "fullDescription": {
+                "text": "A Laravel .env file was discovered, which stores sensitive information like database credentials and tokens. It should not be publicly accessible."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "high",
+                "security-severity": "8.3"
+              }
+            },
+            {
+              "id": "48ddc995d4772aab2f0baf55bfe5ab96",
+              "name": "Discovered path http://127.0.0.1:8080/admin/",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8080/admin/"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (192 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "943ca1d3a1b73258310dce65cdb6a7b2",
+              "name": "Discovered path http://127.0.0.1:8080/backup.zip",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8080/backup.zip"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (16 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "c773adcec2c03219a1d0420ac0af58a9",
+              "name": "Discovered path http://127.0.0.1:8080/files/",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8080/files/"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (216 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "17d148e969b761020afd26613e72ed62",
+              "name": "Discovered path http://127.0.0.1:8080/login",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8080/login"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (210 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "7c92d86e0e98d6a071cf96e5960845d8",
+              "name": "Discovered path http://127.0.0.1:8080/phpinfo.php",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8080/phpinfo.php"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (213 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "a7fd80d8c779c6bc3ca028897749923a",
+              "name": "Discovered path http://127.0.0.1:8080/search",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8080/search"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (75 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "abb0620c708f7ccc311714395ac10d37",
+              "name": "Discovered path http://127.0.0.1:8080/server-status",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8080/server-status"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (185 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            }
+          ]
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "startTimeUtc": "2026-11-19T00:06:16+00:00"
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "ea17d92cf5ee355b3d256b2023483e98",
+          "level": "error",
+          "message": {
+            "text": "Valid credentials for http://127.0.0.1:8080/login \u2014 http://127.0.0.1:8080/login"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/login"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "critical",
+            "cvss": null,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_9bef6a02a259"
+            ],
+            "sourceTool": "authcheck",
+            "reproduction": [
+              "POST http://127.0.0.1:8080/login with the reported credentials",
+              "Observed HTTP 200 with authenticated content"
+            ]
+          }
+        },
+        {
+          "ruleId": "codeigniter-env",
+          "level": "error",
+          "message": {
+            "text": "Codeigniter - .env File Discovery \u2014 http://127.0.0.1:8081/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": null,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_ee497b292b84"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0' 'http://127.0.0.1:8081/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_3b3895807550_nuclei.log",
+              "Re-ran nuclei template(s): codeigniter-env"
+            ]
+          }
+        },
+        {
+          "ruleId": "codeigniter-env",
+          "level": "error",
+          "message": {
+            "text": "Codeigniter - .env File Discovery \u2014 http://127.0.0.1:8080/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": null,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_1b8e1bdfb610"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0' 'http://127.0.0.1:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_f4cfadabb145_nuclei.log",
+              "Re-ran nuclei template(s): codeigniter-env"
+            ]
+          }
+        },
+        {
+          "ruleId": "generic-env",
+          "level": "error",
+          "message": {
+            "text": "Generic Env File Disclosure \u2014 http://127.0.0.1:8080/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": 8.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_8eba3385ca55"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15' 'http://127.0.0.1:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_652b354c66da_nuclei.log",
+              "Re-ran nuclei template(s): generic-env"
+            ]
+          }
+        },
+        {
+          "ruleId": "generic-env",
+          "level": "error",
+          "message": {
+            "text": "Generic Env File Disclosure \u2014 http://127.0.0.1:8081/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": 8.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_55e2f7cc3432"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.3 Safari/605.1.15' 'http://127.0.0.1:8081/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_adc50199b80e_nuclei.log",
+              "Re-ran nuclei template(s): generic-env"
+            ]
+          }
+        },
+        {
+          "ruleId": "laravel-env",
+          "level": "error",
+          "message": {
+            "text": "Laravel - Sensitive Information Disclosure \u2014 http://127.0.0.1:8080/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": 8.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_485ce17b90ca"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 14.3) AppleWebKit/619.29 (KHTML, like Gecko) Version/17.0.14 Safari/619.29' 'http://127.0.0.1:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_8761665890c2_nuclei.log",
+              "Re-ran nuclei template(s): laravel-env"
+            ]
+          }
+        },
+        {
+          "ruleId": "48ddc995d4772aab2f0baf55bfe5ab96",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8080/admin/ \u2014 http://127.0.0.1:8080/admin/"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/admin/"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_8c4ccca78133"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "943ca1d3a1b73258310dce65cdb6a7b2",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8080/backup.zip \u2014 http://127.0.0.1:8080/backup.zip"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/backup.zip"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_8c4ccca78133"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "c773adcec2c03219a1d0420ac0af58a9",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8080/files/ \u2014 http://127.0.0.1:8080/files/"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/files/"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_8c4ccca78133"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "17d148e969b761020afd26613e72ed62",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8080/login \u2014 http://127.0.0.1:8080/login"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/login"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_8c4ccca78133"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "7c92d86e0e98d6a071cf96e5960845d8",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8080/phpinfo.php \u2014 http://127.0.0.1:8080/phpinfo.php"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/phpinfo.php"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_8c4ccca78133"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "a7fd80d8c779c6bc3ca028897749923a",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8080/search \u2014 http://127.0.0.1:8080/search"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/search"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_8c4ccca78133"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "abb0620c708f7ccc311714395ac10d37",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8080/server-status \u2014 http://127.0.0.1:8080/server-status"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/server-status"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_8c4ccca78133"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        }
+      ],
+      "properties": {
+        "engagement": "RedFox lab target (authorized, self-owned)",
+        "autonomy": 2,
+        "authorization": "LAB-SELF-OWNED-2026-11-19"
+      }
+    }
+  ]
+}

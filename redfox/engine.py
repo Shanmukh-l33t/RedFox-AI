@@ -45,6 +45,14 @@ class Campaign:
         self.toolbox = ToolBox(self.runtime)
         self.llm = llm or LLMClient(settings)
         self.wordlist = Path(__file__).resolve().parent.parent / "tools" / "wordlists" / "common.txt"
+        self._agents = build_agents(self.llm, self.toolbox.catalog_text())
+
+    async def write_report(self, engagement_id: str) -> dict[str, Any]:
+        """Re-render the report from stored state, without scanning anything."""
+        eng = self.store.get_engagement(engagement_id)
+        if not eng:
+            raise ValueError(f"unknown engagement {engagement_id}")
+        return await self._report(eng, Scope.from_dict(eng["scope"]))
 
     # ---- entry points -------------------------------------------------
     async def run(self, engagement_id: str, max_steps: int | None = None) -> dict[str, Any]:
@@ -134,7 +142,15 @@ class Campaign:
 
         eng = self.store.get_engagement(engagement_id) or eng
         if eng["status"] == "running":
-            self.store.set_status(engagement_id, "completed")
+            report_done = any(t["kind"] == "report" and t["state"] == "done"
+                              for t in self.store.tasks_for(engagement_id))
+            if report_done:
+                self.store.set_status(engagement_id, "completed")
+            else:
+                # Out of budget without a report: paused is the honest status.
+                self.store.set_status(engagement_id, "paused")
+                self.store.event(engagement_id, "campaign.budget_exhausted",
+                                 {"steps": steps})
         return self.summary(engagement_id, denial_spike=denial_spike, steps=steps)
 
     # ---- dispatch -----------------------------------------------------
@@ -533,6 +549,8 @@ class Campaign:
                                      f"({exc}). The findings below are unaffected.",
                 "remediation": {},
             }
+        if not (summary.get("executive_summary") or "").strip():
+            summary["executive_summary"] = _count_summary(findings)
         meta["model"] = self.llm.model or self.llm.provider
         directory = self.settings.home / "reports" / eng["id"]
         paths = report.write_bundle(directory, findings, eng, summary, meta)
@@ -609,6 +627,22 @@ class Campaign:
             "audit": {"ok": ok, "message": audit_message},
             "report_dir": str(self.settings.home / "reports" / eid),
         }
+
+
+def _count_summary(findings: list[dict]) -> str:
+    """Factual summary built from the findings table, used when the model is silent."""
+    validated = [f for f in findings if f["status"] == "validated"]
+    if not validated:
+        return ("No finding was validated during this engagement. Any candidates listed "
+                "below are unproven and should be reviewed by an operator.")
+    counts = {sev: sum(1 for f in validated if f["severity"] == sev)
+              for sev in ("critical", "high", "medium", "low")}
+    parts = [f"{count} {sev}" for sev, count in counts.items() if count]
+    top = ", ".join(sorted({f["title"] for f in validated
+                            if f["severity"] in {"critical", "high"}}))
+    return (f"{len(validated)} finding(s) were validated with recorded evidence "
+            f"({', '.join(parts)}). " + (f"The highest-impact issues: {top}. " if top else "")
+            + "Each finding below links to the tool output that proves it.")
 
 
 def _fallback_triage(batch: list[dict]) -> list[dict]:

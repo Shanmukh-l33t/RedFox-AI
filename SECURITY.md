@@ -40,6 +40,9 @@ RedFox is a local operator tool, not a multi-tenant service.
   restricted egress for anything beyond a lab.
 - The database, evidence and audit log are plaintext files under `~/.redfox`.
   Protect that directory like any other engagement record.
+- Credentials supplied for the auth-check adapter are stored in the engagement
+  record in plaintext. For real engagements, keep them out of the scope file and
+  pass them at run time, or run against a local model so nothing leaves the host.
 - DNS is not resolved when a scope is checked, so a name that later resolves to
   an out-of-scope address is not detected at the DNS layer. Match on IP/CIDR when
   that matters.

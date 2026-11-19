@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>RedFox AI report — RedFox lab target (authorized, self-owned)</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin:0; padding:48px 6vw; background:#0d1117; color:#e6edf3;
+         font:16px/1.6 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif; }
+  h1 { font-size:34px; letter-spacing:-.02em; margin:0 0 8px; }
+  h2 { margin-top:44px; font-size:22px; border-bottom:1px solid #21262d; padding-bottom:8px; }
+  h3 { font-size:18px; margin:0 0 6px; }
+  h4 { font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:#8b949e; margin:16px 0 6px; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px;
+          background:#161b22; padding:2px 6px; border-radius:4px; word-break:break-all; }
+  .notice { border-left:3px solid #d29922; background:#1c1610; padding:12px 16px;
+             border-radius:6px; color:#e3b341; font-size:14px; }
+  .grid { display:flex; gap:16px; flex-wrap:wrap; margin:28px 0; }
+  .stat { flex:1 1 120px; background:#161b22; border:1px solid #21262d; border-radius:10px;
+           padding:14px 16px; }
+  .stat b { display:block; font-size:26px; }
+  .stat span { color:#8b949e; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+  .tablewrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table { width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; }
+  td code, td a { white-space:nowrap; }
+  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid #21262d; }
+  th { color:#8b949e; font-weight:600; font-size:12px; text-transform:uppercase; }
+  .finding { background:#161b22; border:1px solid #21262d; border-radius:12px;
+              padding:20px 22px; margin:16px 0; }
+  .sev { font-size:11px; text-transform:uppercase; letter-spacing:.08em; padding:3px 8px;
+          border-radius:999px; font-weight:700; }
+  .sev.critical { background:#3d1114; color:#ff7b72; }
+  .sev.high { background:#3d1d11; color:#ffa657; }
+  .sev.medium { background:#3d3211; color:#e3b341; }
+  .sev.low { background:#12261e; color:#7ee787; }
+  .sev.info { background:#1c2128; color:#8b949e; }
+  .meta { color:#8b949e; font-size:13px; }
+  .evidence li { font-size:13px; color:#8b949e; }
+  footer { margin-top:48px; color:#6e7681; font-size:12px; }
+</style></head><body>
+<h1>Penetration test report — RedFox lab target (authorized, self-owned)</h1>
+<p class="meta">Shanmukh Dheekonda ·
+ authorization <code>LAB-SELF-OWNED-2026-11-19</code> ·
+ autonomy L2 · generated 2026-11-19T00:29:24+00:00</p>
+<p class="notice">Authorized testing only. RedFox AI refuses targets that are not present in an operator-attested authorization scope. Unauthorized use is illegal.</p>
+<div class="grid">
+  <div class="stat"><b>13</b><span>findings</span></div>
+  <div class="stat"><b>1</b><span>critical</span></div>
+  <div class="stat"><b>5</b><span>high</span></div>
+  <div class="stat"><b>0</b><span>medium</span></div>
+  <div class="stat"><b>12</b><span>actions</span></div>
+  <div class="stat"><b>0</b><span>refused</span></div>
+</div>
+<h2>Executive summary</h2>
+<p>6 finding(s) were validated with recorded evidence (1 critical, 5 high). The highest-impact issues: Codeigniter - .env File Discovery, Generic Env File Disclosure, Laravel - Sensitive Information Disclosure, Valid credentials for http://127.0.0.1:8080/login. Each finding below links to the tool output that proves it.</p>
+<h2>Findings</h2>
+<div class="tablewrap"><table><thead><tr><th>#</th><th>Severity</th><th>Finding</th>
+<th>Asset</th><th>Status</th></tr></thead>
+<tbody><tr><td>1</td><td><span class='sev critical'>critical</span></td><td>Valid credentials for http://127.0.0.1:8080/login</td><td><code>http://127.0.0.1:8080/login</code></td><td>validated</td></tr><tr><td>2</td><td><span class='sev high'>high</span></td><td>Codeigniter - .env File Discovery</td><td><code>http://127.0.0.1:8081/.env</code></td><td>validated</td></tr><tr><td>3</td><td><span class='sev high'>high</span></td><td>Codeigniter - .env File Discovery</td><td><code>http://127.0.0.1:8080/.env</code></td><td>validated</td></tr><tr><td>4</td><td><span class='sev high'>high</span></td><td>Generic Env File Disclosure</td><td><code>http://127.0.0.1:8080/.env</code></td><td>validated</td></tr><tr><td>5</td><td><span class='sev high'>high</span></td><td>Generic Env File Disclosure</td><td><code>http://127.0.0.1:8081/.env</code></td><td>validated</td></tr><tr><td>6</td><td><span class='sev high'>high</span></td><td>Laravel - Sensitive Information Disclosure</td><td><code>http://127.0.0.1:8080/.env</code></td><td>validated</td></tr><tr><td>7</td><td><span class='sev info'>info</span></td><td>Discovered path http://127.0.0.1:8080/admin/</td><td><code>http://127.0.0.1:8080/admin/</code></td><td>candidate</td></tr><tr><td>8</td><td><span class='sev info'>info</span></td><td>Discovered path http://127.0.0.1:8080/backup.zip</td><td><code>http://127.0.0.1:8080/backup.zip</code></td><td>candidate</td></tr><tr><td>9</td><td><span class='sev info'>info</span></td><td>Discovered path http://127.0.0.1:8080/files/</td><td><code>http://127.0.0.1:8080/files/</code></td><td>candidate</td></tr><tr><td>10</td><td><span class='sev info'>info</span></td><td>Discovered path http://127.0.0.1:8080/login</td><td><code>http://127.0.0.1:8080/login</code></td><td>candidate</td></tr><tr><td>11</td><td><span class='sev info'>info</span></td><td>Discovered path http://127.0.0.1:8080/phpinfo.php</td><td><code>http://127.0.0.1:8080/phpinfo.php</code></td><td>candidate</td></tr><tr><td>12</td><td><span class='sev info'>info</span></td><td>Discovered path http://127.0.0.1:8080/search</td><td><code>http://127.0.0.1:8080/search</code></td><td>candidate</td></tr><tr><td>13</td><td><span class='sev info'>info</span></td><td>Discovered path http://127.0.0.1:8080/server-status</td><td><code>http://127.0.0.1:8080/server-status</code></td><td>candidate</td></tr></tbody></table></div>
+
+        <section class="finding">
+          <h3><span class="sev critical">critical</span>
+              Valid credentials for http://127.0.0.1:8080/login</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/login</code>
+             · validated · authcheck</p>
+          <p>Operator-supplied credentials for &#39;admin&#39; were accepted by http://127.0.0.1:8080/login (HTTP 200).</p>
+          <h4>Reproduction</h4><ol><li>POST http://127.0.0.1:8080/login with the reported credentials</li><li>Observed HTTP 200 with authenticated content</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_9bef6a02a259</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_5b7f7175c813_authcheck.http</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev high">high</span>
+              Codeigniter - .env File Discovery</h3>
+          <p class="meta"><code>http://127.0.0.1:8081/.env</code>
+             · validated · nuclei_validate</p>
+          <p>Codeigniter .env file was discovered.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0&#39; &#39;http://127.0.0.1:8081/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_3b3895807550_nuclei.log</li><li>Re-ran nuclei template(s): codeigniter-env</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_ee497b292b84</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_3b3895807550_nuclei.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev high">high</span>
+              Codeigniter - .env File Discovery</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/.env</code>
+             · validated · nuclei_validate</p>
+          <p>Codeigniter .env file was discovered.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0&#39; &#39;http://127.0.0.1:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_f4cfadabb145_nuclei.log</li><li>Re-ran nuclei template(s): codeigniter-env</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_1b8e1bdfb610</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_f4cfadabb145_nuclei.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev high">high</span>
+              Generic Env File Disclosure</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/.env</code>
+             · validated · nuclei_validate</p>
+          <p>A .env file was discovered containing sensitive information like database credentials and tokens. It should not be publicly accessible.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15&#39; &#39;http://127.0.0.1:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_652b354c66da_nuclei.log</li><li>Re-ran nuclei template(s): generic-env</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8eba3385ca55</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_652b354c66da_nuclei.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev high">high</span>
+              Generic Env File Disclosure</h3>
+          <p class="meta"><code>http://127.0.0.1:8081/.env</code>
+             · validated · nuclei_validate</p>
+          <p>A .env file was discovered containing sensitive information like database credentials and tokens. It should not be publicly accessible.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.3 Safari/605.1.15&#39; &#39;http://127.0.0.1:8081/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_adc50199b80e_nuclei.log</li><li>Re-ran nuclei template(s): generic-env</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_55e2f7cc3432</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_adc50199b80e_nuclei.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev high">high</span>
+              Laravel - Sensitive Information Disclosure</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/.env</code>
+             · validated · nuclei_validate</p>
+          <p>A Laravel .env file was discovered, which stores sensitive information like database credentials and tokens. It should not be publicly accessible.</p>
+          <h4>Reproduction</h4><ol><li>Replay: curl -X &#39;GET&#39; -d &#39;&#39; -H &#39;Accept: */*&#39; -H &#39;Accept-Language: en&#39; -H &#39;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 14.3) AppleWebKit/619.29 (KHTML, like Gecko) Version/17.0.14 Safari/619.29&#39; &#39;http://127.0.0.1:8080/.env&#39;</li><li>Evidence file: C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_8761665890c2_nuclei.log</li><li>Re-ran nuclei template(s): laravel-env</li></ol>
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_485ce17b90ca</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_8761665890c2_nuclei.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev info">info</span>
+              Discovered path http://127.0.0.1:8080/admin/</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/admin/</code>
+             · candidate · ffuf</p>
+          <p>Content discovery returned HTTP 200 (192 bytes).</p>
+          
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8c4ccca78133</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_b34c694f9e9a_ffuf.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev info">info</span>
+              Discovered path http://127.0.0.1:8080/backup.zip</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/backup.zip</code>
+             · candidate · ffuf</p>
+          <p>Content discovery returned HTTP 200 (16 bytes).</p>
+          
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8c4ccca78133</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_b34c694f9e9a_ffuf.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev info">info</span>
+              Discovered path http://127.0.0.1:8080/files/</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/files/</code>
+             · candidate · ffuf</p>
+          <p>Content discovery returned HTTP 200 (216 bytes).</p>
+          
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8c4ccca78133</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_b34c694f9e9a_ffuf.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev info">info</span>
+              Discovered path http://127.0.0.1:8080/login</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/login</code>
+             · candidate · ffuf</p>
+          <p>Content discovery returned HTTP 200 (210 bytes).</p>
+          
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8c4ccca78133</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_b34c694f9e9a_ffuf.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev info">info</span>
+              Discovered path http://127.0.0.1:8080/phpinfo.php</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/phpinfo.php</code>
+             · candidate · ffuf</p>
+          <p>Content discovery returned HTTP 200 (213 bytes).</p>
+          
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8c4ccca78133</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_b34c694f9e9a_ffuf.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev info">info</span>
+              Discovered path http://127.0.0.1:8080/search</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/search</code>
+             · candidate · ffuf</p>
+          <p>Content discovery returned HTTP 200 (75 bytes).</p>
+          
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8c4ccca78133</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_b34c694f9e9a_ffuf.log</li></ul>
+          
+        </section>
+        <section class="finding">
+          <h3><span class="sev info">info</span>
+              Discovered path http://127.0.0.1:8080/server-status</h3>
+          <p class="meta"><code>http://127.0.0.1:8080/server-status</code>
+             · candidate · ffuf</p>
+          <p>Content discovery returned HTTP 200 (185 bytes).</p>
+          
+          <h4>Evidence</h4><ul class="evidence"><li><code>ev_8c4ccca78133</code> C:\Users\ImMandatory\AppData\Local\hermes\cache\scratch\rf-final\evidence\eng_4d7ace09c873\act_b34c694f9e9a_ffuf.log</li></ul>
+          
+        </section>
+<h2>Tooling and trace</h2>
+<p class="meta">Tools used: authcheck, ffuf, httpx, nuclei ·
+ audit chain 26 records verified ·
+ scope <code>{&quot;allow&quot;: [{&quot;kind&quot;: &quot;ip&quot;, &quot;value&quot;: &quot;127.0.0.1&quot;}, {&quot;kind&quot;: &quot;url&quot;, &quot;value&quot;: &quot;http://127.0.0.1:8080&quot;}, {&quot;kind&quot;: &quot;url&quot;, &quot;value&quot;: &quot;http://127.0.0.1:8081&quot;}], &quot;deny&quot;: [], &quot;ports&quot;: &quot;8080-8081&quot;}</code></p>
+<footer>Generated by RedFox AI 0.1.0. Findings are listed only where recorded evidence exists.</footer>
+</body></html>

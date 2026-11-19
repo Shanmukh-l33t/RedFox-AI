@@ -109,7 +109,7 @@ def cmd_report(args: argparse.Namespace) -> int:
         print("no such engagement", file=sys.stderr)
         return 2
     campaign = Campaign(settings, store, audit, policy)
-    result = asyncio.run(campaign._report(eng, Scope.from_dict(eng["scope"])))
+    result = asyncio.run(campaign.write_report(args.engagement))
     print(json.dumps(result, indent=2))
     return 0
 
