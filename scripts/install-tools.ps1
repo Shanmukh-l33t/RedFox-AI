@@ -35,7 +35,7 @@ if (-not (Get-Command nmap -ErrorAction SilentlyContinue)) {
 
 Remove-Item -Recurse -Force $tmp
 Write-Host ""
-Write-Host "Installed into $bin:"
+Write-Host "Installed into ${bin}:"
 Get-ChildItem $bin | ForEach-Object { Write-Host "  $($_.Name)" }
 Write-Host ""
 Write-Host "Run 'tools\bin\nuclei.exe -update-templates' once, then 'redfox tools'."
