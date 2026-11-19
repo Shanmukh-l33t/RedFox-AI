@@ -147,6 +147,17 @@ class Campaign:
                 self.store.set_status(engagement_id, "paused")
                 self.store.event(engagement_id, "campaign.paused", {"reason": str(exc)})
                 raise
+            except Exception as exc:  # a task bug must not take the campaign down
+                import traceback
+
+                self.store.finish_task(task["id"], "failed",
+                                       {"error": f"{type(exc).__name__}: {exc}"})
+                self.store.event(engagement_id, "task.error",
+                                 {"kind": task["kind"],
+                                  "error": f"{type(exc).__name__}: {exc}"[:300],
+                                  "trace": traceback.format_exc()[-800:]})
+                outcome = {"error": str(exc)}
+                consecutive_denials = 0
             steps += 1
 
             if consecutive_denials >= 3:
@@ -185,13 +196,19 @@ class Campaign:
             return await self._run_authcheck(eng, task)
         if kind == "triage":
             return await self._triage(eng)
-        if kind == "validation":
+        if kind in {"validation", "http_probe"}:
+            # A planner may ask to "probe this URL"; the validator owns which
+            # candidates get proven and how, so one validation pass covers it.
             return await self._validation(eng, scope)
         if kind == "impact":
             return await self._impact(eng)
         if kind == "report":
             return await self._report(eng, scope)
-        raise ValueError(f"unknown task kind {kind}")
+        # A model must never be able to end a campaign by naming something we
+        # do not implement. Record it and move on.
+        self.store.event(eng["id"], "task.unsupported", {"kind": kind,
+                                                         "agent": task.get("agent", "")})
+        return {"error": f"unsupported task kind {kind}"}
 
     async def _run_tool(self, eng: dict, scope: Scope, task: dict) -> dict[str, Any]:
         adapter = self.toolbox.get(task["kind"])

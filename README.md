@@ -196,10 +196,12 @@ redfox/
   runtime.py     the only process/HTTP executor
   db.py          SQLite schema and queries
   audit.py       hash-chained audit log
-  adapters/      nmap, nuclei, httpx, subfinder, ffuf, whatweb, sslscan, authcheck
+  impact.py      the gated read-only post-exploitation step
+  adapters/      nmap, nuclei, httpx, subfinder, amass, ffuf, whatweb, sslscan, authcheck
   agents.py      orchestrator, triage, validator, reporter
   engine.py      resumable campaign state machine
   report.py      SARIF / Markdown / HTML
+  pdf.py         dependency-free PDF renderer
   api.py         FastAPI + WebSocket
   cli.py         argparse CLI
   web/           static SPA
@@ -207,6 +209,7 @@ lab/vulnapp.py   deliberately vulnerable loopback target
 docs/            architecture, design synthesis, adapter guide, runbook, references
 tools/           bundled wordlist; binaries are gitignored
 examples/        the lab engagement, plus a recorded run's report and audit log
+scripts/         tool installer, evidence verifier, soak harness
 ```
 
 ## Design record

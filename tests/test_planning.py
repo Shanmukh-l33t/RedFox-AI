@@ -108,3 +108,27 @@ def test_scope_roundtrip_keeps_ports() -> None:
     scope = Scope.from_dict({"allow": ["lab.internal"], "ports": "8080-8082"})
     assert scope.as_dict()["ports"] == "8080-8082"
     assert scope.check_ports([8081])[0]
+
+
+def test_unknown_task_kind_does_not_crash_the_campaign(tmp_path) -> None:
+    """A model naming a tool we do not implement must not end a run."""
+    import asyncio
+
+    from redfox.audit import AuditLog
+    from redfox.config import Settings
+    from redfox.db import Store
+    from redfox.engine import Campaign
+    from redfox.policy import PolicyEnforcementPoint
+
+    settings = Settings.load(home=tmp_path / "home")
+    store = Store(settings.db_path)
+    campaign = Campaign(settings, store, AuditLog(settings.audit_path),
+                        PolicyEnforcementPoint(settings))
+    eng = {"id": "eng_x", "autonomy": 2, "scope": {"allow": ["lab.internal"]},
+           "authorization": {"operator": "t", "authorization_ref": "A",
+                             "attested_at": "2026-01-01"}, "config": {}}
+    store.create_engagement("x", eng["scope"], eng["authorization"], 2)
+    result = asyncio.run(campaign._dispatch(
+        eng, Scope.from_dict(eng["scope"]),
+        {"kind": "metasploit", "agent": "enum", "payload": {}, "id": "t1"}))
+    assert "error" in result
