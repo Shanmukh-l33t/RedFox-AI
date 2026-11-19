@@ -55,7 +55,7 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install -e ".[dev]"
       - name: Install scanners
-        run: ./scripts/install-tools.sh
+        run: bash ./scripts/install-tools.sh
       - name: Update nuclei templates
         run: ./tools/bin/nuclei -update-templates -disable-update-check || true
       - name: Run the lab target and a campaign
