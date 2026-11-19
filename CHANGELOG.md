@@ -1,5 +1,44 @@
 # Changelog
 
+## v0.4.0
+
+Two gaps from the previous release's own "what it does not do" list are closed, and
+one of them is proven in CI rather than described.
+
+### Added
+
+- **Per-tool container isolation.** `REDFOX_ISOLATE=docker` runs an invocation as
+  `docker run` of an image that holds only that tool: no capabilities, no new
+  privileges, a pid limit, and the engagement's evidence directory as the only
+  mount. The policy gate is unchanged and runs before the container starts. A tool
+  with no image is refused (`isolation.no_image`) instead of silently running on
+  the host. A CI job runs nmap inside a container against the lab and asserts the
+  port is still found and the evidence still written through the mount.
+- **API authentication.** `REDFOX_API_TOKEN` requires `Authorization: Bearer …` on
+  every `/api` route (constant-time compare) and `?token=` on the WebSocket. The UI
+  asks for the token inline and remembers it; a modal dialog was rejected because
+  it blocked the event stream the UI exists to show.
+
+### Changed
+
+- `docs/ARCHITECTURE.md#isolation`, the runbook and the README describe what
+  isolation contains and does not, instead of listing it as missing.
+
+### Known limits
+
+- No images yet for `ffuf`, `amass`, `whatweb`, `sslscan`; they are refused while
+  isolation is on. Adding an entry to `redfox/isolation.py` is the whole change.
+
+## v0.3.2
+
+`redfox --version` and the package metadata still said 0.1.0. The version now has a
+single source, `redfox/__init__.py`.
+
+## v0.3.1
+
+Planner memory is one line per tool (observations found, denials, or why a tool was
+unavailable) instead of one tool's raw observation dump inside the prompt.
+
 ## v0.3.0
 
 Hardening: a security review of the platform itself, with the fixes it found, plus
