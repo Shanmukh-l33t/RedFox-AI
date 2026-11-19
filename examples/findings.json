@@ -1,32 +1,7 @@
 [
   {
-    "id": "find_d3eb5187340e",
-    "engagement_id": "eng_4d7ace09c873",
-    "fingerprint": "ea17d92cf5ee355b3d256b2023483e98ae1d71aa",
-    "title": "Valid credentials for http://127.0.0.1:8080/login",
-    "severity": "critical",
-    "cvss": null,
-    "cve": "",
-    "asset": "http://127.0.0.1:8080/login",
-    "location": "http://127.0.0.1:8080/login",
-    "description": "Operator-supplied credentials for 'admin' were accepted by http://127.0.0.1:8080/login (HTTP 200).",
-    "remediation": "",
-    "status": "validated",
-    "source_tool": "authcheck",
-    "template_id": "",
-    "created_at": "2026-11-19T00:21:32+00:00",
-    "updated_at": "2026-11-19T00:21:32+00:00",
-    "reproduction": [
-      "POST http://127.0.0.1:8080/login with the reported credentials",
-      "Observed HTTP 200 with authenticated content"
-    ],
-    "evidence_ids": [
-      "ev_9bef6a02a259"
-    ]
-  },
-  {
-    "id": "find_5e50ff7afc40",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_182a25b35f03",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "20a1b8c2e71cdaf79f56c0a5b1ab5b6063233700",
     "title": "Codeigniter - .env File Discovery",
     "severity": "high",
@@ -39,20 +14,19 @@
     "status": "validated",
     "source_tool": "nuclei_validate",
     "template_id": "codeigniter-env",
-    "created_at": "2026-11-19T00:09:48+00:00",
-    "updated_at": "2026-11-19T00:21:24+00:00",
+    "created_at": "2026-11-19T08:15:23+00:00",
+    "updated_at": "2026-11-19T08:19:23+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0' 'http://127.0.0.1:8081/.env'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_3b3895807550_nuclei.log",
-      "Re-ran nuclei template(s): codeigniter-env"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/.env'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_19d0d19da67f_nuclei.log"
     ],
     "evidence_ids": [
-      "ev_ee497b292b84"
+      "ev_731592002254"
     ]
   },
   {
-    "id": "find_9cd60da83b2a",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_55e158a3f47e",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "8394e268e1cd19d37f37e6bfac6286d8a9e8d93a",
     "title": "Codeigniter - .env File Discovery",
     "severity": "high",
@@ -65,20 +39,19 @@
     "status": "validated",
     "source_tool": "nuclei_validate",
     "template_id": "codeigniter-env",
-    "created_at": "2026-11-19T00:09:10+00:00",
-    "updated_at": "2026-11-19T00:21:26+00:00",
+    "created_at": "2026-11-19T08:14:19+00:00",
+    "updated_at": "2026-11-19T08:19:18+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0' 'http://127.0.0.1:8080/.env'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_f4cfadabb145_nuclei.log",
-      "Re-ran nuclei template(s): codeigniter-env"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Linux i686; rv:1.9.7.20) Gecko/ Firefox/3.6.7' 'http://127.0.0.1:8080/.env'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_a15078b16a76_nuclei.log"
     ],
     "evidence_ids": [
-      "ev_1b8e1bdfb610"
+      "ev_0275d2172cd5"
     ]
   },
   {
-    "id": "find_f1391c6a9958",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_b16d76ce004f",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "422c20f6190ad576cd8ad09b3767be8d09371f0e",
     "title": "Generic Env File Disclosure",
     "severity": "high",
@@ -91,20 +64,20 @@
     "status": "validated",
     "source_tool": "nuclei_validate",
     "template_id": "generic-env",
-    "created_at": "2026-11-19T00:09:10+00:00",
-    "updated_at": "2026-11-19T00:21:28+00:00",
+    "created_at": "2026-11-19T08:14:19+00:00",
+    "updated_at": "2026-11-19T08:19:43+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15' 'http://127.0.0.1:8080/.env'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_652b354c66da_nuclei.log",
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh, Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.13 Safari/605.1.15' 'http://127.0.0.1:8080/.env'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_512560822a36_nuclei.log",
       "Re-ran nuclei template(s): generic-env"
     ],
     "evidence_ids": [
-      "ev_8eba3385ca55"
+      "ev_abf07f11e678"
     ]
   },
   {
-    "id": "find_1362624c4982",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_eec9fd9d64e5",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "68b274f8f4ff32c15bcb4fd3fa1db917da7503f4",
     "title": "Generic Env File Disclosure",
     "severity": "high",
@@ -117,20 +90,20 @@
     "status": "validated",
     "source_tool": "nuclei_validate",
     "template_id": "generic-env",
-    "created_at": "2026-11-19T00:09:48+00:00",
-    "updated_at": "2026-11-19T00:21:30+00:00",
+    "created_at": "2026-11-19T08:15:23+00:00",
+    "updated_at": "2026-11-19T08:19:48+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.3 Safari/605.1.15' 'http://127.0.0.1:8081/.env'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_adc50199b80e_nuclei.log",
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1' 'http://127.0.0.1:8081/.env'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_7c117f7d32e3_nuclei.log",
       "Re-ran nuclei template(s): generic-env"
     ],
     "evidence_ids": [
-      "ev_55e2f7cc3432"
+      "ev_3ae012d13906"
     ]
   },
   {
-    "id": "find_d95a8260ee8d",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_1b4a4c56635b",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "555bbffdaf4ab30011d94135cd97912bff8c0cc8",
     "title": "Laravel - Sensitive Information Disclosure",
     "severity": "high",
@@ -143,20 +116,46 @@
     "status": "validated",
     "source_tool": "nuclei_validate",
     "template_id": "laravel-env",
-    "created_at": "2026-11-19T00:09:10+00:00",
-    "updated_at": "2026-11-19T00:21:32+00:00",
+    "created_at": "2026-11-19T08:14:19+00:00",
+    "updated_at": "2026-11-19T08:20:19+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 14.3) AppleWebKit/619.29 (KHTML, like Gecko) Version/17.0.14 Safari/619.29' 'http://127.0.0.1:8080/.env'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_8761665890c2_nuclei.log",
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36' 'http://127.0.0.1:8080/.env'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_e6af54a8ee5b_nuclei.log",
       "Re-ran nuclei template(s): laravel-env"
     ],
     "evidence_ids": [
-      "ev_485ce17b90ca"
+      "ev_861ec23ce25a"
     ]
   },
   {
-    "id": "find_b3dc27762ba1",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_4d09aa6c8197",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "cafeb858fd35b2e178f5d90472339f9beb22f528",
+    "title": "Laravel - Sensitive Information Disclosure",
+    "severity": "high",
+    "cvss": 8.3,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/.env",
+    "location": "http://127.0.0.1:8081/.env",
+    "description": "A Laravel .env file was discovered, which stores sensitive information like database credentials and tokens. It should not be publicly accessible.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "nuclei_validate",
+    "template_id": "laravel-env",
+    "created_at": "2026-11-19T08:15:23+00:00",
+    "updated_at": "2026-11-19T08:20:25+00:00",
+    "reproduction": [
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/.env'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_ba26266aa4d7_nuclei.log",
+      "Re-ran nuclei template(s): laravel-env"
+    ],
+    "evidence_ids": [
+      "ev_55bf1daad011"
+    ]
+  },
+  {
+    "id": "find_49490e182c4f",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "ac61dd8daaa9d448c90d2641ad1acc582b74c0df",
     "title": "Compressed Backup File - Detect",
     "severity": "medium",
@@ -164,24 +163,24 @@
     "cve": "",
     "asset": "http://127.0.0.1:8081/backup.zip",
     "location": "http://127.0.0.1:8081/backup.zip",
-    "description": "The backup file is compressed and does not contain any sensitive information that can be directly accessed via HTTP request. No specific vulnerability is detected.",
-    "remediation": "None",
-    "status": "rejected",
-    "source_tool": "nuclei",
+    "description": "Multiple compressed backup files were detected.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "nuclei_validate",
     "template_id": "zip-backup-files",
-    "created_at": "2026-11-19T00:09:48+00:00",
-    "updated_at": "2026-11-19T00:16:37+00:00",
+    "created_at": "2026-11-19T08:15:23+00:00",
+    "updated_at": "2026-11-19T08:18:31+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Debian; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/backup.zip'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_4e149f60a5b9_nuclei.log"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Kubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/backup.zip'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_39c90ac50ffc_nuclei.log"
     ],
     "evidence_ids": [
-      "ev_ced238b3a928"
+      "ev_f292f8f6a2db"
     ]
   },
   {
-    "id": "find_7a8799f79f15",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_cac42f1cd719",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "ee297729536d0f46b73ba4a3ec136cd15078e610",
     "title": "Compressed Backup File - Detect",
     "severity": "medium",
@@ -189,24 +188,25 @@
     "cve": "",
     "asset": "http://127.0.0.1:8080/backup.zip",
     "location": "http://127.0.0.1:8080/backup.zip",
-    "description": "The backup file is compressed and does not contain any sensitive information that can be directly accessed via HTTP request. No specific vulnerability is detected.",
-    "remediation": "None",
-    "status": "rejected",
-    "source_tool": "nuclei",
+    "description": "Multiple compressed backup files were detected.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "nuclei_validate",
     "template_id": "zip-backup-files",
-    "created_at": "2026-11-19T00:09:10+00:00",
-    "updated_at": "2026-11-19T00:16:37+00:00",
+    "created_at": "2026-11-19T08:14:20+00:00",
+    "updated_at": "2026-11-19T08:20:01+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (ZZ; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36' 'http://127.0.0.1:8080/backup.zip'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_02d3872cc31c_nuclei.log"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.8' 'http://127.0.0.1:8080/backup.zip'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_cb53c8208309_nuclei.log",
+      "Re-ran nuclei template(s): zip-backup-files"
     ],
     "evidence_ids": [
-      "ev_166e22827a50"
+      "ev_ccc7283d77d9"
     ]
   },
   {
-    "id": "find_2f8532b1690e",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_60b3a0460197",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "0a1321741f65576f1880d66ccb09727e3712231c",
     "title": "Git Configuration - Detect",
     "severity": "medium",
@@ -214,24 +214,25 @@
     "cve": "",
     "asset": "http://127.0.0.1:8080/.git/config",
     "location": "http://127.0.0.1:8080/.git/config",
-    "description": "The .git/config file contains sensitive information such as SSH keys and credentials, which can be accessed via HTTP request. No specific vulnerability is detected.",
-    "remediation": "None",
-    "status": "rejected",
-    "source_tool": "nuclei",
+    "description": "Git configuration was detected via the pattern /.git/config and log file on passed URLs.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "nuclei_validate",
     "template_id": "git-config",
-    "created_at": "2026-11-19T00:09:10+00:00",
-    "updated_at": "2026-11-19T00:16:37+00:00",
+    "created_at": "2026-11-19T08:14:19+00:00",
+    "updated_at": "2026-11-19T08:20:06+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15' 'http://127.0.0.1:8080/.git/config'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_02d3872cc31c_nuclei.log"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Ubuntu; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' 'http://127.0.0.1:8080/.git/config'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_77e5048d06c5_nuclei.log",
+      "Re-ran nuclei template(s): git-config"
     ],
     "evidence_ids": [
-      "ev_166e22827a50"
+      "ev_272ab8f32172"
     ]
   },
   {
-    "id": "find_c34fe4dc26dc",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_f52247412f2c",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "dd9cefa424b69c19806dc37bc0a69e795e08b896",
     "title": "Git Configuration - Detect",
     "severity": "medium",
@@ -239,26 +240,24 @@
     "cve": "",
     "asset": "http://127.0.0.1:8081/.git/config",
     "location": "http://127.0.0.1:8081/.git/config",
-    "description": "The tool detected a configuration file that may contain sensitive information, such as credentials or configuration settings.",
-    "remediation": "Review and sanitize the configuration file to remove any sensitive information.",
-    "status": "inconclusive",
-    "source_tool": "nuclei",
+    "description": "Git configuration was detected via the pattern /.git/config and log file on passed URLs.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "nuclei_validate",
     "template_id": "git-config",
-    "created_at": "2026-11-19T00:09:48+00:00",
-    "updated_at": "2026-11-19T00:21:32+00:00",
+    "created_at": "2026-11-19T08:15:24+00:00",
+    "updated_at": "2026-11-19T08:17:52+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (CentOS; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/.git/config'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_4e149f60a5b9_nuclei.log",
-      "POST http://127.0.0.1:8080/login with operator-supplied credentials (see the credential finding)"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Kubuntu; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/.git/config'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_b8e7ce22cd18_nuclei.log"
     ],
     "evidence_ids": [
-      "ev_9bef6a02a259",
-      "ev_ced238b3a928"
+      "ev_bdf99a7804ea"
     ]
   },
   {
-    "id": "find_5926a189b390",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_a75b030a1567",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "2835b7f4cffb0b002a86c02342136be313c3fa21",
     "title": "Apache Server Status Disclosure",
     "severity": "low",
@@ -266,24 +265,24 @@
     "cve": "",
     "asset": "http://127.0.0.1:8080/server-status",
     "location": "http://127.0.0.1:8080/server-status",
-    "description": "The tool detected a path that is known to be vulnerable to server status disclosure, but the asset itself is not sensitive.",
-    "remediation": "No specific remediation is needed as the asset is not sensitive.",
-    "status": "rejected",
-    "source_tool": "nuclei",
+    "description": "Apache /server-status displays information about your Apache status. If you are not using this feature, disable it.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "nuclei_validate",
     "template_id": "apache-server-status",
-    "created_at": "2026-11-19T00:09:10+00:00",
-    "updated_at": "2026-11-19T00:17:58+00:00",
+    "created_at": "2026-11-19T08:14:20+00:00",
+    "updated_at": "2026-11-19T08:18:56+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Gecko/20100101 Firefox/140.0.2 (x64 de)' 'http://127.0.0.1:8080/server-status'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_02d3872cc31c_nuclei.log"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0' 'http://127.0.0.1:8080/server-status'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_b7792a8a8968_nuclei.log"
     ],
     "evidence_ids": [
-      "ev_166e22827a50"
+      "ev_c75d3a478aac"
     ]
   },
   {
-    "id": "find_7b541f627174",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_954576580388",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "ec872d1df314ea2e7d738405541d6035983ec5d1",
     "title": "Apache Server Status Disclosure",
     "severity": "low",
@@ -291,24 +290,25 @@
     "cve": "",
     "asset": "http://127.0.0.1:8081/server-status",
     "location": "http://127.0.0.1:8081/server-status",
-    "description": "The tool detected a path that is known to be vulnerable to server status disclosure, but the asset itself is not sensitive.",
-    "remediation": "No specific remediation is needed as the asset is not sensitive.",
-    "status": "rejected",
-    "source_tool": "nuclei",
+    "description": "Apache /server-status displays information about your Apache status. If you are not using this feature, disable it.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "nuclei_validate",
     "template_id": "apache-server-status",
-    "created_at": "2026-11-19T00:09:48+00:00",
-    "updated_at": "2026-11-19T00:17:58+00:00",
+    "created_at": "2026-11-19T08:15:24+00:00",
+    "updated_at": "2026-11-19T08:20:34+00:00",
     "reproduction": [
-      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36' 'http://127.0.0.1:8081/server-status'",
-      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_4e149f60a5b9_nuclei.log"
+      "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; PPC Mac OS X 10_8_9 rv:6.0; ms-MY) AppleWebKit/532.11.2 (KHTML, like Gecko) Version/5.0 Safari/532.11.2' 'http://127.0.0.1:8081/server-status'",
+      "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_375aa3ca9878_nuclei.log",
+      "Re-ran nuclei template(s): apache-server-status"
     ],
     "evidence_ids": [
-      "ev_ced238b3a928"
+      "ev_5b59096fb2bd"
     ]
   },
   {
-    "id": "find_95b816fa9111",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_e3db8c52a60b",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "48ddc995d4772aab2f0baf55bfe5ab96695a4675",
     "title": "Discovered path http://127.0.0.1:8080/admin/",
     "severity": "info",
@@ -321,16 +321,16 @@
     "status": "candidate",
     "source_tool": "ffuf",
     "template_id": "",
-    "created_at": "2026-11-19T00:11:05+00:00",
-    "updated_at": "2026-11-19T00:11:05+00:00",
+    "created_at": "2026-11-19T08:15:26+00:00",
+    "updated_at": "2026-11-19T08:15:26+00:00",
     "reproduction": [],
     "evidence_ids": [
-      "ev_8c4ccca78133"
+      "ev_1aaee89c9e6f"
     ]
   },
   {
-    "id": "find_dbd33806dcae",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_0322ebb9cb1c",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "943ca1d3a1b73258310dce65cdb6a7b2a92f88af",
     "title": "Discovered path http://127.0.0.1:8080/backup.zip",
     "severity": "info",
@@ -343,60 +343,16 @@
     "status": "candidate",
     "source_tool": "ffuf",
     "template_id": "",
-    "created_at": "2026-11-19T00:11:05+00:00",
-    "updated_at": "2026-11-19T00:11:05+00:00",
+    "created_at": "2026-11-19T08:15:26+00:00",
+    "updated_at": "2026-11-19T08:15:26+00:00",
     "reproduction": [],
     "evidence_ids": [
-      "ev_8c4ccca78133"
+      "ev_1aaee89c9e6f"
     ]
   },
   {
-    "id": "find_95118d696ba7",
-    "engagement_id": "eng_4d7ace09c873",
-    "fingerprint": "c773adcec2c03219a1d0420ac0af58a91c6405f9",
-    "title": "Discovered path http://127.0.0.1:8080/files/",
-    "severity": "info",
-    "cvss": null,
-    "cve": "",
-    "asset": "http://127.0.0.1:8080/files/",
-    "location": "http://127.0.0.1:8080/files/",
-    "description": "Content discovery returned HTTP 200 (216 bytes).",
-    "remediation": "",
-    "status": "candidate",
-    "source_tool": "ffuf",
-    "template_id": "",
-    "created_at": "2026-11-19T00:11:05+00:00",
-    "updated_at": "2026-11-19T00:11:05+00:00",
-    "reproduction": [],
-    "evidence_ids": [
-      "ev_8c4ccca78133"
-    ]
-  },
-  {
-    "id": "find_05d1425f494e",
-    "engagement_id": "eng_4d7ace09c873",
-    "fingerprint": "17d148e969b761020afd26613e72ed629aa545e1",
-    "title": "Discovered path http://127.0.0.1:8080/login",
-    "severity": "info",
-    "cvss": null,
-    "cve": "",
-    "asset": "http://127.0.0.1:8080/login",
-    "location": "http://127.0.0.1:8080/login",
-    "description": "Content discovery returned HTTP 200 (210 bytes).",
-    "remediation": "",
-    "status": "candidate",
-    "source_tool": "ffuf",
-    "template_id": "",
-    "created_at": "2026-11-19T00:11:05+00:00",
-    "updated_at": "2026-11-19T00:11:05+00:00",
-    "reproduction": [],
-    "evidence_ids": [
-      "ev_8c4ccca78133"
-    ]
-  },
-  {
-    "id": "find_36d32f683e77",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_d7e99afbaee2",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "7c92d86e0e98d6a071cf96e5960845d8524ba405",
     "title": "Discovered path http://127.0.0.1:8080/phpinfo.php",
     "severity": "info",
@@ -409,16 +365,16 @@
     "status": "candidate",
     "source_tool": "ffuf",
     "template_id": "",
-    "created_at": "2026-11-19T00:11:05+00:00",
-    "updated_at": "2026-11-19T00:11:05+00:00",
+    "created_at": "2026-11-19T08:15:26+00:00",
+    "updated_at": "2026-11-19T08:15:26+00:00",
     "reproduction": [],
     "evidence_ids": [
-      "ev_8c4ccca78133"
+      "ev_1aaee89c9e6f"
     ]
   },
   {
-    "id": "find_f5482b09ed78",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_c25dcd621482",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "a7fd80d8c779c6bc3ca028897749923a687efa7c",
     "title": "Discovered path http://127.0.0.1:8080/search",
     "severity": "info",
@@ -431,16 +387,16 @@
     "status": "candidate",
     "source_tool": "ffuf",
     "template_id": "",
-    "created_at": "2026-11-19T00:11:05+00:00",
-    "updated_at": "2026-11-19T00:11:05+00:00",
+    "created_at": "2026-11-19T08:15:26+00:00",
+    "updated_at": "2026-11-19T08:15:26+00:00",
     "reproduction": [],
     "evidence_ids": [
-      "ev_8c4ccca78133"
+      "ev_1aaee89c9e6f"
     ]
   },
   {
-    "id": "find_fdeef3749366",
-    "engagement_id": "eng_4d7ace09c873",
+    "id": "find_52c1f4e87dd0",
+    "engagement_id": "eng_ce49e2303238",
     "fingerprint": "abb0620c708f7ccc311714395ac10d375667e4e7",
     "title": "Discovered path http://127.0.0.1:8080/server-status",
     "severity": "info",
@@ -453,11 +409,187 @@
     "status": "candidate",
     "source_tool": "ffuf",
     "template_id": "",
-    "created_at": "2026-11-19T00:11:05+00:00",
-    "updated_at": "2026-11-19T00:11:05+00:00",
+    "created_at": "2026-11-19T08:15:26+00:00",
+    "updated_at": "2026-11-19T08:15:26+00:00",
     "reproduction": [],
     "evidence_ids": [
-      "ev_8c4ccca78133"
+      "ev_1aaee89c9e6f"
+    ]
+  },
+  {
+    "id": "find_ce474b5e40c9",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "6ec97cf7bdc3cdd7183ec77a0acffc651f1c1887",
+    "title": "Discovered path http://127.0.0.1:8081/admin/",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/admin/",
+    "location": "http://127.0.0.1:8081/admin/",
+    "description": "Content discovery returned HTTP 200 (192 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:28+00:00",
+    "updated_at": "2026-11-19T08:16:50+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
+    ]
+  },
+  {
+    "id": "find_9472a340de62",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "cf866f0c4621d287c1d34c47bcf4a42b13269327",
+    "title": "Discovered path http://127.0.0.1:8081/backup.zip",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/backup.zip",
+    "location": "http://127.0.0.1:8081/backup.zip",
+    "description": "Content discovery returned HTTP 200 (16 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:29+00:00",
+    "updated_at": "2026-11-19T08:16:50+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
+    ]
+  },
+  {
+    "id": "find_4d9e9b8a0ed8",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "c2f507c8583d640a13b097a1ca440dd602cbaa8a",
+    "title": "Discovered path http://127.0.0.1:8081/files/",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/files/",
+    "location": "http://127.0.0.1:8081/files/",
+    "description": "Content discovery returned HTTP 200 (216 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:29+00:00",
+    "updated_at": "2026-11-19T08:16:50+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
+    ]
+  },
+  {
+    "id": "find_69ecefabe82c",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "679b9d5a52d6c3b6fb17afcd80d975ced805cb26",
+    "title": "Discovered path http://127.0.0.1:8081/internal",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/internal",
+    "location": "http://127.0.0.1:8081/internal",
+    "description": "Content discovery returned HTTP 200 (106 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:29+00:00",
+    "updated_at": "2026-11-19T08:16:51+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
+    ]
+  },
+  {
+    "id": "find_07c4e5a5358b",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "523fe08df392ea927206082264943f2046649453",
+    "title": "Discovered path http://127.0.0.1:8081/login",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/login",
+    "location": "http://127.0.0.1:8081/login",
+    "description": "Content discovery returned HTTP 200 (210 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:30+00:00",
+    "updated_at": "2026-11-19T08:16:50+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
+    ]
+  },
+  {
+    "id": "find_cd73259942bf",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "160901791cce849d4e3056bd220a66851ea191dc",
+    "title": "Discovered path http://127.0.0.1:8081/phpinfo.php",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/phpinfo.php",
+    "location": "http://127.0.0.1:8081/phpinfo.php",
+    "description": "Content discovery returned HTTP 200 (213 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:31+00:00",
+    "updated_at": "2026-11-19T08:16:51+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
+    ]
+  },
+  {
+    "id": "find_b642daf1d61a",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "ee61975d9b604f2431942bb8fe83ea8392ad2485",
+    "title": "Discovered path http://127.0.0.1:8081/search",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/search",
+    "location": "http://127.0.0.1:8081/search",
+    "description": "Content discovery returned HTTP 200 (75 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:29+00:00",
+    "updated_at": "2026-11-19T08:16:50+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
+    ]
+  },
+  {
+    "id": "find_d4b838cce1e4",
+    "engagement_id": "eng_ce49e2303238",
+    "fingerprint": "bb727c240dfc680105784a79569f8a5266053d82",
+    "title": "Discovered path http://127.0.0.1:8081/server-status",
+    "severity": "info",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8081/server-status",
+    "location": "http://127.0.0.1:8081/server-status",
+    "description": "Content discovery returned HTTP 200 (185 bytes).",
+    "remediation": "",
+    "status": "candidate",
+    "source_tool": "ffuf",
+    "template_id": "",
+    "created_at": "2026-11-19T08:15:30+00:00",
+    "updated_at": "2026-11-19T08:16:51+00:00",
+    "reproduction": [],
+    "evidence_ids": [
+      "ev_92543fdde0f3"
     ]
   }
 ]

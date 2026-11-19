@@ -107,6 +107,16 @@ class Campaign:
                                  {"approval_id": waiting["id"], "reason": waiting["reason"]})
                 break
 
+            # The planner decides what to do next, but not whether the engagement
+            # gets a report: on the final round the report is produced regardless
+            # of what is still queued or what the model would prefer.
+            if steps + 1 >= budget and not self._report_done(engagement_id):
+                self.store.event(engagement_id, "plan.report_forced",
+                                 {"steps": steps, "budget": budget})
+                await self._report(eng, scope)
+                steps += 1
+                break
+
             task = self.store.next_task(engagement_id)
             if task is None:
                 plan = await self._agents["orchestrator"].plan(self._state(eng, scope))
@@ -172,8 +182,7 @@ class Campaign:
         eng = self.store.get_engagement(engagement_id) or eng
         if eng["status"] == "running":
             waiting = self.store.pending_approval(engagement_id)
-            report_done = any(t["kind"] == "report" and t["state"] == "done"
-                              for t in self.store.tasks_for(engagement_id))
+            report_done = self._report_done(engagement_id)
             if waiting:
                 # Hitting the budget while an approval is outstanding still means
                 # the campaign is blocked on a human, not finished.
@@ -188,6 +197,10 @@ class Campaign:
         return self.summary(engagement_id, denial_spike=denial_spike, steps=steps)
 
     # ---- dispatch -----------------------------------------------------
+    def _report_done(self, engagement_id: str) -> bool:
+        return any(t["kind"] == "report" and t["state"] == "done"
+                   for t in self.store.tasks_for(engagement_id))
+
     async def _dispatch(self, eng: dict, scope: Scope, task: dict) -> dict[str, Any]:
         kind = task["kind"]
         if kind in TOOL_TASKS:

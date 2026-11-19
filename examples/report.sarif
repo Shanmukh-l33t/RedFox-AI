@@ -10,23 +10,6 @@
           "informationUri": "https://github.com/Shanmukh-l33t/RedFox-AI",
           "rules": [
             {
-              "id": "ea17d92cf5ee355b3d256b2023483e98",
-              "name": "Valid credentials for http://127.0.0.1:8080/login",
-              "shortDescription": {
-                "text": "Valid credentials for http://127.0.0.1:8080/login"
-              },
-              "fullDescription": {
-                "text": "Operator-supplied credentials for 'admin' were accepted by http://127.0.0.1:8080/login (HTTP 200)."
-              },
-              "help": {
-                "text": ""
-              },
-              "properties": {
-                "severity": "critical",
-                "security-severity": "9.5"
-              }
-            },
-            {
               "id": "codeigniter-env",
               "name": "Codeigniter - .env File Discovery",
               "shortDescription": {
@@ -78,6 +61,57 @@
               }
             },
             {
+              "id": "zip-backup-files",
+              "name": "Compressed Backup File - Detect",
+              "shortDescription": {
+                "text": "Compressed Backup File - Detect"
+              },
+              "fullDescription": {
+                "text": "Multiple compressed backup files were detected."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "medium",
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "git-config",
+              "name": "Git Configuration - Detect",
+              "shortDescription": {
+                "text": "Git Configuration - Detect"
+              },
+              "fullDescription": {
+                "text": "Git configuration was detected via the pattern /.git/config and log file on passed URLs."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "medium",
+                "security-severity": "5.3"
+              }
+            },
+            {
+              "id": "apache-server-status",
+              "name": "Apache Server Status Disclosure",
+              "shortDescription": {
+                "text": "Apache Server Status Disclosure"
+              },
+              "fullDescription": {
+                "text": "Apache /server-status displays information about your Apache status. If you are not using this feature, disable it."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "low",
+                "security-severity": "2.5"
+              }
+            },
+            {
               "id": "48ddc995d4772aab2f0baf55bfe5ab96",
               "name": "Discovered path http://127.0.0.1:8080/admin/",
               "shortDescription": {
@@ -102,40 +136,6 @@
               },
               "fullDescription": {
                 "text": "Content discovery returned HTTP 200 (16 bytes)."
-              },
-              "help": {
-                "text": ""
-              },
-              "properties": {
-                "severity": "info",
-                "security-severity": "0.0"
-              }
-            },
-            {
-              "id": "c773adcec2c03219a1d0420ac0af58a9",
-              "name": "Discovered path http://127.0.0.1:8080/files/",
-              "shortDescription": {
-                "text": "Discovered path http://127.0.0.1:8080/files/"
-              },
-              "fullDescription": {
-                "text": "Content discovery returned HTTP 200 (216 bytes)."
-              },
-              "help": {
-                "text": ""
-              },
-              "properties": {
-                "severity": "info",
-                "security-severity": "0.0"
-              }
-            },
-            {
-              "id": "17d148e969b761020afd26613e72ed62",
-              "name": "Discovered path http://127.0.0.1:8080/login",
-              "shortDescription": {
-                "text": "Discovered path http://127.0.0.1:8080/login"
-              },
-              "fullDescription": {
-                "text": "Content discovery returned HTTP 200 (210 bytes)."
               },
               "help": {
                 "text": ""
@@ -195,6 +195,142 @@
                 "severity": "info",
                 "security-severity": "0.0"
               }
+            },
+            {
+              "id": "6ec97cf7bdc3cdd7183ec77a0acffc65",
+              "name": "Discovered path http://127.0.0.1:8081/admin/",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/admin/"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (192 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "cf866f0c4621d287c1d34c47bcf4a42b",
+              "name": "Discovered path http://127.0.0.1:8081/backup.zip",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/backup.zip"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (16 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "c2f507c8583d640a13b097a1ca440dd6",
+              "name": "Discovered path http://127.0.0.1:8081/files/",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/files/"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (216 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "679b9d5a52d6c3b6fb17afcd80d975ce",
+              "name": "Discovered path http://127.0.0.1:8081/internal",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/internal"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (106 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "523fe08df392ea927206082264943f20",
+              "name": "Discovered path http://127.0.0.1:8081/login",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/login"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (210 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "160901791cce849d4e3056bd220a6685",
+              "name": "Discovered path http://127.0.0.1:8081/phpinfo.php",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/phpinfo.php"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (213 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "ee61975d9b604f2431942bb8fe83ea83",
+              "name": "Discovered path http://127.0.0.1:8081/search",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/search"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (75 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
+            },
+            {
+              "id": "bb727c240dfc680105784a79569f8a52",
+              "name": "Discovered path http://127.0.0.1:8081/server-status",
+              "shortDescription": {
+                "text": "Discovered path http://127.0.0.1:8081/server-status"
+              },
+              "fullDescription": {
+                "text": "Content discovery returned HTTP 200 (185 bytes)."
+              },
+              "help": {
+                "text": ""
+              },
+              "properties": {
+                "severity": "info",
+                "security-severity": "0.0"
+              }
             }
           ]
         }
@@ -202,39 +338,10 @@
       "invocations": [
         {
           "executionSuccessful": true,
-          "startTimeUtc": "2026-11-19T00:06:16+00:00"
+          "startTimeUtc": "2026-11-19T08:12:47+00:00"
         }
       ],
       "results": [
-        {
-          "ruleId": "ea17d92cf5ee355b3d256b2023483e98",
-          "level": "error",
-          "message": {
-            "text": "Valid credentials for http://127.0.0.1:8080/login \u2014 http://127.0.0.1:8080/login"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "http://127.0.0.1:8080/login"
-                }
-              }
-            }
-          ],
-          "properties": {
-            "severity": "critical",
-            "cvss": null,
-            "status": "validated",
-            "evidenceIds": [
-              "ev_9bef6a02a259"
-            ],
-            "sourceTool": "authcheck",
-            "reproduction": [
-              "POST http://127.0.0.1:8080/login with the reported credentials",
-              "Observed HTTP 200 with authenticated content"
-            ]
-          }
-        },
         {
           "ruleId": "codeigniter-env",
           "level": "error",
@@ -255,13 +362,12 @@
             "cvss": null,
             "status": "validated",
             "evidenceIds": [
-              "ev_ee497b292b84"
+              "ev_731592002254"
             ],
             "sourceTool": "nuclei_validate",
             "reproduction": [
-              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0' 'http://127.0.0.1:8081/.env'",
-              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_3b3895807550_nuclei.log",
-              "Re-ran nuclei template(s): codeigniter-env"
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_19d0d19da67f_nuclei.log"
             ]
           }
         },
@@ -285,13 +391,12 @@
             "cvss": null,
             "status": "validated",
             "evidenceIds": [
-              "ev_1b8e1bdfb610"
+              "ev_0275d2172cd5"
             ],
             "sourceTool": "nuclei_validate",
             "reproduction": [
-              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0' 'http://127.0.0.1:8080/.env'",
-              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_f4cfadabb145_nuclei.log",
-              "Re-ran nuclei template(s): codeigniter-env"
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Linux i686; rv:1.9.7.20) Gecko/ Firefox/3.6.7' 'http://127.0.0.1:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_a15078b16a76_nuclei.log"
             ]
           }
         },
@@ -315,12 +420,12 @@
             "cvss": 8.3,
             "status": "validated",
             "evidenceIds": [
-              "ev_8eba3385ca55"
+              "ev_abf07f11e678"
             ],
             "sourceTool": "nuclei_validate",
             "reproduction": [
-              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.5 Safari/605.1.15' 'http://127.0.0.1:8080/.env'",
-              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_652b354c66da_nuclei.log",
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh, Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.13 Safari/605.1.15' 'http://127.0.0.1:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_512560822a36_nuclei.log",
               "Re-ran nuclei template(s): generic-env"
             ]
           }
@@ -345,12 +450,12 @@
             "cvss": 8.3,
             "status": "validated",
             "evidenceIds": [
-              "ev_55e2f7cc3432"
+              "ev_3ae012d13906"
             ],
             "sourceTool": "nuclei_validate",
             "reproduction": [
-              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.3 Safari/605.1.15' 'http://127.0.0.1:8081/.env'",
-              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_adc50199b80e_nuclei.log",
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1' 'http://127.0.0.1:8081/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_7c117f7d32e3_nuclei.log",
               "Re-ran nuclei template(s): generic-env"
             ]
           }
@@ -375,13 +480,220 @@
             "cvss": 8.3,
             "status": "validated",
             "evidenceIds": [
-              "ev_485ce17b90ca"
+              "ev_861ec23ce25a"
             ],
             "sourceTool": "nuclei_validate",
             "reproduction": [
-              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 14.3) AppleWebKit/619.29 (KHTML, like Gecko) Version/17.0.14 Safari/619.29' 'http://127.0.0.1:8080/.env'",
-              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-final\\evidence\\eng_4d7ace09c873\\act_8761665890c2_nuclei.log",
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Ubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36' 'http://127.0.0.1:8080/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_e6af54a8ee5b_nuclei.log",
               "Re-ran nuclei template(s): laravel-env"
+            ]
+          }
+        },
+        {
+          "ruleId": "laravel-env",
+          "level": "error",
+          "message": {
+            "text": "Laravel - Sensitive Information Disclosure \u2014 http://127.0.0.1:8081/.env"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/.env"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "high",
+            "cvss": 8.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_55bf1daad011"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/.env'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_ba26266aa4d7_nuclei.log",
+              "Re-ran nuclei template(s): laravel-env"
+            ]
+          }
+        },
+        {
+          "ruleId": "zip-backup-files",
+          "level": "warning",
+          "message": {
+            "text": "Compressed Backup File - Detect \u2014 http://127.0.0.1:8081/backup.zip"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/backup.zip"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "cvss": 5.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_f292f8f6a2db"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Kubuntu; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/backup.zip'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_39c90ac50ffc_nuclei.log"
+            ]
+          }
+        },
+        {
+          "ruleId": "zip-backup-files",
+          "level": "warning",
+          "message": {
+            "text": "Compressed Backup File - Detect \u2014 http://127.0.0.1:8080/backup.zip"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/backup.zip"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "cvss": 5.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_ccc7283d77d9"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0) Gecko/20100101 Firefox/140.8' 'http://127.0.0.1:8080/backup.zip'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_cb53c8208309_nuclei.log",
+              "Re-ran nuclei template(s): zip-backup-files"
+            ]
+          }
+        },
+        {
+          "ruleId": "git-config",
+          "level": "warning",
+          "message": {
+            "text": "Git Configuration - Detect \u2014 http://127.0.0.1:8080/.git/config"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/.git/config"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "cvss": 5.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_272ab8f32172"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Ubuntu; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36' 'http://127.0.0.1:8080/.git/config'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_77e5048d06c5_nuclei.log",
+              "Re-ran nuclei template(s): git-config"
+            ]
+          }
+        },
+        {
+          "ruleId": "git-config",
+          "level": "warning",
+          "message": {
+            "text": "Git Configuration - Detect \u2014 http://127.0.0.1:8081/.git/config"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/.git/config"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "medium",
+            "cvss": 5.3,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_bdf99a7804ea"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Kubuntu; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36' 'http://127.0.0.1:8081/.git/config'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_b8e7ce22cd18_nuclei.log"
+            ]
+          }
+        },
+        {
+          "ruleId": "apache-server-status",
+          "level": "note",
+          "message": {
+            "text": "Apache Server Status Disclosure \u2014 http://127.0.0.1:8080/server-status"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8080/server-status"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "cvss": null,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_c75d3a478aac"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0' 'http://127.0.0.1:8080/server-status'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_b7792a8a8968_nuclei.log"
+            ]
+          }
+        },
+        {
+          "ruleId": "apache-server-status",
+          "level": "note",
+          "message": {
+            "text": "Apache Server Status Disclosure \u2014 http://127.0.0.1:8081/server-status"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/server-status"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "low",
+            "cvss": null,
+            "status": "validated",
+            "evidenceIds": [
+              "ev_5b59096fb2bd"
+            ],
+            "sourceTool": "nuclei_validate",
+            "reproduction": [
+              "Replay: curl -X 'GET' -d '' -H 'Accept: */*' -H 'Accept-Language: en' -H 'User-Agent: Mozilla/5.0 (Macintosh; PPC Mac OS X 10_8_9 rv:6.0; ms-MY) AppleWebKit/532.11.2 (KHTML, like Gecko) Version/5.0 Safari/532.11.2' 'http://127.0.0.1:8081/server-status'",
+              "Evidence file: C:\\Users\\ImMandatory\\AppData\\Local\\hermes\\cache\\scratch\\rf-ds3\\evidence\\eng_ce49e2303238\\act_375aa3ca9878_nuclei.log",
+              "Re-ran nuclei template(s): apache-server-status"
             ]
           }
         },
@@ -405,7 +717,7 @@
             "cvss": null,
             "status": "candidate",
             "evidenceIds": [
-              "ev_8c4ccca78133"
+              "ev_1aaee89c9e6f"
             ],
             "sourceTool": "ffuf",
             "reproduction": []
@@ -431,59 +743,7 @@
             "cvss": null,
             "status": "candidate",
             "evidenceIds": [
-              "ev_8c4ccca78133"
-            ],
-            "sourceTool": "ffuf",
-            "reproduction": []
-          }
-        },
-        {
-          "ruleId": "c773adcec2c03219a1d0420ac0af58a9",
-          "level": "note",
-          "message": {
-            "text": "Discovered path http://127.0.0.1:8080/files/ \u2014 http://127.0.0.1:8080/files/"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "http://127.0.0.1:8080/files/"
-                }
-              }
-            }
-          ],
-          "properties": {
-            "severity": "info",
-            "cvss": null,
-            "status": "candidate",
-            "evidenceIds": [
-              "ev_8c4ccca78133"
-            ],
-            "sourceTool": "ffuf",
-            "reproduction": []
-          }
-        },
-        {
-          "ruleId": "17d148e969b761020afd26613e72ed62",
-          "level": "note",
-          "message": {
-            "text": "Discovered path http://127.0.0.1:8080/login \u2014 http://127.0.0.1:8080/login"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "http://127.0.0.1:8080/login"
-                }
-              }
-            }
-          ],
-          "properties": {
-            "severity": "info",
-            "cvss": null,
-            "status": "candidate",
-            "evidenceIds": [
-              "ev_8c4ccca78133"
+              "ev_1aaee89c9e6f"
             ],
             "sourceTool": "ffuf",
             "reproduction": []
@@ -509,7 +769,7 @@
             "cvss": null,
             "status": "candidate",
             "evidenceIds": [
-              "ev_8c4ccca78133"
+              "ev_1aaee89c9e6f"
             ],
             "sourceTool": "ffuf",
             "reproduction": []
@@ -535,7 +795,7 @@
             "cvss": null,
             "status": "candidate",
             "evidenceIds": [
-              "ev_8c4ccca78133"
+              "ev_1aaee89c9e6f"
             ],
             "sourceTool": "ffuf",
             "reproduction": []
@@ -561,7 +821,215 @@
             "cvss": null,
             "status": "candidate",
             "evidenceIds": [
-              "ev_8c4ccca78133"
+              "ev_1aaee89c9e6f"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "6ec97cf7bdc3cdd7183ec77a0acffc65",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/admin/ \u2014 http://127.0.0.1:8081/admin/"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/admin/"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "cf866f0c4621d287c1d34c47bcf4a42b",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/backup.zip \u2014 http://127.0.0.1:8081/backup.zip"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/backup.zip"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "c2f507c8583d640a13b097a1ca440dd6",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/files/ \u2014 http://127.0.0.1:8081/files/"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/files/"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "679b9d5a52d6c3b6fb17afcd80d975ce",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/internal \u2014 http://127.0.0.1:8081/internal"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/internal"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "523fe08df392ea927206082264943f20",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/login \u2014 http://127.0.0.1:8081/login"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/login"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "160901791cce849d4e3056bd220a6685",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/phpinfo.php \u2014 http://127.0.0.1:8081/phpinfo.php"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/phpinfo.php"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "ee61975d9b604f2431942bb8fe83ea83",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/search \u2014 http://127.0.0.1:8081/search"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/search"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
+            ],
+            "sourceTool": "ffuf",
+            "reproduction": []
+          }
+        },
+        {
+          "ruleId": "bb727c240dfc680105784a79569f8a52",
+          "level": "note",
+          "message": {
+            "text": "Discovered path http://127.0.0.1:8081/server-status \u2014 http://127.0.0.1:8081/server-status"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "http://127.0.0.1:8081/server-status"
+                }
+              }
+            }
+          ],
+          "properties": {
+            "severity": "info",
+            "cvss": null,
+            "status": "candidate",
+            "evidenceIds": [
+              "ev_92543fdde0f3"
             ],
             "sourceTool": "ffuf",
             "reproduction": []
@@ -571,7 +1039,8 @@
       "properties": {
         "engagement": "RedFox lab target (authorized, self-owned)",
         "autonomy": 2,
-        "authorization": "LAB-SELF-OWNED-2026-11-19"
+        "authorization": "LAB-SELF-OWNED-2026-11-19",
+        "model": "deepseek-v4.1-flash-1017"
       }
     }
   ]

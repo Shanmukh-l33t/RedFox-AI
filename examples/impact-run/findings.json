@@ -1,0 +1,28 @@
+[
+  {
+    "id": "find_493a644989b0",
+    "engagement_id": "eng_60e88e4dc7c8",
+    "fingerprint": "31f912e2fd16ecb909e636738c4fed5cfbfd1db9",
+    "title": "Authenticated access to http://127.0.0.1:8080/admin/",
+    "severity": "high",
+    "cvss": null,
+    "cve": "",
+    "asset": "http://127.0.0.1:8080/admin/",
+    "location": "http://127.0.0.1:8080/admin/",
+    "description": "Operator-supplied credentials authenticate and reach http://127.0.0.1:8080/admin/ without further authorization checks. Signed-in content was returned in the response.",
+    "remediation": "",
+    "status": "validated",
+    "source_tool": "impact_probe",
+    "template_id": "",
+    "created_at": "2026-11-19T07:20:03+00:00",
+    "updated_at": "2026-11-19T07:20:03+00:00",
+    "reproduction": [
+      "POST http://127.0.0.1:8080/login with the reported credentials",
+      "GET http://127.0.0.1:8080/admin/ with the session cookie"
+    ],
+    "evidence_ids": [
+      "ev_3a1718a2ae9b",
+      "ev_61dfe843c0b7"
+    ]
+  }
+]
