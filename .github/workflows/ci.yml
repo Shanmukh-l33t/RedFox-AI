@@ -72,6 +72,13 @@ jobs:
             sleep 1
           done
           curl -fsS http://127.0.0.1:8080/ >/dev/null
+      - name: Debug whatweb
+        run: |
+          which -a whatweb
+          gem list addressable
+          whatweb --version || true
+          whatweb --log-json=/tmp/w.json --color=never -a 1 http://127.0.0.1:8080 || echo "EXIT=$?"
+          ls -la /tmp/w.json && head -c 600 /tmp/w.json || true
       - name: Adapters against real binaries
         run: python -m pytest tests/test_toolchain.py -q -rs
 
