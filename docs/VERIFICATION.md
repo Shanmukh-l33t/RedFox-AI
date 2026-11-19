@@ -34,8 +34,13 @@ binaries and runs the adapters through the policy gate. It found three defects
 that unit tests with fixtures could not (see `docs/SECURITY-REVIEW.md` §11 and the
 whatweb parse fallback).
 
-Local suite: **118 passed, 1 skipped** (`whatweb` is not installed on the dev
-machine; it runs in CI).
+The end-to-end job runs a live LLM campaign on the runner, against the model in
+the repo secrets: on `b0f55ca` it produced **26 findings, 11 validated, 17 actions**
+with **13,808 nuclei templates** downloaded first — so the pipeline is proven on
+every push, not only in the recorded example.
+
+Local suite: **136 passed, 2 skipped** (the live-lab and docker tests skip when
+those are absent; both run in CI).
 
 ## 3. Real end-to-end run, from a clean clone
 
