@@ -30,7 +30,7 @@ reference repo below is backed by a cited file path in the per-repo analyses in
 
 | Repo | License | Primary language | Scale | Shape |
 |---|---|---|---|---|
-| [pentagi](https://github.com/vxcontrol/pentagi) | MIT + a separate `EULA.md` addendum | Go, TypeScript | ~198k non-test/non-generated Go, ~91k TS | Product: multi-agent pentest platform with queue, UI, observability |
+| [pentagi](https://github.com/vxcontrol/pentagi) | MIT, plus an `EULA.md` addendum; its `NOTICE` separately claims the `vxcontrol/cloud` SDK is AGPL-3.0 with an official-project-only exception | Go, TypeScript | ~198k non-test/non-generated Go, ~91k TS | Product: multi-agent pentest platform with queue, UI, observability |
 | [strix](https://github.com/usestrix/strix) | Apache-2.0 | Python, Go, TS | ~45k Python src | Agent CLI with sandboxed tooling and a web viewer |
 | [ARTEX](https://github.com/BaaRai/ARTEX) | AGPL-3.0 | Go | fork of `Autumn-27/ARTEX` | Planner/worker engine with graph-backed findings |
 | [hexstrike-ai](https://github.com/0x4m4/hexstrike-ai) | MIT | Python | ~2 large files | MCP tool broker: 151 tools over an HTTP daemon |
@@ -62,7 +62,7 @@ is precisely where this project had to add something.
 | Resumable campaign state | P | W | W | M | W | P | **P** |
 | Planner + specialist agents | P | P | P | M | W | P | **P** |
 | Provider-agnostic LLM (incl. local) | P | W | P | M | W | W | **P** |
-| SARIF output | M | M | M | M | M | M | **P** |
+| SARIF output | M | **P** | M | M | M | **P** | **P** |
 | Web UI with live campaign view | P | P | P | M | P | P | **P** |
 | Multi-node scale / queue service | P | W | W | M | W | P | M (single node, stated) |
 | Per-tool container isolation | P | P | M | M | M | P | M (stated, see below) |
@@ -137,11 +137,17 @@ the shell: adapters return argv arrays and the runtime is the only process spawn
    **RedFox fix:** every finding row carries evidence ids, and each evidence id
    maps to a file written by the runtime with the argv, the exit code and a
    SHA-256 of the output. `redfox report` renders those ids; it cannot invent them.
-6. **No machine-readable output.** None of the six emits SARIF, so none drops into
-   GitHub code scanning. **RedFox fix:** SARIF 2.1.0 is a first-class output,
-   alongside Markdown and HTML.
+6. **Reporting is uneven, and two of them do emit SARIF.** strix ships a SARIF 2.1.0
+   emitter with CWE rules, and shannon renders Markdown, Typst PDF and SARIF from one
+   canonical `report.json`; the other four have no machine-readable output at all.
+   Where the set falls short is the join, not the format: strix's SARIF is produced at
+   the end of its own report pipeline, and in shannon a finding's status is optional on
+   the report path and defaults to `exploited`, so "no exploit, no report" rests partly
+   on prompt headings. **RedFox fix:** SARIF, Markdown and HTML are three renderings of
+   one findings table, and every finding in all three carries the evidence ids that the
+   runtime issued when it ran the tool.
 
-## What RedFox adds that none of them have
+## What RedFox adds, and where the references fall short
 
 - A **signed-shape authorization record** that gates the whole lifecycle, with the
   same object re-checked at execution time rather than at plan time.
@@ -152,11 +158,13 @@ the shell: adapters return argv arrays and the runtime is the only process spawn
 - **Hash-chained audit log** that is verifiable by a third party (`redfox verify-audit`).
 - **Evidence ids issued by the runtime**, referenced by findings and rendered into
   every report format.
-- **SARIF plus human reports** from one findings table.
+- **One findings table rendered three ways** — SARIF, Markdown, HTML — where strix
+  emits SARIF only at the end of its report pipeline and four of the six emit no
+  machine-readable format at all.
 
 ## Deliberate deviations from the brief's default stack
 
-The brief allows overriding its table with justification. Four were overridden:
+The brief allows overriding its table with justification. Five were overridden:
 
 | Default | Chosen | Why |
 |---|---|---|

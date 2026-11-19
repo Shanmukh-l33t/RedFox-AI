@@ -27,9 +27,13 @@ Rejected: scope as a suggestion in a prompt template.
 Adopted: deterministic ingestion — parsers in code, so the model never reads raw
 scanner output — and code-owned decisions over model-owned verdicts.
 Rejected: an opt-in, operator-deletable safety floor.
-ARTEX's history is why this project refuses to make its scope gate configurable:
-it was a legitimate framework that was mass-forked into an attack tool and taken
-down, and the difference is enforcement, not intent.
+The mission brief describes ARTEX as a legitimate framework that was mass-forked
+into an attack tool and taken down. **The checkout does not corroborate that
+history**: it is a squashed single-commit fork of `Autumn-27/ARTEX` with no record
+of the event (`docs/references/artex.md` marks the premise UNKNOWN). What the code
+does show is why such an outcome is possible — no authorization object, a scope
+gate that ships off, and a safety floor that an operator can delete. That is why
+this project's scope gate is not configurable.
 
 ### [HexStrike AI](https://github.com/0x4m4/hexstrike-ai) — MIT
 
