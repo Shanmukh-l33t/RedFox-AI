@@ -111,7 +111,14 @@ jobs:
       - name: Install scanners
         run: bash ./scripts/install-tools.sh
       - name: Update nuclei templates
-        run: ./tools/bin/nuclei -update-templates -disable-update-check || true
+        # -ut, not "-update-templates -disable-update-check": that combination
+        # exits 0 having downloaded nothing, so every nuclei scan finds nothing.
+        run: ./tools/bin/nuclei -ut || true
+      - name: Check the templates are really there
+        run: |
+          count=$(./tools/bin/nuclei -tl 2>/dev/null | wc -l)
+          echo "nuclei templates: $count"
+          test "$count" -gt 100
       - name: Run the lab target and a campaign
         env:
           REDFOX_LLM_PROVIDER: ${{ secrets.REDFOX_LLM_PROVIDER }}
@@ -127,9 +134,9 @@ jobs:
           fi
           python lab/vulnapp.py --port 8080 --admin-port 8081 &
           sleep 2
-          export PYTHONPATH=. REDFOX_MAX_STEPS=12
+          export PYTHONPATH=. REDFOX_MAX_STEPS=16
           EID=$(python -m redfox.cli init examples/scope-lab.json | python -c "import sys,json;print(json.load(sys.stdin)['engagement'])")
-          python -m redfox.cli run "$EID" --max-steps 12
+          python -m redfox.cli run "$EID" --max-steps 16
           python -m redfox.cli report "$EID"
           python -m redfox.cli verify-audit
           python -m redfox.cli scope-check "$EID" https://example.com/ && exit 1 || exit 0
