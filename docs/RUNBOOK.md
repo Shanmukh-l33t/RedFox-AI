@@ -96,6 +96,25 @@ token spend for the campaign.
 
 ## Troubleshooting
 
+## Credentials
+
+An `auth_check` or `impact` block in the scope file may hold a literal
+`username`/`password` — fine for a loopback lab — or a reference:
+
+```json
+"credentials": [{"username": "admin", "password": "${LAB_ADMIN_PASSWORD}"}]
+```
+
+With a reference, the engagement record holds the string `${LAB_ADMIN_PASSWORD}`
+and nothing else. Export the variable in the environment that runs the campaign
+(`export LAB_ADMIN_PASSWORD=...`), not in the scope file. If it is unset, the
+task fails with a `secrets.missing` event and no login is attempted — a campaign
+never tries a blank password because a variable was missing.
+
+Credentials are redacted before an `auth_check` spec reaches a model, so a hosted
+provider never sees them. They do appear in the request that actually runs, which
+is why the audit log records the action and its rationale rather than the body.
+
 **`required tool 'nuclei' is not installed`** — run `scripts/install-tools.sh`
 (or `.ps1`), then `redfox tools` to confirm. Nuclei also needs
 `nuclei -update-templates` once; without templates it finds nothing.

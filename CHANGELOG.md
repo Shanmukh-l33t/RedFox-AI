@@ -1,5 +1,43 @@
 # Changelog
 
+## v0.3.0
+
+Hardening: a security review of the platform itself, with the fixes it found, plus
+proof that the tool adapters run real binaries in CI.
+
+### Security
+
+The full review, with what was checked and what was accepted, is in
+[docs/SECURITY-REVIEW.md](docs/SECURITY-REVIEW.md).
+
+- **Credentials no longer reach a model.** The validator was handed the whole
+  `auth_check` block, password included, and sent it to whichever provider was
+  configured. It now receives a redacted spec.
+- **Argument injection fixed.** A target string beginning with `-` reached a
+  tool's argv as an option rather than a host. Hosts are now validated before
+  they can become a target, and scope rules reject a leading dash.
+- **Tool output is capped** at 8 MB before it is decoded, stored as evidence and
+  hashed, so a flooding tool or target cannot exhaust memory.
+- **`parse_target` no longer raises `ValueError`** on `host:port/path` — a normal
+  shape for a model to emit — which used to stop a campaign.
+- **Evidence filenames are slugged**, so no tool name can traverse out of the
+  evidence directory.
+
+### Added
+
+- **Credential references.** A password may be written `${ENV_VAR}`; only the
+  reference is stored and the value is read at request time. A missing variable
+  is a hard error, never a blank password sent to a live login.
+- **Real-tool test suite and CI job.** `tests/test_toolchain.py` runs nmap,
+  httpx, ffuf, nuclei and whatweb against the lab through the policy gate; the new
+  `toolchain` CI job installs the binaries and runs it, so adapter regressions
+  fail the build instead of being skipped.
+
+### Changed
+
+- Longer soak (5 rounds, 10 steps each) recorded in the runbook: 0 denials, 0 audit
+  failures, 5 MB peak.
+
 ## v0.2.0
 
 Completes the platform surface the v0.1.0 release left open.

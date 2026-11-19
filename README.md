@@ -28,14 +28,15 @@ scope file ──► engagement record ──► policy gate ──► tool runt
 - **Proof before report.** A finding is `validated` only when a second, policy-gated action reproduced it and the response is stored as evidence. Everything else stays `candidate` or `inconclusive` and is labelled as such.
 - **Intrusive steps need a human.** The one post-exploitation step (an authenticated read of a protected page) is classified `intrusive`: it is refused below L3, files an approval request at L3, and runs only after `redfox approve`, once per operation.
 - **Resumable.** Campaign state is a durable task table. Kill the process mid-run and `redfox run <id>` picks up where it stopped.
+- **Credentials stay out of the record.** Write a password as `${LAB_ADMIN_PASSWORD}` and only the reference is stored; the value is read from the environment when the request is built. Credentials are never sent to a model — the validator sees `<redacted>`.
 
-## What it does not do (v0.2.0)
+## What it does not do (v0.3.0)
 
 - **No container isolation.** Tools run as subprocesses under your user account, behind the policy gate but not inside a sandbox. See [ARCHITECTURE.md](docs/ARCHITECTURE.md#isolation).
 - **Single node.** No Redis/Celery/Postgres. The task queue is a SQLite table; multi-node execution is future work.
 - **No exploitation.** The only intrusive capability is a read-only impact check: it authenticates with operator-supplied credentials and reads one page. It never writes, uploads, deletes or escalates.
 - **No per-tool sandbox inside the process.** Isolation is the policy gate plus your host; run it in a container or VM for real engagements.
-- **`whatweb` needs Ruby, `sslscan` needs its binary.** Both adapters are complete and report `NOT INSTALLED` rather than pretending when the tool is absent.
+- **`whatweb` needs Ruby, `sslscan` needs its binary.** CI installs both on Linux; where they are absent the adapters report `NOT INSTALLED` rather than pretending.
 
 ## Quickstart
 

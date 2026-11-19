@@ -45,6 +45,31 @@ jobs:
       - name: Scope engine refuses out-of-scope and over-autonomy actions
         run: python -m pytest tests/test_safety_core.py -q
 
+  toolchain:
+    name: Real tool adapters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e ".[dev]"
+      - name: Install scanner binaries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nmap whatweb sslscan
+          bash ./scripts/install-tools.sh
+      - name: Start the lab target
+        run: |
+          python lab/vulnapp.py --port 8080 --admin-port 8081 &
+          for i in $(seq 1 15); do
+            curl -fsS http://127.0.0.1:8080/ >/dev/null && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:8080/ >/dev/null
+      - name: Adapters against real binaries
+        run: python -m pytest tests/test_toolchain.py -q -rs
+
   end-to-end:
     name: End-to-end against the lab target
     runs-on: ubuntu-latest
