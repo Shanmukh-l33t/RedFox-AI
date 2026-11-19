@@ -67,6 +67,12 @@ jobs:
             sleep 1
           done
           curl -fsS http://127.0.0.1:8080/ >/dev/null
+      - name: Debug whatweb output
+        run: |
+          whatweb --log-json=/tmp/w.json --color=never -a 1 http://127.0.0.1:8080 || true
+          echo "--- stdout done ---"
+          ls -la /tmp/w.json || echo "NO LOG FILE"
+          head -c 1200 /tmp/w.json || true
       - name: Adapters against real binaries
         run: python -m pytest tests/test_toolchain.py -q -rs
 
