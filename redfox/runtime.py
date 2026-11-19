@@ -18,6 +18,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -53,7 +54,10 @@ def _is_expected_tool(path: str, marker: str) -> bool:
     if path in _VERIFIED:
         return _VERIFIED[path]
     try:
-        probe = subprocess.run([path, "-version"], capture_output=True, text=True, timeout=20)
+        # cwd=temp: a tool that treats "-version" as a path would otherwise write
+        # into whatever directory the campaign was started from.
+        probe = subprocess.run([path, "-version"], capture_output=True, text=True,
+                               timeout=20, cwd=tempfile.gettempdir())
         blob = (probe.stdout or "") + (probe.stderr or "")
         ok = marker.lower() in blob.lower()
     except (OSError, subprocess.SubprocessError):

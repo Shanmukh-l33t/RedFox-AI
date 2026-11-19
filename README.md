@@ -176,16 +176,19 @@ Each finding carries a fingerprint, severity, CVSS (when the tool provides it), 
 - `tests/test_approval.py` — an intrusive action is refused, approved once, consumed, and cannot be replayed; a campaign stops at `awaiting_approval`.
 - `tests/test_pdf.py` — the PDF renderer produces a structurally valid file (xref checked by offset, every finding title present).
 - `tests/test_amass_adapter.py`, `tests/test_llm.py` — parser and model-client behaviour, including the empty-content retry.
+- `tests/test_toolchain.py` — nmap, httpx, ffuf, nuclei and whatweb run against the live lab **through the policy gate**, so an adapter cannot quietly stop parsing.
+- `tests/test_security_review.py`, `tests/test_secrets.py` — every finding in [docs/SECURITY-REVIEW.md](docs/SECURITY-REVIEW.md), including argument injection, the redacted prompt, the output cap, and a same-named binary on `PATH`.
 
 Operational checks live in `scripts/`: `verify_evidence.py` proves every finding is
 backed by an intact evidence file, and `soak.py` runs repeated campaigns and fails
 on any audit break or denied action.
 
-CI runs the unit, structural and parser suites on Linux and Windows for Python
-3.11 and 3.12. Its end-to-end job installs the real scanners and runs the lab
-campaign only when an LLM secret is configured; without one it prints that it is
-skipping and the rest of the suite still gates the pull request. The recorded run
-in `examples/` is the evidence that the full path works.
+CI runs seven jobs on Linux and Windows for Python 3.11 and 3.12: the unit and
+parser suites, the safety invariants, a **real-tool job** that installs nmap,
+whatweb, sslscan, nuclei, httpx, subfinder and ffuf and runs the adapters against
+the lab, and an end-to-end campaign. The campaign job needs an LLM secret; without
+one it says so and the rest of the suite still gates the pull request. The
+recorded run in `examples/` is the evidence that the full path works.
 
 ## Repository layout
 
